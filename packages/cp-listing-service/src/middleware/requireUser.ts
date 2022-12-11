@@ -1,5 +1,8 @@
-import { ServiceResponse, verifyToken, signJWT } from '@cribplug/common';
+import {
+  ServiceResponse, verifyToken, signJWT, sanitizeData
+} from '@cribplug/common';
 import { Request, Response, NextFunction } from 'express';
+import { userCreateFields } from '../schema/user.schema';
 import UserDBService from '../services/user.service';
 import { config } from '../utils/config';
 import { logResponse } from './logRequests';
@@ -34,6 +37,24 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
   if (decoded && valid) {
     const userExists = await userService.findUserById(decoded.userId);
     if (!userExists.success) {
+      const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', decoded.sessionId);
+      if (!session || !JSON.parse(session)) {
+        req.user = null;
+        return next();
+      }
+      const {
+        isValid, user, deviceId, sessionId
+      } = JSON.parse(session);
+      if (!isValid) {
+        req.user = null;
+        return next();
+      }
+      const userData = sanitizeData(userCreateFields, user);
+      const createdUser = await userService.createUser(userData);
+      if (createdUser.success) {
+        req.user = { ...user, deviceId, sessionId };
+        return next();
+      }
       req.user = null;
       return next();
     }
@@ -64,6 +85,24 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     }
     const userExists = await userService.findUserById(refreshDecoded.userId);
     if (!userExists.success) {
+      const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', decoded.sessionId);
+      if (!session || !JSON.parse(session)) {
+        req.user = null;
+        return next();
+      }
+      const {
+        isValid, user, deviceId, sessionId
+      } = JSON.parse(session);
+      if (!isValid) {
+        req.user = null;
+        return next();
+      }
+      const userData = sanitizeData(userCreateFields, user);
+      const createdUser = await userService.createUser(userData);
+      if (createdUser.success) {
+        req.user = { ...user, deviceId, sessionId };
+        return next();
+      }
       req.user = null;
       return next();
     }
