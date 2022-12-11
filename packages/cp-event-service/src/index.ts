@@ -1,17 +1,18 @@
 import {
-  rabbitMQConnect, redisConnect, RedisConnection, serviceDown, serviceUp, setIO
+  rabbitMQConnect, redisConnect, RedisConnection, serviceUp, setIO, serviceDown
 } from '@cribplug/common';
 import http from 'http';
 import { app } from './app';
 import { config } from './utils/config';
 import routes from './routes/index.routes';
+import { serviceEvents } from './services/events.service';
 
 const { self, rabbitMQConfig, redisConfig } = config;
 const PORT = self.port;
 
 const httpServer = http.createServer(app);
 
-const io = setIO(httpServer, '/api/v1/auth/socket');
+const io = setIO(httpServer, `${config.self.basePath}/socket`);
 
 io.on('connection', (socket) => {
   console.log('Socket connected');
@@ -26,6 +27,7 @@ httpServer.listen(PORT, async () => {
     self.queue || '',
     rabbitMQConfig.exchange || '',
     self.serviceName || '',
+    `${self.emoji} 🐇`
   );
   const redis: RedisConnection = redisConnect(redisConfig.url || '', redisConfig.scope || '');
   if (channel && !error) {
@@ -36,12 +38,13 @@ httpServer.listen(PORT, async () => {
     });
   }
   await serviceUp(redis, config);
+  await serviceEvents(channel);
   routes(app);
-  ['SIGTERM', 'SIGINT', 'SIGKILL', 'uncaughtException', 'unhandledRejection'].forEach((signal) => {
-    process.on(signal, async () => {
-      await serviceDown(redis, config);
-      process.exit(0);
-    });
-  });
-  console.log(`Listening on port ${PORT}!!!!!`);
+  // ['SIGTERM', 'SIGINT', 'SIGKILL', 'uncaughtException', 'unhandledRejection'].forEach((signal) => {
+  //   process.on(signal, async () => {
+  //     await serviceDown(redis, config);
+  //     process.exit(0);
+  //   });
+  // });
+  console.log(`${self.emoji} ${config.self.serviceName?.toUpperCase()} Listening on port ${PORT}!!!!!`);
 });

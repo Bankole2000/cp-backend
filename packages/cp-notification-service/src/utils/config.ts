@@ -6,6 +6,9 @@ export const config = {
     basePath: process.env.BASE_PATH,
     queue: process.env.RABBITMQ_QUEUE,
     jwtSecret: process.env.JWT_SECRET,
+    emoji: process.env.EMOJI,
+    accessTokenTTL: process.env.ACCESS_TOKEN_TTL,
+    accessTokenTTLMS: process.env.ACCESS_TOKEN_TTL_MS,
   },
   redisConfig: {
     url: process.env.REDIS_CACHE_URL,

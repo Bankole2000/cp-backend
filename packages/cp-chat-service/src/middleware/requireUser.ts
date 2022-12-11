@@ -5,27 +5,11 @@ import { config } from '../utils/config';
 import { logResponse } from './logRequests';
 
 const userService = new UserDBService();
-
-export const requireUserFromIdToken = async (req: Request, res: Response, next: NextFunction) => {
-  const idToken = req.headers['x-user-id-token'] || req.body.idToken;
-  if (!idToken) {
-    const sr = new ServiceResponse('Unauthorized', null, false, 401, 'Unauthorized', 'AUTH_SERVICE_ID_TOKEN_REQUIRED', 'Confirm flow or generate idToken is required');
-    await logResponse(req, sr);
-    return res.status(sr.statusCode).send(sr);
-  }
-  const { valid, decoded, error } = await verifyToken(idToken, config.self.jwtSecret || '');
-  if (!valid) {
-    const sr = new ServiceResponse('Unauthorized', null, false, 401, 'Unauthorized', error, null);
-    await logResponse(req, sr);
-    return res.status(sr.statusCode).send(sr);
-  }
-  req.user = decoded;
-  return next();
-};
+const { self, redisConfig } = config;
 
 export const requireLoggedInUser = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
-    const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'AUTH_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
+    const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'CHAT_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
@@ -53,12 +37,21 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
-    const { success, data } = await userService.getSessionById(decoded.sessionId);
-    if (!success || !data.isValid) {
+    const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', decoded.sessionId);
+    if (!session || !JSON.parse(session)) {
       req.user = null;
       return next();
     }
-    req.user = decoded;
+
+    const {
+      isValid, user, deviceId, sessionId
+    } = JSON.parse(session);
+    if (!isValid) {
+      req.user = null;
+      return next();
+    }
+
+    req.user = { ...user, deviceId, sessionId };
     return next();
   }
   if (!refreshToken) {
@@ -76,15 +69,22 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
-    const { success, data: { sessionId, isValid, deviceId } } = await userService.getSessionById(refreshDecoded.sessionId);
-    if (!success || !isValid) {
+    const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', refreshDecoded.sessionId);
+    if (!session || !JSON.parse(session)) {
       req.user = null;
       return next();
     }
-    const newAccessToken = (await signJWT({ ...userExists.data, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
+    const {
+      isValid, user, deviceId, sessionId
+    } = JSON.parse(session);
+    if (!isValid) {
+      req.user = null;
+      return next();
+    }
+    req.user = { ...user, deviceId, sessionId };
+    const newAccessToken = (await signJWT({ ...user, deviceId, sessionId }, self.jwtSecret as string, { expiresIn: self.accessTokenTTL })).token;
     res.locals.newAccessToken = newAccessToken;
     res.setHeader('x-access-token', newAccessToken as string);
-    req.user = refreshDecoded;
     return next();
   }
   req.user = null;

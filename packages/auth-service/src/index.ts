@@ -11,7 +11,7 @@ const PORT = self.port;
 
 const httpServer = http.createServer(app);
 
-const io = setIO(httpServer, '/api/v1/auth/socket');
+const io = setIO(httpServer, `${self.basePath}/socket`);
 
 io.on('connection', (socket) => {
   console.log('Socket connected');
@@ -38,11 +38,11 @@ httpServer.listen(PORT, async () => {
   }
   await serviceUp(redis, config);
   routes(app);
-  ['SIGTERM', 'SIGINT', 'SIGKILL', 'uncaughtException', 'unhandledRejection'].forEach((signal) => {
-    process.on(signal, async () => {
-      await serviceDown(redis, config);
-      process.exitCode = 1;
-    });
-  });
+  // ['SIGTERM', 'SIGINT', 'SIGKILL', 'uncaughtException', 'unhandledRejection'].forEach((signal) => {
+  //   process.on(signal, async () => {
+  //     await serviceDown(redis, config);
+  //     process.exitCode = 1;
+  //   });
+  // });
   console.log(`${self.emoji} ${self.serviceName?.toUpperCase()} Listening on port ${PORT}!!!!!`);
 });
