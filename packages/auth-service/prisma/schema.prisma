@@ -1,0 +1,114 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId           String             @id @default(uuid())
+  email            String             @unique
+  emailVerified    Boolean            @default(false) @db.Boolean
+  username         String             @unique @default(uuid())
+  roles            Role[]             @default([USER])
+  password         String             @default(uuid())
+  firstname        String?            @db.VarChar(100)
+  lastname         String?            @db.VarChar(100)
+  displayname      String?            @db.VarChar(100)
+  dob              DateTime
+  gender           Gender             @default(OTHER)
+  tos              Boolean            @db.Boolean
+  sessions         Session[]
+  approvedDevices  ApprovedDevices[]
+  onboardingStatus OnboardingStatus[] @default([NEWLY_REGISTERED])
+  version          Int                @default(0)
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+}
+
+enum OnboardingStatus {
+  NEWLY_REGISTERED
+  EMAIL_VERIFIED
+  USERNAME_SET
+  PASSWORD_SET
+  COMPLETED
+}
+
+enum Gender {
+  MALE
+  FEMALE
+  OTHER
+}
+
+enum Role {
+  ADMIN
+  SYSTEM
+  SUPPORT
+  AGENT
+  USER
+}
+
+model Session {
+  sessionId   String           @id @default(uuid()) @db.Uuid
+  ip          String
+  userAgent   String
+  user        User             @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId      String
+  device      ApprovedDevices? @relation(fields: [deviceId], references: [deviceId])
+  deviceId    String?
+  isValid     Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  loggedOutAt DateTime?        @updatedAt
+}
+
+model ApprovedDevices {
+  deviceId   String    @id @default(uuid())
+  ip         String
+  deviceData Json      @default("{}") @db.Json
+  user       User      @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId     String
+  sessions   Session[]
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model RequestLog {
+  id            String    @unique @default(uuid())
+  ip            String?
+  userAgent     String?
+  userAgentData Json?     @default("{}") @db.Json
+  method        String
+  path          String
+  originalUrl   String
+  params        Json      @default("{}") @db.Json
+  body          Json      @default("{}") @db.Json
+  query         Json      @default("{}") @db.Json
+  response      Json      @default("{}") @db.Json
+  user          Json?     @default("{}") @db.Json
+  success       Boolean   @default(false)
+  responseData  Json?     @default("{}") @db.Json
+  time          Int?      @default(0)
+  status        Int?
+  message       String?
+  error         ErrorLog?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model ErrorLog {
+  id        String      @unique @default(uuid())
+  request   RequestLog? @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requestId String?     @unique
+  error     String?     @db.VarChar(1000)
+  errors    Json?       @default("{}") @db.Json
+  status    Int
+  fix       String?     @db.VarChar(1000)
+  resolved  Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}

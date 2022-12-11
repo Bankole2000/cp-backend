@@ -1,0 +1,54 @@
+>>>: Create Event
+const event = new ServiceEvent('EVENT_TYPE', eventData, idToken, accessToken, sendingServiceName);
+
+>>>: SECTION: Using channel on request object
+>>>: Publish to exchange
+await req.channel.publish(exchange, '', Buffer.from(JSON.stringify(event)), { durable: true });
+
+>>>: Send to Specific Queue
+await req.channel.sendToQueue('queue-name', Buffer.from(JSON.stringify(event)), { persistant: true });
+
+>>>: SECTION: Using events service functions
+>>>: Send to Specific Queues
+const specificServiceQueues = await getServiceQueues(req.redis, `${config.redisConfig.scope}-services`, ['chat', 'profile', 'notification', 'transaction']);
+await sendToServiceQueues(req.channel, event, specificServiceQueues)
+
+>>>: Send to All Queues (except own queue)
+const allQueues = await getServiceQueues(req.redis, `${config.redisConfig.scope}-services`);
+await sendToServiceQueues(req.channel, event, allQueues);
+
+>>>: SECTION: Using RPC over rabbitmq
+>>>: Sending Service (expecting response)
+const sendTask = async () => {
+  const connection = await amqp.connection('connectionurl');
+  const channel = await connection.createChannel();
+
+  console.log('[x] Requesting fib(%d)', num);
+
+  channel.sendToQueue('rpc_queue', Buffer.from(num.toString()), {
+    replyTo: q.queue,
+    correlationId: someuuid 
+  });
+}
+
+const processTask = async () => {
+  c
+}
+
+export const sendToServiceQueues = async (channel: Channel, message: any, services: string[] = []) => {
+  const promises: any[] = [];
+  // all promises will be added to array in order
+  services.forEach((service) => {
+    promises.push(channel.sendToQueue(service, Buffer.from(JSON.stringify(message)), { persistent: true }));
+  });
+  // Promise.all will await all promises in the array to resolve
+  // then it will itself resolve to an array of the results.
+  // results will be in order of the Promises passed,
+  // regardless of completion order
+  const results = await Promise.all(promises);
+  console.log(results);
+};
+
+touch index.handlers.ts auth.handlers.ts chat.handlers.ts comms.handlers.ts feed.handlers.ts listing.handlers.ts notification.handlers.ts offer.handlers.ts profile.handlers.ts transaction.handlers.ts
+touch index.jobs.service.ts auth.jobs.service.ts chat.jobs.service.ts comms.jobs.service.ts feed.jobs.service.ts listing.jobs.service.ts notification.jobs.service.ts offer.jobs.service.ts profile.jobs.service.ts transaction.jobs.service.ts
+touch index.exchange.ts auth.exchange.ts chat.exchange.ts comms.exchange.ts feed.exchange.ts listing.exchange.ts notification.exchange.ts offer.exchange.ts profile.exchange.ts transaction.exchange.ts

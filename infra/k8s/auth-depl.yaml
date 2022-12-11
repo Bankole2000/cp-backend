@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: 
+  name: auth-depl
+spec: 
+  replicas: 1
+  selector: 
+    matchLabels: 
+      app: cp-auth
+  template:
+    metadata:
+      labels:
+        app: cp-auth
+    spec:
+      containers:
+        - name: cp-auth
+          image: bankole2000/cp-auth
+---
+apiVersion: v1
+kind: Service
+metadata: 
+  name: cp-auth
+spec:
+  selector:
+    app: cp-auth
+  ports:
+    - name: cp-auth
+      protocol: TCP
+      port: 3001
+      targetPort: 3001

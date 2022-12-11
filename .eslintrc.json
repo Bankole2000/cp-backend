@@ -21,6 +21,19 @@
     ],
     "rules": {
       "linebreak-style": "off",
-      "prettier/prettier": ["error"]
+      "max-len": "warn",
+      "prettier/prettier": ["error"],
+      "import/prefer-default-export": "off",
+      "comma-dangle": "off",
+      "import/extensions": [
+        "off",
+        "ignorePackages",
+        {
+          ".js": "never",
+          ".jsx": "never",
+          ".ts": "never",
+          ".tsx": "never"
+        }
+      ]
     }
 }

@@ -1,0 +1,63 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId        String   @id @default(uuid())
+  email         String   @unique
+  emailVerified Boolean  @default(false) @db.Boolean
+  username      String   @unique @default(uuid())
+  role          String[] @default(["USER"])
+  firstname     String?  @db.VarChar(100)
+  lastname      String?  @db.VarChar(100)
+  displayname   String?  @db.VarChar(100)
+  dob           DateTime
+  tos           Boolean  @db.Boolean
+  version       Int      @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model RequestLog {
+  id            String    @unique @default(uuid())
+  ip            String?
+  userAgent     String?
+  userAgentData Json?     @default("{}") @db.Json
+  method        String
+  path          String
+  originalUrl   String
+  params        Json      @default("{}") @db.Json
+  body          Json      @default("{}") @db.Json
+  query         Json      @default("{}") @db.Json
+  response      Json      @default("{}") @db.Json
+  user          Json?     @default("{}") @db.Json
+  success       Boolean   @default(false)
+  responseData  Json?     @default("{}") @db.Json
+  time          Int?      @default(0)
+  status        Int?
+  message       String?
+  error         ErrorLog?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model ErrorLog {
+  id        String      @unique @default(uuid())
+  request   RequestLog? @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requestId String?     @unique
+  error     String?     @db.VarChar(1000)
+  errors    Json?       @default("{}") @db.Json
+  status    Int
+  fix       String?     @db.VarChar(1000)
+  resolved  Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}

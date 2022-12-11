@@ -1,0 +1,61 @@
+{
+  "workbench.colorCustomizations": {
+    "titleBar.activeForeground": "#fff",
+    "titleBar.inactiveForeground": "#ffffffcc",
+    "titleBar.activeBackground": "#936700",
+    "titleBar.inactiveBackground": "#937e4b"
+  },
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "todohighlight.keywords": [
+    "DEBUG:",
+    "REVIEW:",
+    {
+        "text": "NOTE:",
+        "color": "#ff0000",
+        "backgroundColor": "yellow",
+        "overviewRulerColor": "grey"
+    },
+    {
+      "text": "STEP:",
+      "color": "#000",
+      "borderRadius": "5px",
+      "isWholeLine": false,
+      "backgroundColor": "white",
+      "overviewRulerColor": "grey"
+  },
+    {
+        "text": "HACK:",
+        "color": "#000",
+        "isWholeLine": false,
+    },
+    {
+        "text": ">>>:", 
+        "color": "white", 
+        "backgroundColor": "purple", 
+        "borderRadius": "5px",
+        // "paddingRight":"2px",
+        // "paddingLeft":"2px",
+        "overviewRulerColor": "purple"
+    }, 
+    {
+        "text": "SECTION:", 
+        "color": "#000",
+        "backgroundColor": "white",
+        "isWholeLine": true 
+    }, 
+    {
+        "text": "#region", 
+        "color": "white", 
+        "backgroundColor": "blue", 
+        "isWholeLine": true
+    },
+    {
+        "text": "#endregion", 
+        "color": "white", 
+        "backgroundColor": "steelblue", 
+        "isWholeLine": true
+    }
+  ],
+}
