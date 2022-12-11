@@ -1,21 +1,25 @@
 import { Channel, RedisConnection } from '@cribplug/common';
 import { config } from '../utils/config';
+import { exchangeEventHandlers } from './events/exchangeEventHandlers.service';
+import { queueEventHandlers } from './events/queuedEventHandlers.service';
 
 export const serviceEvents = async (channel: Channel) => {
   try {
     await channel.assertExchange(config.rabbitMQConfig.exchange, 'fanout');
+    const { emoji, serviceName } = config.self;
     const q = await channel.assertQueue(config.rabbitMQConfig.exqueue, { exclusive: true });
     const j = await channel.assertQueue(config.self.queue, { durable: true });
     await channel.bindQueue(q.queue, config.rabbitMQConfig.exchange, '');
     await channel.consume(q.queue, async (msg: any) => {
-      console.log('Listening for exchange events');
-      console.log({ msg, data: JSON.parse(msg.content.toString()) });
+      const { type, origin } = JSON.parse(msg.content.toString());
+      console.log(`${emoji}📨 ${serviceName?.toUpperCase()} - exchange message: ${type} from ${origin.toUpperCase()}`);
+      exchangeEventHandlers(msg, channel);
     });
     // channel.sendToQueue(config.self.queue, Buffer.from(JSON.stringify({ message: 'Hello World' })), { persistent: true });
     await channel.consume(j.queue, async (msg: any) => {
-      console.log('Listening for queue jobs');
-      console.log({ msg, data: JSON.parse(msg.content.toString()) });
-      channel.ack(msg);
+      const { type, origin } = JSON.parse(msg.content.toString());
+      console.log(`${emoji}📩 ${serviceName?.toUpperCase()} - queue job: ${type} from ${origin.toUpperCase()}`);
+      queueEventHandlers(msg, channel);
     }, { noAck: false });
   } catch (error) {
     console.log(error);

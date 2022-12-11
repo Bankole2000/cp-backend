@@ -26,6 +26,7 @@ httpServer.listen(PORT, async () => {
     self.queue || '',
     rabbitMQConfig.exchange || '',
     self.serviceName || '',
+    `${self.emoji} 🐇`
   );
   const redis: RedisConnection = redisConnect(redisConfig.url || '', redisConfig.scope || '');
   if (channel && !error) {
@@ -43,5 +44,5 @@ httpServer.listen(PORT, async () => {
       process.exit(0);
     });
   });
-  console.log(`Listening on port ${PORT}!!!!!`);
+  console.log(`${self.emoji} ${self.serviceName?.toUpperCase()} Listening on port ${PORT}!!!!!`);
 });

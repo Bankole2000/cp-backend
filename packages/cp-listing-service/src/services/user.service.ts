@@ -22,7 +22,7 @@ export default class UserDBService {
       if (createdUser) {
         return new ServiceResponse('User created successfully', createdUser, true, 200, null, null, null);
       }
-      return new ServiceResponse('Failed to create User', createdUser, false, 400, 'Failed to create User', 'AUTH_SERVICE_ERROR_CREATING_USER', 'Check all fields and try again');
+      return new ServiceResponse('Failed to create User', createdUser, false, 400, 'Failed to create User', 'LISTING_SERVICE_ERROR_CREATING_USER', 'Check all fields and try again');
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error creating User', null, false, 500, error.message, error, 'Check logs and database');
@@ -39,7 +39,7 @@ export default class UserDBService {
       if (user) {
         return new ServiceResponse('User found successfully', user, true, 200, null, null, null);
       }
-      return new ServiceResponse('User not found', user, false, 200, 'User not found', 'AUTH_SERVICE_USER_BY_EMAIL_NOT_FOUND', 'Confirm that user exists');
+      return new ServiceResponse('User not found', user, false, 200, 'User not found', 'LISTING_SERVICE_USER_BY_EMAIL_NOT_FOUND', 'Confirm that user exists');
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error finding User', null, false, 500, error.message, error, 'Check logs and database');
@@ -56,7 +56,7 @@ export default class UserDBService {
       if (user) {
         return new ServiceResponse('User found successfully', user, true, 200, null, null, null);
       }
-      return new ServiceResponse('User not found', user, false, 404, 'User not found', 'AUTH_SERVICE_USER_BY_ID_NOT_FOUND', 'Confirm that user exists');
+      return new ServiceResponse('User not found', user, false, 404, 'User not found', 'LISTING_SERVICE_USER_BY_ID_NOT_FOUND', 'Confirm that user exists');
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error finding User', null, false, 500, error.message, error, 'Check logs and database');
@@ -79,7 +79,7 @@ export default class UserDBService {
       if (updatedUser) {
         return new ServiceResponse('User updated successfully', updatedUser, true, 200, null, null, null);
       }
-      return new ServiceResponse('Error updating user', updatedUser, false, 500, 'Error updating user', 'AUTH_SERVICE_ERROR_UPDATING_USER', 'Check the logs and database');
+      return new ServiceResponse('Error updating user', updatedUser, false, 500, 'Error updating user', 'LISTING_SERVICE_ERROR_UPDATING_USER', 'Check the logs and database');
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error updating User', null, false, 500, error.message, error, 'Check logs and database');
@@ -96,7 +96,7 @@ export default class UserDBService {
       if (user) {
         return new ServiceResponse('User found successfully', user, true, 200, null, null, null);
       }
-      return new ServiceResponse('User not found', user, false, 404, 'User not found', 'AUTH_SERVICE_USER_BY_USERNAME_NOT_FOUND', 'Confirm the username and try again');
+      return new ServiceResponse('User not found', user, false, 404, 'User not found', 'LISTING_SERVICE_USER_BY_USERNAME_NOT_FOUND', 'Confirm the username and try again');
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error finding User', null, false, 500, error.message, error, 'Check logs and database');

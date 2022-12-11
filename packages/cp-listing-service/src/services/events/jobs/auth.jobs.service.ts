@@ -11,6 +11,13 @@ export const authQueueJobsHandler = async (msg: any, channel: Channel) => {
     //   }
     //   break;
     // }
+    case 'USER_CREATED': {
+      const result = await authJobs.USER_CREATED(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
     default: {
       const result = await authJobs.authDefaultJobHandler(message);
       if (result.success) {

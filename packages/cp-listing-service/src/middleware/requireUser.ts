@@ -9,7 +9,7 @@ const { self, redisConfig } = config;
 
 export const requireLoggedInUser = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
-    const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'AUTH_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
+    const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'LISTING_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
@@ -86,5 +86,19 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     return next();
   }
   req.user = null;
+  return next();
+};
+
+export const allowOnly = (allowedRoles: string[]) => async (req: Request, res: Response, next: NextFunction) => {
+  if (!req.user) {
+    const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'LISTING_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  if (!allowedRoles.includes(req.user.role)) {
+    const sr = new ServiceResponse('Unauthorized', null, false, 401, 'Unauthorized', 'LISTING_SERVICE_USER_NOT_AUTHORIZED', 'You are not authorized to perform this action');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
   return next();
 };

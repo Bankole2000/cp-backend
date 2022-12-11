@@ -19,6 +19,5 @@ export const USER_CREATED = async (message: ServiceEvent) => {
   const userService = new UserDBService();
   const userData = sanitizeData(userCreateFields, message.data);
   const sr = await userService.createUser(userData);
-  console.log({ sr });
   return sr;
 };

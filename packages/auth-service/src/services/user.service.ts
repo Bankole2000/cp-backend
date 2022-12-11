@@ -233,10 +233,6 @@ export default class UserDBService {
       const { sessionId } = session;
       updatedSessionsData[sessionId] = JSON.stringify(session);
     });
-    // updatedSessions.map((session: any) => {
-    //   const { sessionId } = session;
-    //   return { [sessionId]: JSON.stringify(session) };
-    // });
     await redis.client.hSet(`${scope}-logged-in`, [...Object.entries(updatedSessionsData).flat()]);
     await redis.client.disconnect();
   }
