@@ -4,9 +4,10 @@ import {
 } from '@cribplug/common';
 import UserDBService from '../services/user.service';
 import { logResponse } from '../middleware/logRequests';
-import { userCreateFields } from '../schema/user.schema';
+import { allRoles, userCreateFields } from '../schema/user.schema';
 import { config } from '../utils/config';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
+import { LoginType, Role } from '@prisma/client';
 
 export const registerWithEmail = async (req: Request, res: Response) => {
   // #region STEP: Check if user already exists, Sanitize Data
@@ -25,8 +26,9 @@ export const registerWithEmail = async (req: Request, res: Response) => {
   // #endregion
   // #region STEP: Create new user
   if (userData.email === config.self.adminEmail) {
-    userData.roles = ['USER'];
+    userData.roles = allRoles as Role[];
   }
+  userData.registeredVia = 'EMAIL' as LoginType;
   const newUserSR = await userService.createUser(userData);
   if (!newUserSR.success) {
     await logResponse(req, newUserSR);

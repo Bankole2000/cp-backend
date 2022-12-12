@@ -12,9 +12,9 @@ datasource db {
 
 model User {
   userId           String             @id @default(uuid())
-  email            String             @unique
+  email            String?             
   emailVerified    Boolean            @default(false) @db.Boolean
-  phone            String?            @unique
+  phone            String?            
   phoneVerified    Boolean            @default(false) @db.Boolean
   registeredVia    LoginType?         @default(EMAIL)
   username         String             @unique @default(uuid())

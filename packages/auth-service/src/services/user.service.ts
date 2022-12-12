@@ -32,7 +32,7 @@ export default class UserDBService {
 
   async findUserByEmail(email: string) {
     try {
-      const user = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findFirst({
         where: {
           email,
         },
@@ -363,7 +363,7 @@ export default class UserDBService {
         }
       });
       if (deletedUser) {
-        const updateData = desanitizeData(userSoftDeleteFields, deletedUser, deletedUser.userId);
+        const updateData = desanitizeData(['username'], deletedUser, deletedUser.userId);
         const softDeletedUser = await this.prisma.user.update({
           where: {
             userId,
@@ -373,7 +373,7 @@ export default class UserDBService {
             deletedAt: new Date(),
           }
         });
-        return new ServiceResponse('User account deleted successfully', { ...deletedUser, deletedAt: softDeletedUser.deletedAt }, true, 200, null, null, null);
+        return new ServiceResponse('User account deleted successfully', { ...deletedUser, deletedAt: softDeletedUser.deletedAt, username: softDeletedUser.username }, true, 200, null, null, null);
       }
       return new ServiceResponse('User account not found', deletedUser, false, 404, 'User account not found', 'AUTH_SERVICE_USER_NOT_FOUND', 'Check the userId and try again');
     } catch (error: any) {

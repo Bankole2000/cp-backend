@@ -2,7 +2,9 @@ import { ServiceResponse } from '@cribplug/common';
 import { Request, Response } from 'express';
 import { logResponse } from '../middleware/logRequests';
 import UserDBService from '../services/user.service';
+import { config } from '../utils/config';
 
+const { redisConfig } = config
 const userService = new UserDBService();
 
 export const currentUserHandler = async (req: Request, res: Response) => {
@@ -21,6 +23,7 @@ export const currentUserHandler = async (req: Request, res: Response) => {
 export const deleteOwnAccountHandler = async (req: Request, res: Response) => {
   const { userId } = req.user;
   const sr = await userService.softDeleteUserAccount(userId);
+  await userService.invalidateAllActiveUserSessions(req.redis, redisConfig.scope as string, userId);
   await logResponse(req, sr);
   return res.status(sr.statusCode).send(sr);
 };

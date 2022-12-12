@@ -94,6 +94,10 @@ export const verifyEmailSchema = object({
 export const userCreateFields = ['firstname', 'lastname', 'email', 'tos', 'dob'];
 export const userOnboardingFields = ['username', 'password', 'gender'];
 export const userSoftDeleteFields = ['email', 'username', 'phone'];
+export const systemPermittedRoles = ['SUPER_ADMIN', 'ADMIN', 'SYSTEM'];
+export const supportPermittedRoles = ['SUPER_ADMIN', 'ADMIN', 'SYSTEM', 'SUPPORT'];
+export const agentPermittedRoles = ['SUPER_ADMIN', 'ADMIN', 'SYSTEM', 'SUPPORT', 'AGENT'];
+export const allRoles = ['SUPER_ADMIN', 'ADMIN', 'SYSTEM', 'SUPPORT', 'AGENT', 'USER'];
 
 export const isValidDate = (datelike: string) => new Date(datelike) instanceof Date && !Number.isNaN(datelike) && typeof datelike !== 'boolean' && new Date(datelike).toString() !== 'Invalid Date';
 

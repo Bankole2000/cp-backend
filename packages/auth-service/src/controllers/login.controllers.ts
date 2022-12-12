@@ -6,6 +6,7 @@ import { logResponse } from '../middleware/logRequests';
 import UserDBService from '../services/user.service';
 import { config } from '../utils/config';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
+import { LoginType } from '@prisma/client';
 
 export const emailLoginHandler = async (req: Request, res: Response) => {
   // #region STEP: Check user exists and Sanitize Data
@@ -52,6 +53,7 @@ export const emailLoginHandler = async (req: Request, res: Response) => {
     ip,
     userAgent,
     deviceId: deviceApproved.data.deviceId,
+    loginType: 'EMAIL' as LoginType
   });
   if (!createSessionSR.success) {
     await logResponse(req, createSessionSR);
@@ -126,6 +128,7 @@ export const usernameLoginHandler = async (req: Request, res: Response) => {
     ip,
     userAgent,
     deviceId: deviceApproved.data.deviceId,
+    loginType: userExists.data.registeredVia as LoginType
   });
   if (!createSessionSR.success) {
     await logResponse(req, createSessionSR);
