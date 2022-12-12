@@ -16,7 +16,7 @@ model User {
   emailVerified    Boolean            @default(false) @db.Boolean
   phone            String?            @unique
   phoneVerified    Boolean            @default(false) @db.Boolean
-  registeredVia    LoginType          @default(EMAIL)
+  registeredVia    LoginType?         @default(EMAIL)
   username         String             @unique @default(uuid())
   roles            Role[]             @default([USER])
   password         String             @default(uuid())
@@ -35,11 +35,25 @@ model User {
   deletedAt        DateTime?
 }
 
+model AccountSettings {
+  key      String
+  value    String
+  category String
+  userId   String
+
+  @@id([key, userId])
+}
+
 enum OnboardingStatus {
   NEWLY_REGISTERED
   EMAIL_VERIFIED
+  PHONE_VERIFIED
+  ID_VERIFIED
+  AGENT_ID_VERIFIED
   USERNAME_SET
   PASSWORD_SET
+  PROFILE_IMAGE_SET
+
   COMPLETED
 }
 
