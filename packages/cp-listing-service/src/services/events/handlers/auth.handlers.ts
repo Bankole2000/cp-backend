@@ -19,7 +19,6 @@ export const authDefaultExchangeHandler = async (message: ServiceEvent) => {
 };
 
 export const USER_CREATED = async (message: ServiceEvent) => {
-  console.log('Handling Event: ', message.type);
   const userData = sanitizeData(userCreateFields, message.data);
   const sr = await userService.createUser(userData);
   if (sr.success) {

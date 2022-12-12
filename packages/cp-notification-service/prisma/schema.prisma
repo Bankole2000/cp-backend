@@ -15,7 +15,7 @@ model User {
   email         String   @unique
   emailVerified Boolean  @default(false) @db.Boolean
   username      String   @unique @default(uuid())
-  // role          Role?    @default(CPUSER)
+  roles         String[] @default(["USER"])
   firstname     String?  @db.VarChar(100)
   lastname      String?  @db.VarChar(100)
   displayname   String?  @db.VarChar(100)

@@ -1,8 +1,9 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, Role } from '@prisma/client';
 import {
   getDriver, Driver, ServiceResponse, getAdjectives, RedisConnection
 } from '@cribplug/common';
 import prisma from '../lib/prisma';
+import { desanitizeData, resanitizeData, userSoftDeleteFields } from '../schema/user.schema';
 
 export default class UserDBService {
   prisma: PrismaClient;
@@ -43,6 +44,28 @@ export default class UserDBService {
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error finding User', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async setUserRoles(userId: string, roles: Role[]) {
+    try {
+      const user = await this.prisma.user.update({
+        where: {
+          userId,
+        },
+        data: {
+          roles: {
+            set: roles,
+          },
+        },
+      });
+      if (user) {
+        return new ServiceResponse('User role added successfully', user, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Failed to add role to User', user, false, 400, 'Failed to add role to User', 'AUTH_SERVICE_ERROR_ADDING_USER_ROLE', 'Check all fields and try again');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error adding role to User', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
 
@@ -298,6 +321,120 @@ export default class UserDBService {
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error removing User session', null, false, 500, error.message, error, null);
+    }
+  }
+
+  async invalidateAllActiveUserSessions(redis: RedisConnection, scope: string, userId: string) {
+    const { data: sessions } = await this.getUserActiveSessions(userId);
+    if (sessions && sessions.length) {
+      const sessionIds = sessions.map((session: any) => session.sessionId);
+      try {
+        const invalidatedSessions = await this.prisma.session.updateMany({
+          where: {
+            sessionId: {
+              in: sessionIds,
+            }
+          },
+          data: {
+            isValid: false,
+          }
+        });
+        if (invalidatedSessions) {
+          await redis.client.connect();
+          await redis.client.hDel(`${scope}-logged-in`, sessionIds);
+          await redis.client.disconnect();
+          return new ServiceResponse('User sessions invalidated successfully', invalidatedSessions, true, 200, null, null, null);
+        }
+      } catch (error: any) {
+        console.log({ error });
+        return new ServiceResponse('Error invalidating active Sessions', null, true, 500, error.message, error, 'Check logs and database');
+      }
+
+      return new ServiceResponse('Error invalidating active Sessions', null, true, 500, 'error invalidating active sessions', 'AUTH_SERVICE_ERROR_INVALIDATING_USER_SESSIONS', 'Check logs and database');
+    }
+    return new ServiceResponse('No active sessions found', sessions, true, 200, null, null, null);
+  }
+
+  async softDeleteUserAccount(userId: string) {
+    try {
+      const deletedUser = await this.prisma.user.findFirst({
+        where: {
+          userId,
+        }
+      });
+      if (deletedUser) {
+        const updateData = desanitizeData(userSoftDeleteFields, deletedUser, deletedUser.userId);
+        const softDeletedUser = await this.prisma.user.update({
+          where: {
+            userId,
+          },
+          data: {
+            ...updateData,
+            deletedAt: new Date(),
+          }
+        });
+        return new ServiceResponse('User account deleted successfully', { ...deletedUser, deletedAt: softDeletedUser.deletedAt }, true, 200, null, null, null);
+      }
+      return new ServiceResponse('User account not found', deletedUser, false, 404, 'User account not found', 'AUTH_SERVICE_USER_NOT_FOUND', 'Check the userId and try again');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error deleting User', null, false, 500, error.message, error, null);
+    }
+  }
+
+  async recoverSoftDeletedAccount(userId: string) {
+    try {
+      const userToRecover = await this.prisma.user.findFirst({
+        where: {
+          userId,
+          deletedAt: {
+            not: null,
+          }
+        },
+      });
+      if (userToRecover) {
+        const updateData = resanitizeData(userSoftDeleteFields, userToRecover, userToRecover.userId);
+        const { success: usernameTaken } = await this.findUserByUsername(updateData.username);
+        if (usernameTaken) {
+          return new ServiceResponse('Username already taken', null, false, 400, 'Username already taken', 'AUTH_SERVICE_USERNAME_TAKEN', 'Choose a different username');
+        }
+        const { success: emailTaken } = await this.findUserByEmail(updateData.email);
+        if (emailTaken) {
+          return new ServiceResponse('Email already taken', null, false, 400, 'Email already taken', 'AUTH_SERVICE_EMAIL_TAKEN', 'Choose a different email');
+        }
+        const recoveredUser = await this.prisma.user.update({
+          where: {
+            userId,
+          },
+          data: {
+            ...updateData,
+            deletedAt: null,
+          }
+        });
+        console.log({ recoveredUser });
+        return new ServiceResponse('User account recovered successfully', recoveredUser, true, 200, null, null, null);
+      }
+      return new ServiceResponse('User account not found', userToRecover, false, 404, 'User account not found', 'AUTH_SERVICE_USER_NOT_FOUND', 'Check the userId and try again');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error recovering User', null, false, 500, error.message, error, null);
+    }
+  }
+
+  async hardDeleteUserAccount(userId: string) {
+    try {
+      const deletedUser = await this.prisma.user.delete({
+        where: {
+          userId,
+        }
+      });
+      if (deletedUser) {
+        return new ServiceResponse('User account deleted successfully', deletedUser, true, 200, null, null, null);
+      }
+      return new ServiceResponse('User account not found', deletedUser, false, 404, 'User account not found', 'AUTH_SERVICE_USER_NOT_FOUND', 'Check the userId and try again');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error deleting User', null, false, 500, error.message, error, null);
     }
   }
 }

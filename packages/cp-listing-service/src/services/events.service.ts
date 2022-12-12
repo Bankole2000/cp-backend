@@ -15,7 +15,6 @@ export const serviceEvents = async (channel: Channel) => {
       console.log(`${emoji}📨 ${serviceName?.toUpperCase()} - exchange message: ${type} from ${origin.toUpperCase()}`);
       exchangeEventHandlers(msg, channel);
     });
-    // channel.sendToQueue(config.self.queue, Buffer.from(JSON.stringify({ message: 'Hello World' })), { persistent: true });
     await channel.consume(j.queue, async (msg: any) => {
       const { type, origin } = JSON.parse(msg.content.toString());
       console.log(`${emoji}📩 ${serviceName?.toUpperCase()} - queue job: ${type} from ${origin.toUpperCase()}`);
@@ -28,28 +27,23 @@ export const serviceEvents = async (channel: Channel) => {
 
 export const sendToServiceQueues = async (channel: Channel, message: any, services: string[] = []) => {
   const promises: any[] = [];
-  // all promises will be added to array in order
   services.forEach((service) => {
     promises.push(channel.sendToQueue(service, Buffer.from(JSON.stringify(message)), { persistent: true }));
   });
-  // Promise.all will await all promises in the array to resolve
-  // then it will itself resolve to an array of the results.
-  // results will be in order of the Promises passed,
-  // regardless of completion order
   const results = await Promise.all(promises);
   console.log(results);
 };
 
-export const getServiceQueues = async (redis: RedisConnection, scope = `${config.redisConfig.scope}-services`, services: string[] = []) => {
+export const getServiceQueues = async (redis: RedisConnection, scope: string, services: string[] = []) => {
   await redis.client.connect();
-  const registeredServices = await redis.client.get(scope);
-  const upServices = await JSON.parse(registeredServices || '{}');
-  let relevantServices: string[] = [];
+  const registeredQueues = await redis.client.sMembers(`${scope}-queues`);
+  let relevantQueues: string[] = [];
   if (!services.length) {
-    relevantServices = Object.keys(upServices).filter((x) => x !== config.self.serviceName);
+    relevantQueues = registeredQueues.filter((x) => x !== config.self.queue);
   } else {
-    relevantServices = Object.keys(upServices).filter((x) => services.includes(x.split('-')[0]) && x !== config.self.serviceName);
+    relevantQueues = registeredQueues.filter((x) => services.includes(x.split('-')[1]) && x !== config.self.queue);
   }
-  const queues = relevantServices.map((s) => upServices[s].self.queue);
-  return queues;
+  console.log({ registeredQueues, relevantQueues });
+  await redis.client.disconnect();
+  return relevantQueues;
 };

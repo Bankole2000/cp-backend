@@ -11,19 +11,127 @@ datasource db {
 }
 
 model User {
-  userId        String   @id @default(uuid())
-  email         String   @unique
-  emailVerified Boolean  @default(false) @db.Boolean
-  username      String   @unique @default(uuid())
-  roles         String[] @default(["USER"])
-  firstname     String?  @db.VarChar(100)
-  lastname      String?  @db.VarChar(100)
-  displayname   String?  @db.VarChar(100)
-  dob           DateTime
-  tos           Boolean  @db.Boolean
-  version       Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  userId              String               @id @default(uuid())
+  email               String               @unique
+  emailVerified       Boolean              @default(false) @db.Boolean
+  username            String               @unique @default(uuid())
+  roles               String[]             @default(["USER"])
+  firstname           String?              @db.VarChar(100)
+  lastname            String?              @db.VarChar(100)
+  displayname         String?              @db.VarChar(100)
+  dob                 DateTime
+  chatMessages        ChatMessage[]
+  chatRooms           ChatParticipants[]
+  tos                 Boolean              @db.Boolean
+  version             Int                  @default(0)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  readMessages        MessageSeenBy[]
+  deliveredMessages   MessageDeliveredTo[]
+  SentChatInvites     ChatInvites[]        @relation("InvitesSentBy")
+  RecievedChatInvites ChatInvites[]        @relation("InvitesSentTo")
+  deletedAt           DateTime?
+}
+
+model ChatInvites {
+  inviteId   String   @id @default(uuid())
+  chatRoomId String
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [chatRoomId])
+  sentById   String
+  sentBy     User     @relation("InvitesSentBy", fields: [sentById], references: [userId])
+  sentToId   String
+  sentTo     User     @relation("InvitesSentTo", fields: [sentToId], references: [userId])
+  accepted   Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model ChatRoom {
+  chatRoomId        String             @id @default(uuid())
+  messages          ChatMessage[]
+  type              String             @default("PRIVATE")
+  public            Boolean            @default(false)
+  participants      ChatParticipants[]
+  groupChatSettings GroupChatSettings?
+  ChatInvites       ChatInvites[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+}
+
+model GroupChatSettings {
+  chatRoomId  String
+  chatRoom    ChatRoom @relation(fields: [chatRoomId], references: [chatRoomId])
+  name        String
+  description String
+  image       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@id([chatRoomId])
+}
+
+model ChatParticipants {
+  chatRoomId String
+  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [chatRoomId])
+  userId     String
+  user       User     @relation(fields: [userId], references: [userId])
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@id([chatRoomId, userId])
+}
+
+model ChatMessage {
+  messageId        String        @id @default(uuid())
+  chatRoomId       String
+  chatRoom         ChatRoom      @relation(fields: [chatRoomId], references: [chatRoomId])
+  userId           String
+  user             User          @relation(fields: [userId], references: [userId])
+  message          String
+  replyToMessage   ChatMessage?  @relation("MessageHasReply", fields: [replyToMessageId], references: [messageId])
+  replyToMessageId String?
+  replies          ChatMessage[] @relation("MessageHasReply")
+  media            Media?        @relation("MessageHasMedia")
+  reactions        Reaction[]    @relation("MessageHasReaction")
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+  deletedAt        DateTime?
+}
+
+model Media {
+  mediaId   String      @id @default(uuid())
+  type      String
+  url       String?
+  data      Json
+  message   ChatMessage @relation("MessageHasMedia", fields: [messageId], references: [messageId])
+  messageId String      @unique
+  createdAt DateTime    @default(now())
+}
+
+model Reaction {
+  reactionId String      @unique @default(uuid())
+  messageId  String
+  userId     String
+  reaction   String
+  message    ChatMessage @relation("MessageHasReaction", fields: [messageId], references: [messageId])
+  user       Json
+  createdAt  DateTime    @default(now())
+}
+
+model MessageSeenBy {
+  messageId String
+  userId    String
+  user      User   @relation(fields: [userId], references: [userId])
+
+  @@id([messageId, userId])
+}
+
+model MessageDeliveredTo {
+  messageId String
+  userId    String
+  user      User   @relation(fields: [userId], references: [userId])
+
+  @@id([messageId, userId])
 }
 
 model RequestLog {

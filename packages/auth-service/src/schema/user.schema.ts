@@ -93,8 +93,35 @@ export const verifyEmailSchema = object({
 
 export const userCreateFields = ['firstname', 'lastname', 'email', 'tos', 'dob'];
 export const userOnboardingFields = ['username', 'password', 'gender'];
+export const userSoftDeleteFields = ['email', 'username'];
 
 export const isValidDate = (datelike: string) => new Date(datelike) instanceof Date && !Number.isNaN(datelike) && typeof datelike !== 'boolean' && new Date(datelike).toString() !== 'Invalid Date';
+
+export const resanitizeData = (fields: string[], data: any, scrambler: string) => {
+  const resanitizedData: { [key: string]: any } = {};
+  const dataFields = Object.keys(data);
+  dataFields.forEach((field) => {
+    if (fields.includes(field)) {
+      resanitizedData[field] = data[field].replace(`-${scrambler}`, '');
+    } else {
+      resanitizedData[field] = data[field];
+    }
+  });
+  return resanitizedData;
+};
+
+export const desanitizeData = (fields: string[], data: any, scrambler: string) => {
+  const desanitizedData: { [key: string]: any } = {};
+  const dataFields = Object.keys(data);
+  dataFields.forEach((field) => {
+    if (fields.includes(field)) {
+      desanitizedData[field] = `${data[field]}-${scrambler}`;
+    } else {
+      desanitizedData[field] = data[field];
+    }
+  });
+  return desanitizedData;
+};
 
 export const sanitizeData = (fields: string[], data: any) => {
   const sanitizedData: { [key: string]: any } = {};
