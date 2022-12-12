@@ -93,7 +93,7 @@ export const verifyEmailSchema = object({
 
 export const userCreateFields = ['firstname', 'lastname', 'email', 'tos', 'dob'];
 export const userOnboardingFields = ['username', 'password', 'gender'];
-export const userSoftDeleteFields = ['email', 'username'];
+export const userSoftDeleteFields = ['email', 'username', 'phone'];
 
 export const isValidDate = (datelike: string) => new Date(datelike) instanceof Date && !Number.isNaN(datelike) && typeof datelike !== 'boolean' && new Date(datelike).toString() !== 'Invalid Date';
 

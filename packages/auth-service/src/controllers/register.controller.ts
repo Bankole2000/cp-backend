@@ -24,6 +24,9 @@ export const registerWithEmail = async (req: Request, res: Response) => {
   userData.displayname = `${firstname}`;
   // #endregion
   // #region STEP: Create new user
+  if (userData.email === config.self.adminEmail) {
+    userData.roles = ['USER'];
+  }
   const newUserSR = await userService.createUser(userData);
   if (!newUserSR.success) {
     await logResponse(req, newUserSR);

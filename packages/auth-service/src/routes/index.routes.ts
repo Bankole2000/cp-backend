@@ -8,6 +8,7 @@ import { notFoundHandler } from '../middleware/errorHandler';
 import { config } from '../utils/config';
 import { requireLoggedInUser } from '../middleware/requireUser';
 import { logoutHandler } from '../controllers/login.controllers';
+import { systemRoutes } from './system.routes';
 
 const { basePath } = config.self;
 
@@ -18,6 +19,7 @@ export default (app: Express): void => {
   app.use(`${basePath}/login`, loginRoutes);
   app.use(`${basePath}/currentuser`, currentUserRoutes);
   app.use(`${basePath}/data`, dataRoutes);
+  app.use(`${basePath}/system`, systemRoutes);
 
   app.use('*', notFoundHandler);
 };

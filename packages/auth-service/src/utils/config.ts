@@ -11,6 +11,7 @@ export const config = {
     accessTokenTTLMS: process.env.ACCESS_TOKEN_TTL_MS,
     refreshTokenTTL: process.env.REFRESH_TOKEN_TTL,
     refreshTokenTTLMS: process.env.REFRESH_TOKEN_TTL_MS,
+    adminEmail: process.env.ADMIN_EMAIL,
   },
   redisConfig: {
     url: process.env.REDIS_CACHE_URL,
