@@ -12,25 +12,29 @@ datasource db {
 
 model User {
   userId              String               @id @default(uuid())
-  email               String               @unique
+  email               String?
   emailVerified       Boolean              @default(false) @db.Boolean
+  phone               String?
+  phoneVerified       Boolean              @default(false) @db.Boolean
+  registeredVia       String?
   username            String               @unique @default(uuid())
+  gender              String?
   roles               String[]             @default(["USER"])
   firstname           String?              @db.VarChar(100)
   lastname            String?              @db.VarChar(100)
   displayname         String?              @db.VarChar(100)
   dob                 DateTime
-  chatMessages        ChatMessage[]
-  chatRooms           ChatParticipants[]
-  tos                 Boolean              @db.Boolean
+  tos                 Boolean              @default(false) @db.Boolean
   version             Int                  @default(0)
   createdAt           DateTime             @default(now())
   updatedAt           DateTime             @updatedAt
+  deletedAt           DateTime?
+  chatMessages        ChatMessage[]
+  chatRooms           ChatParticipants[]
   readMessages        MessageSeenBy[]
   deliveredMessages   MessageDeliveredTo[]
   SentChatInvites     ChatInvites[]        @relation("InvitesSentBy")
   RecievedChatInvites ChatInvites[]        @relation("InvitesSentTo")
-  deletedAt           DateTime?
 }
 
 model ChatInvites {

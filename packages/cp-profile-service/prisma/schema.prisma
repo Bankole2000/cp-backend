@@ -10,50 +10,58 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  userId        String   @id @default(uuid())
-  email         String   @unique
-  emailVerified Boolean  @default(false) @db.Boolean
-  username      String   @unique @default(uuid())
-  roles         String[] @default(["USER"])
-  firstname     String?  @db.VarChar(100)
-  lastname      String?  @db.VarChar(100)
-  displayname   String?  @db.VarChar(100)
-  dob           DateTime
-  tos           Boolean  @db.Boolean
-  version       Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-}
-
 model Profile {
-  userId          String   @id @default(uuid())
-  email           String   @unique
-  emailVerified   Boolean  @default(false) @db.Boolean
-  username        String   @unique @default(uuid())
-  roles           String[] @default(["USER"])
-  firstname       String?  @db.VarChar(100)
-  lastname        String?  @db.VarChar(100)
-  displayname     String?  @db.VarChar(100)
-  dob             DateTime
-  gender          Gender?
-  bio             String?
-  phone           String?
-  phoneVerified   Boolean? @default(false)
-  instagramHandle String?  @db.VarChar(255)
-  twitterHandle   String?  @db.VarChar(255)
-  snapchatUrl     String?  @db.VarChar(255)
-  facebookUrl     String?  @db.VarChar(255)
-  websiteUrl      String?  @db.VarChar(255)
-  version         Int      @default(0)
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  userId                 String          @id @default(uuid())
+  email                  String?
+  emailVerified          Boolean         @default(false) @db.Boolean
+  phone                  String?
+  phoneVerified          Boolean         @default(false) @db.Boolean
+  registeredVia          String?
+  username               String          @unique @default(uuid())
+  gender                 String?
+  roles                  String[]        @default(["USER"])
+  firstname              String?         @db.VarChar(100)
+  lastname               String?         @db.VarChar(100)
+  displayname            String?         @db.VarChar(100)
+  dob                    DateTime
+  tos                    Boolean         @db.Boolean
+  isPrivate              Boolean         @default(false)
+  instagramHandle        String?         @db.VarChar(100)
+  twitterHandle          String?         @db.VarChar(100)
+  snapchatUrl            String?         @db.VarChar(100)
+  facebookUrl            String?         @db.VarChar(100)
+  websiteUrl             String?         @db.VarChar(100)
+  bio                    String?         @db.VarChar(255)
+  listingsCount          Int?            @default(0)
+  offersCount            Int?            @default(0)
+  postCount              Int?            @default(0)
+  followers              Follows[]       @relation("following")
+  following              Follows[]       @relation("follower")
+  receivedFollowRequests FollowRequest[] @relation("UserToBeFollowed")
+  sentFollowRequests     FollowRequest[] @relation("UserWantsToFollow")
+  version                Int             @default(0)
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+  deletedAt              DateTime?
 }
 
-enum Gender {
-  MALE
-  FEMALE
-  NONE
+model Follows {
+  follower    Profile  @relation("follower", fields: [followerId], references: [userId])
+  followerId  String
+  following   Profile  @relation("following", fields: [followingId], references: [userId])
+  followingId String
+  createdAt   DateTime @default(now())
+
+  @@id([followerId, followingId])
+}
+
+model FollowRequest {
+  requestId     String   @id @default(uuid())
+  requestedById String
+  requestedBy   Profile  @relation("UserWantsToFollow", fields: [requestedById], references: [userId])
+  receiverId    String
+  receiver      Profile  @relation("UserToBeFollowed", fields: [receiverId], references: [userId])
+  createdAt     DateTime @default(now())
 }
 
 model RequestLog {

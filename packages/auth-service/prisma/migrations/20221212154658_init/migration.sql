@@ -1,17 +1,23 @@
 -- CreateEnum
-CREATE TYPE "OnboardingStatus" AS ENUM ('NEWLY_REGISTERED', 'EMAIL_VERIFIED', 'USERNAME_SET', 'PASSWORD_SET', 'COMPLETED');
+CREATE TYPE "OnboardingStatus" AS ENUM ('NEWLY_REGISTERED', 'EMAIL_VERIFIED', 'PHONE_VERIFIED', 'ID_VERIFIED', 'AGENT_ID_VERIFIED', 'USERNAME_SET', 'PASSWORD_SET', 'PROFILE_IMAGE_SET', 'COMPLETED');
 
 -- CreateEnum
 CREATE TYPE "Gender" AS ENUM ('MALE', 'FEMALE', 'OTHER');
 
 -- CreateEnum
-CREATE TYPE "Role" AS ENUM ('ADMIN', 'SYSTEM', 'SUPPORT', 'AGENT', 'USER');
+CREATE TYPE "Role" AS ENUM ('SUPER_ADMIN', 'ADMIN', 'SYSTEM', 'SUPPORT', 'AGENT', 'USER');
+
+-- CreateEnum
+CREATE TYPE "LoginType" AS ENUM ('EMAIL', 'PHONE', 'USERNAME', 'GOOGLE', 'FACEBOOK');
 
 -- CreateTable
 CREATE TABLE "User" (
     "userId" TEXT NOT NULL,
-    "email" TEXT NOT NULL,
+    "email" TEXT,
     "emailVerified" BOOLEAN NOT NULL DEFAULT false,
+    "phone" TEXT,
+    "phoneVerified" BOOLEAN NOT NULL DEFAULT false,
+    "registeredVia" "LoginType" DEFAULT 'EMAIL',
     "username" TEXT NOT NULL,
     "roles" "Role"[] DEFAULT ARRAY['USER']::"Role"[],
     "password" TEXT NOT NULL,
@@ -25,8 +31,19 @@ CREATE TABLE "User" (
     "version" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
+    "deletedAt" TIMESTAMP(3),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("userId")
+);
+
+-- CreateTable
+CREATE TABLE "AccountSettings" (
+    "key" TEXT NOT NULL,
+    "value" TEXT NOT NULL,
+    "category" TEXT NOT NULL,
+    "userId" TEXT NOT NULL,
+
+    CONSTRAINT "AccountSettings_pkey" PRIMARY KEY ("key","userId")
 );
 
 -- CreateTable
@@ -34,6 +51,7 @@ CREATE TABLE "Session" (
     "sessionId" UUID NOT NULL,
     "ip" TEXT NOT NULL,
     "userAgent" TEXT NOT NULL,
+    "loginType" "LoginType" NOT NULL DEFAULT 'EMAIL',
     "userId" TEXT NOT NULL,
     "deviceId" TEXT,
     "isValid" BOOLEAN NOT NULL DEFAULT true,
@@ -92,13 +110,7 @@ CREATE TABLE "ErrorLog" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
-
--- CreateIndex
-CREATE UNIQUE INDEX "ApprovedDevices_ip_key" ON "ApprovedDevices"("ip");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "RequestLog_id_key" ON "RequestLog"("id");

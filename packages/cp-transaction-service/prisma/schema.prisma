@@ -11,19 +11,24 @@ datasource db {
 }
 
 model User {
-  userId        String   @id @default(uuid())
-  email         String   @unique
-  emailVerified Boolean  @default(false) @db.Boolean
-  username      String   @unique @default(uuid())
-  // role          Role?    @default(CPUSER)
-  firstname     String?  @db.VarChar(100)
-  lastname      String?  @db.VarChar(100)
-  displayname   String?  @db.VarChar(100)
+  userId        String    @id @default(uuid())
+  email         String?
+  emailVerified Boolean   @default(false) @db.Boolean
+  phone         String?
+  phoneVerified Boolean   @default(false) @db.Boolean
+  registeredVia String?
+  username      String    @unique @default(uuid())
+  gender        String?
+  roles         String[]  @default(["USER"])
+  firstname     String?   @db.VarChar(100)
+  lastname      String?   @db.VarChar(100)
+  displayname   String?   @db.VarChar(100)
   dob           DateTime
-  tos           Boolean  @db.Boolean
-  version       Int      @default(0)
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  tos           Boolean   @db.Boolean
+  version       Int       @default(0)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
 }
 
 model RequestLog {

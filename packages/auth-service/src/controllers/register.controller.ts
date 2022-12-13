@@ -2,12 +2,12 @@ import { Request, Response } from 'express';
 import {
   ServiceResponse, sanitizeData, ServiceEvent, signJWT, hashPassword
 } from '@cribplug/common';
+import { LoginType, Role } from '@prisma/client';
 import UserDBService from '../services/user.service';
 import { logResponse } from '../middleware/logRequests';
 import { allRoles, userCreateFields } from '../schema/user.schema';
 import { config } from '../utils/config';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
-import { LoginType, Role } from '@prisma/client';
 
 export const registerWithEmail = async (req: Request, res: Response) => {
   // #region STEP: Check if user already exists, Sanitize Data
