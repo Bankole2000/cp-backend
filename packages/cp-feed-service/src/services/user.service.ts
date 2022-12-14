@@ -28,6 +28,24 @@ export default class UserDBService {
     }
   }
 
+  async updateUser(userId: string, userData: any) {
+    try {
+      const updatedUser = await this.prisma.user.update({
+        where: {
+          userId,
+        },
+        data: { ...userData },
+      });
+      if (updatedUser) {
+        return new ServiceResponse('User updated successfully', updatedUser, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error updating user', updatedUser, false, 400, 'Error updating User', 'FEED_SERVICE_ERROR_UPDATING_USER', 'Check fields, service logs and db');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error updating User', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async findUserById(userId: string) {
     try {
       const user = await this.prisma.user.findUnique({

@@ -71,9 +71,6 @@ export default class UserDBService {
         },
         data: {
           ...userData,
-          version: {
-            increment: 1
-          }
         },
       });
       if (updatedUser) {

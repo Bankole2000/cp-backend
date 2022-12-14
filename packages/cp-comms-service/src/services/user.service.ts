@@ -70,10 +70,7 @@ export default class UserDBService {
           userId,
         },
         data: {
-          ...userData,
-          version: {
-            increment: 1
-          }
+          ...userData
         },
       });
       if (updatedUser) {
