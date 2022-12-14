@@ -421,7 +421,7 @@ export default class UserDBService {
     }
   }
 
-  async hardDeleteUserAccount(userId: string) {
+  async purgeUserAccount(userId: string) {
     try {
       const deletedUser = await this.prisma.user.delete({
         where: {
@@ -435,6 +435,34 @@ export default class UserDBService {
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error deleting User', null, false, 500, error.message, error, null);
+    }
+  }
+
+  async purgeUserSessions(redis: RedisConnection, scope: string, userId: string) {
+    try {
+      const allUserSessions = await this.prisma.session.findMany({
+        where: {
+          userId,
+        }
+      });
+      if (allUserSessions.length) {
+        const sessionIds = allUserSessions.map((session: any) => session.sessionId);
+        const deletedSessions = await this.prisma.session.deleteMany({
+          where: {
+            sessionId: {
+              in: sessionIds,
+            }
+          }
+        });
+        await redis.client.connect();
+        await redis.client.hDel(`${scope}-logged-in`, sessionIds);
+        await redis.client.disconnect();
+        return new ServiceResponse('User sessions purged successfully', deletedSessions, true, 200, null, null, null);
+      }
+      return new ServiceResponse('User sessions not found', allUserSessions, false, 404, 'User sessions not found', 'AUTH_SERVICE_NO_USER_SESSIONS_FOUND', 'Check the userId and try again');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error purging User sessions', null, false, 500, error.message, error, null);
     }
   }
 }

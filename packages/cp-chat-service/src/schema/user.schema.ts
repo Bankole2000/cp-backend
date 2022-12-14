@@ -1,1 +1,2 @@
-export const userCreateFields = ['userId', 'email', 'emailVerified', 'phone', 'phoneVerified', 'registeredVia', 'username', 'roles', 'firstname', 'lastname', 'displayname', 'dob', 'tos'];
+export const userCreateFields = ['userId', 'email', 'emailVerified', 'phone', 'phoneVerified', 'registeredVia', 'username', 'gender', 'roles', 'firstname', 'lastname', 'displayname', 'dob', 'tos'];
+export const userUpdateFields = ['email', 'emailVerified', 'phone', 'phoneVerified', 'registeredVia', 'username', 'gender', 'roles', 'firstname', 'lastname', 'displayname', 'dob', 'tos', 'version', 'deletedAt'];

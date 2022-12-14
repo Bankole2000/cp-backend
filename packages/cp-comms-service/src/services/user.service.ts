@@ -31,7 +31,7 @@ export default class UserDBService {
 
   async findUserByEmail(email: string) {
     try {
-      const user = await this.prisma.user.findUnique({
+      const user = await this.prisma.user.findFirst({
         where: {
           email,
         },
@@ -108,5 +108,22 @@ export default class UserDBService {
     const session = await redis.client.hGet(`${scope}-logged-in`, sessionId);
     await redis.client.disconnect();
     return session;
+  }
+
+  async purgeUserAccount(userId: string) {
+    try {
+      const deletedUser = await this.prisma.user.delete({
+        where: {
+          userId,
+        },
+      });
+      if (deletedUser) {
+        return new ServiceResponse('User deleted successfully', deletedUser, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error deleting user', deletedUser, false, 500, 'Error deleting user', 'COMMS_SERVICE_ERROR_DELETING_USER', 'Check the logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error deleting User', null, false, 500, error.message, error, 'Check logs and database');
+    }
   }
 }

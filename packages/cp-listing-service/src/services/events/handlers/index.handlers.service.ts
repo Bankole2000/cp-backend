@@ -1,4 +1,6 @@
-import { authDefaultExchangeHandler, authDefaultJobHandler, USER_CREATED } from './auth.handlers';
+import {
+  authDefaultExchangeHandler, authDefaultJobHandler, USER_CREATED, USER_PURGED
+} from './auth.handlers';
 import { chatDefaultExchangeHandler, chatDefaultJobHandler } from './chat.handlers';
 import { commsDefaultExchangeHandler, commsDefaultJobHandler } from './comms.handlers';
 import { feedDefaultExchangeHandler, feedDefaultJobHandler } from './feed.handlers';
@@ -12,6 +14,7 @@ export const authJobs = {
   authDefaultJobHandler,
   authDefaultExchangeHandler,
   USER_CREATED,
+  USER_PURGED
 };
 
 export const chatJobs = {

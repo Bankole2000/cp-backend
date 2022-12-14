@@ -46,6 +46,24 @@ export default class UserDBService {
     }
   }
 
+  async updateUser(userId: string, userData: any) {
+    try {
+      const updatedUser = await this.prisma.user.update({
+        where: {
+          userId,
+        },
+        data: { ...userData },
+      });
+      if (updatedUser) {
+        return new ServiceResponse('User updated successfully', updatedUser, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error updating user', updatedUser, false, 400, 'Error updating User', 'CHAT_SERVICE_ERROR_UPDATING_USER', 'Check fields, service logs and db');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error updating User', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async findUserByUsername(username: string) {
     try {
       const user = await this.prisma.user.findUnique({
@@ -68,5 +86,22 @@ export default class UserDBService {
     const session = await redis.client.hGet(`${scope}-logged-in`, sessionId);
     await redis.client.disconnect();
     return session;
+  }
+
+  async purgeUserAccount(userId: string) {
+    try {
+      const deletedUser = await this.prisma.user.delete({
+        where: {
+          userId,
+        },
+      });
+      if (deletedUser) {
+        return new ServiceResponse('User deleted successfully', deletedUser, true, 200, null, null, null);
+      }
+      return new ServiceResponse('User not found', deletedUser, false, 404, 'User not found', 'CHAT_SERVICE_USER_BY_ID_NOT_FOUND', 'Confirm that user exists');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error deleting User', null, false, 500, error.message, error, 'Check logs and database');
+    }
   }
 }

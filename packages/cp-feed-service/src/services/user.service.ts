@@ -68,4 +68,21 @@ export default class UserDBService {
     await redis.client.disconnect();
     return session;
   }
+
+  async purgeUserAccount(userId: string) {
+    try {
+      const user = await this.prisma.user.delete({
+        where: {
+          userId,
+        },
+      });
+      if (user) {
+        return new ServiceResponse('User deleted successfully', user, true, 200, null, null, null);
+      }
+      return new ServiceResponse('User not found', user, false, 404, 'User not found', 'EVENT_SERVICE_ERROR_PURGING_USER', 'Confirm that user exists');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error deleting User', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
 }

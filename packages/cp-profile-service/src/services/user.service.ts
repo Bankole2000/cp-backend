@@ -15,7 +15,7 @@ export default class UserDBService {
 
   async createUser(userData: any) {
     try {
-      const createdUser = await this.prisma.user.create({
+      const createdUser = await this.prisma.profile.create({
         data: { ...userData },
       });
       if (createdUser) {
@@ -30,7 +30,7 @@ export default class UserDBService {
 
   async findUserById(userId: string) {
     try {
-      const user = await this.prisma.user.findUnique({
+      const user = await this.prisma.profile.findUnique({
         where: {
           userId,
         },
@@ -47,7 +47,7 @@ export default class UserDBService {
 
   async findUserByUsername(username: string) {
     try {
-      const user = await this.prisma.user.findUnique({
+      const user = await this.prisma.profile.findUnique({
         where: {
           username,
         },
@@ -67,5 +67,22 @@ export default class UserDBService {
     const session = await redis.client.hGet(`${scope}-logged-in`, sessionId);
     await redis.client.disconnect();
     return session;
+  }
+
+  async purgeUserAccount(userId: string) {
+    try {
+      const deletedUser = await this.prisma.profile.delete({
+        where: {
+          userId,
+        },
+      });
+      if (deletedUser) {
+        return new ServiceResponse('User deleted successfully', deletedUser, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error deleting user', deletedUser, false, 500, 'Error deleting user', 'PROFILE_SERVICE_ERROR_DELETING_USER', 'Check the logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error deleting User', null, false, 500, error.message, error, 'Check logs and database');
+    }
   }
 }
