@@ -1,5 +1,6 @@
-import { sanitizeData, ServiceEvent, ServiceResponse } from '@cribplug/common';
-import { userCreateFields, userUpdateFields } from '../../../schema/user.schema';
+import {
+  sanitizeData, ServiceEvent, ServiceResponse, userCreateFields, userUpdateFields
+} from '@cribplug/common';
 import { config } from '../../../utils/config';
 import UserDBService from '../../user.service';
 
@@ -16,6 +17,18 @@ export const authDefaultExchangeHandler = async (message: ServiceEvent) => {
   console.log('Handling Event: ', message.type);
   const sr = new ServiceResponse('Message handled', message.type, true, 200, null, null, null, null);
   return sr;
+};
+
+export const USER_FIRST_LOGIN = async (message: ServiceEvent) => {
+  const { userId } = message.data;
+  const userExists = await userService.findUserById(userId);
+  if (!userExists.success) {
+    console.log(`${emoji} ${serviceName?.toUpperCase()} Error Handling Event: ${message.type}: ${userExists.errors}`);
+    return userExists;
+  }
+  console.log(`${emoji} ${serviceName?.toUpperCase()} Handled Event: ${message.type}`);
+  // #region STEP: TODO: Handle first login event
+  return userExists;
 };
 
 export const USER_CREATED = async (message: ServiceEvent) => {

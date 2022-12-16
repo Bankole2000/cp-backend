@@ -1,4 +1,4 @@
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import {
   getDriver, Driver, ServiceResponse, getAdjectives, RedisConnection
 } from '@cribplug/common';
@@ -47,7 +47,24 @@ export default class UserDBService {
     }
   }
 
-  async setUserRoles(userId: string, roles: Role[]) {
+  async findUserByPhoneNumber(phone: string) {
+    try {
+      const user = await this.prisma.user.findFirst({
+        where: {
+          phone,
+        },
+      });
+      if (user) {
+        return new ServiceResponse('User found successfully', user, true, 200, null, null, null);
+      }
+      return new ServiceResponse('User not found', user, false, 200, 'User not found', 'AUTH_SERVICE_USER_BY_PHONE_NUMBER_NOT_FOUND', 'Confirm that user exists');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error finding User', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async setUserRoles(userId: string, roles: string[]) {
     try {
       const user = await this.prisma.user.update({
         where: {
@@ -60,7 +77,7 @@ export default class UserDBService {
         },
       });
       if (user) {
-        return new ServiceResponse('User role added successfully', user, true, 200, null, null, null);
+        return new ServiceResponse('User role(s) set successfully', user, true, 200, null, null, null);
       }
       return new ServiceResponse('Failed to add role to User', user, false, 400, 'Failed to add role to User', 'AUTH_SERVICE_ERROR_ADDING_USER_ROLE', 'Check all fields and try again');
     } catch (error: any) {

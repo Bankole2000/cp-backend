@@ -1,5 +1,6 @@
-import { sanitizeData, ServiceEvent, ServiceResponse } from '@cribplug/common';
-import { userCreateFields, userUpdateFields } from '../../../schema/user.schema';
+import {
+  sanitizeData, ServiceEvent, ServiceResponse, userCreateFields, userUpdateFields
+} from '@cribplug/common';
 import { config } from '../../../utils/config';
 import UserDBService from '../../user.service';
 
@@ -27,6 +28,41 @@ export const USER_CREATED = async (message: ServiceEvent) => {
     console.log(`${emoji} ${serviceName?.toUpperCase()} Failed to Handle Event: ${message.type}`);
   }
   return sr;
+};
+
+export const SEND_VERIFICATION_EMAIL = async (message: ServiceEvent) => {
+  const { userId } = message.data;
+  const userExists = await userService.findUserById(userId);
+  if (!userExists.success) {
+    console.log(`${emoji} ${serviceName?.toUpperCase()} Error Handling Event: ${message.type}: ${userExists.errors}`);
+    return userExists;
+  }
+  console.log(`${emoji} ${serviceName?.toUpperCase()} Handled Event: ${message.type}`);
+  // #region STEP: TODO: Store event in DB
+  return userExists;
+};
+
+export const SEND_VERIFICATION_SMS = async (message: ServiceEvent) => {
+  const { userId } = message.data;
+  const userExists = await userService.findUserById(userId);
+  if (!userExists.success) {
+    console.log(`${emoji} ${serviceName?.toUpperCase()} Error Handling Event: ${message.type}: ${userExists.errors}`);
+    return userExists;
+  }
+  console.log(`${emoji} ${serviceName?.toUpperCase()} Handled Event: ${message.type}`);
+  // #region STEP: TODO: Store event in DB
+  return userExists;
+};
+
+export const USER_FIRST_LOGIN = async (message: ServiceEvent) => {
+  const { userId } = message.data;
+  const userExists = await userService.findUserById(userId);
+  if (!userExists.success) {
+    console.log(`${emoji} ${serviceName?.toUpperCase()} Error Handling Event: ${message.type}: ${userExists.errors}`);
+    return userExists;
+  }
+  console.log(`${emoji} ${serviceName?.toUpperCase()} Handled Event: ${message.type}`);
+  return userExists;
 };
 
 export const USER_UPDATED = async (message: ServiceEvent) => {

@@ -32,6 +32,34 @@ export const registerWithEmailSchema = object({
   })
 });
 
+export const registerWithPhoneSchema = object({
+  body: object({
+    phone: string({
+      required_error: 'Phone number is required',
+    }),
+    countryCode: string({
+      required_error: 'Country code is required',
+    })
+      .min(2, 'Country code must be 2 Characters')
+      .max(2, 'Country code must be 2 characters'),
+    firstname: string({
+      required_error: 'First name is required',
+    }),
+    lastname: string({
+      required_error: 'Last name is required',
+    }),
+    tos: boolean({
+      required_error: 'You must agree to the terms of service',
+    }),
+    dob: string({
+      required_error: 'Date of birth is required',
+    })
+  }).refine((data) => isOfAge(data.dob, 16), {
+    message: 'You must be at least 16 years old to register',
+    path: ['dob'],
+  })
+});
+
 export const onboardingUsernameAndPasswordSchema = object({
   body: object({
     idToken: string({
@@ -91,7 +119,6 @@ export const verifyEmailSchema = object({
   }),
 });
 
-export const userCreateFields = ['firstname', 'lastname', 'email', 'tos', 'dob'];
 export const userOnboardingFields = ['username', 'password', 'gender'];
 export const userSoftDeleteFields = ['email', 'username', 'phone'];
 export const systemPermittedRoles = ['SUPER_ADMIN', 'ADMIN', 'SYSTEM'];

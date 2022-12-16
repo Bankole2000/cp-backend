@@ -12,13 +12,14 @@ datasource db {
 
 model User {
   userId           String             @id @default(uuid())
-  email            String?             
+  email            String?
   emailVerified    Boolean            @default(false) @db.Boolean
-  phone            String?            
+  phone            String?
+  phoneData        Json?              @default("{}") @db.Json
   phoneVerified    Boolean            @default(false) @db.Boolean
   registeredVia    LoginType?         @default(EMAIL)
   username         String             @unique @default(uuid())
-  roles            Role[]             @default([USER])
+  roles            String[]           @default(["USER"])
   password         String             @default(uuid())
   firstname        String?            @db.VarChar(100)
   lastname         String?            @db.VarChar(100)
@@ -63,14 +64,14 @@ enum Gender {
   OTHER
 }
 
-enum Role {
-  SUPER_ADMIN
-  ADMIN
-  SYSTEM
-  SUPPORT
-  AGENT
-  USER
-}
+// enum Role {
+//   SUPER_ADMIN
+//   ADMIN
+//   SYSTEM
+//   SUPPORT
+//   AGENT
+//   USER
+// }
 
 model Session {
   sessionId   String           @id @default(uuid()) @db.Uuid
@@ -110,6 +111,7 @@ model RequestLog {
   query         Json      @default("{}") @db.Json
   response      Json      @default("{}") @db.Json
   user          Json?     @default("{}") @db.Json
+  userId        String?
   success       Boolean   @default(false)
   responseData  Json?     @default("{}") @db.Json
   time          Int?      @default(0)

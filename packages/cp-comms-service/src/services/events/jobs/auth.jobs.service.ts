@@ -18,6 +18,27 @@ export const authQueueJobsHandler = async (msg: any, channel: Channel) => {
       }
       break;
     }
+    case 'SEND_VERIFICATION_EMAIL': {
+      const result = await authJobs.SEND_VERIFICATION_EMAIL(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
+    case 'SEND_VERIFICATION_SMS': {
+      const result = await authJobs.SEND_VERIFICATION_SMS(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
+    case 'USER_FIRST_LOGIN': {
+      const result = await authJobs.USER_FIRST_LOGIN(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
     case 'USER_UPDATED': {
       const result = await authJobs.USER_UPDATED(message);
       if (result.success) {

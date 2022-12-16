@@ -15,6 +15,7 @@ model Profile {
   email                  String?
   emailVerified          Boolean         @default(false) @db.Boolean
   phone                  String?
+  phoneData              Json?           @default("{}") @db.Json
   phoneVerified          Boolean         @default(false) @db.Boolean
   registeredVia          String?
   username               String          @unique @default(uuid())
@@ -77,6 +78,7 @@ model RequestLog {
   query         Json      @default("{}") @db.Json
   response      Json      @default("{}") @db.Json
   user          Json?     @default("{}") @db.Json
+  userId        String?
   success       Boolean   @default(false)
   responseData  Json?     @default("{}") @db.Json
   time          Int?      @default(0)

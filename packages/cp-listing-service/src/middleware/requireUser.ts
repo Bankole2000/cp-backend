@@ -1,8 +1,7 @@
 import {
-  ServiceResponse, verifyToken, signJWT, sanitizeData
+  ServiceResponse, verifyToken, signJWT, sanitizeData, userCreateFields
 } from '@cribplug/common';
 import { Request, Response, NextFunction } from 'express';
-import { userCreateFields } from '../schema/user.schema';
 import UserDBService from '../services/user.service';
 import { config } from '../utils/config';
 import { logResponse } from './logRequests';

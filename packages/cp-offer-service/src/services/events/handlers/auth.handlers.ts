@@ -1,5 +1,6 @@
-import { sanitizeData, ServiceEvent, ServiceResponse } from '@cribplug/common';
-import { userCreateFields, userUpdateFields } from '../../../schema/user.schema';
+import {
+  sanitizeData, ServiceEvent, ServiceResponse, userCreateFields, userUpdateFields
+} from '@cribplug/common';
 import { config } from '../../../utils/config';
 import UserDBService from '../../user.service';
 

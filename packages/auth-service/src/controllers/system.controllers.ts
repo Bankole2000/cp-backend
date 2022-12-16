@@ -8,6 +8,10 @@ import { config } from '../utils/config';
 const { self, redisConfig } = config;
 const userService = new UserDBService();
 
+// #region TODO: Purge Request Logs Hander, all, by UserId, if error, by ErrorId, self
+// #region TODO: Purge Sessions Handler, all, by UserId, self
+// #region TODO: Purge Approved Devices Handler, all, by UserId, self
+
 export const addUserRoleHandler = async (req: Request, res: Response) => {
   const { userId } = req.params;
   const { role } = req.body;

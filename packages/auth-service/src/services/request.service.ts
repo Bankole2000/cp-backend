@@ -67,6 +67,7 @@ export default class RequestService {
         },
         data: {
           user: user || undefined,
+          userId: user?.userId || undefined,
           response: JSON.parse(JSON.stringify(serviceResponse)),
           responseData: serviceResponse.data || undefined,
           success: serviceResponse.success,

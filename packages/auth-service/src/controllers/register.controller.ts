@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
+import { parsePhoneNumberWithError, ParseError, PhoneNumber } from 'libphonenumber-js';
 import {
-  ServiceResponse, sanitizeData, ServiceEvent, signJWT, hashPassword
+  ServiceResponse, sanitizeData, ServiceEvent, signJWT, hashPassword, userCreateFields, allRoles
 } from '@cribplug/common';
-import { LoginType, Role } from '@prisma/client';
+import { LoginType } from '@prisma/client';
 import UserDBService from '../services/user.service';
 import { logResponse } from '../middleware/logRequests';
-import { allRoles, userCreateFields } from '../schema/user.schema';
 import { config } from '../utils/config';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
 
-export const registerWithEmail = async (req: Request, res: Response) => {
+export const registerWithEmailHandler = async (req: Request, res: Response) => {
   // #region STEP: Check if user already exists, Sanitize Data
   const {
     email, firstname
@@ -26,7 +26,7 @@ export const registerWithEmail = async (req: Request, res: Response) => {
   // #endregion
   // #region STEP: Create new user
   if (userData.email === config.self.adminEmail) {
-    userData.roles = allRoles as Role[];
+    userData.roles = allRoles as string[];
   }
   userData.registeredVia = 'EMAIL' as LoginType;
   const newUserSR = await userService.createUser(userData);
@@ -52,6 +52,77 @@ export const registerWithEmail = async (req: Request, res: Response) => {
   // #endregion
 };
 
+export const registerWithPhoneHandler = async (req: Request, res: Response) => {
+  // #region STEP: Check if user already exists, Sanitize Data
+  const {
+    phone, countryCode, firstname
+  } = req.body;
+  const userService = new UserDBService();
+  let parsedNumber: PhoneNumber | undefined;
+  try {
+    parsedNumber = parsePhoneNumberWithError(phone, countryCode);
+  } catch (error: any) {
+    if (error instanceof ParseError) {
+      const sr = new ServiceResponse('Error parsing phone number', null, false, 400, error.message, error, 'Check phone number and country code');
+      await logResponse(req, sr);
+      return res.status(sr.statusCode).send(sr);
+    }
+    const sr = new ServiceResponse('Invalid phone number', null, false, 400, error.message, error, 'Check phone number and country code');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  if (!parsedNumber || !parsedNumber.isValid()) {
+    const sr = new ServiceResponse('Invalid phone number', null, false, 400, 'Invalid phone number', 'AUTH_SERVICE_INVALID_PHONE_NUMBER', 'Check phone number and country code');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  const userExists = await userService.findUserByPhoneNumber(parsedNumber.number);
+  if (userExists.success) {
+    const sr = new ServiceResponse('Phone number already registered', null, false, 400, 'Phone number already registered', 'AUTH_SERVICE_PHONE_NUMBER_ALREADY_REGISTERED', null);
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  const userData = sanitizeData(userCreateFields, req.body);
+  userData.phone = parsedNumber.number;
+  userData.phoneData = {
+    ...parsedNumber,
+    isValid: parsedNumber.isValid(),
+    isNonGeographic: parsedNumber.isNonGeographic(),
+    type: parsedNumber.getType(),
+    formatNational: parsedNumber.formatNational(),
+    formatInternational: parsedNumber.formatInternational(),
+    uri: parsedNumber.getURI(),
+  };
+  userData.displayname = `${firstname}`;
+  // #endregion
+  // #region STEP: Create new user
+  if (userData.phone === config.self.adminPhone) {
+    userData.roles = allRoles as string[];
+  }
+  userData.registeredVia = 'PHONE' as LoginType;
+  const newUserSR = await userService.createUser(userData);
+  if (!newUserSR.success) {
+    await logResponse(req, newUserSR);
+    return res.status(newUserSR.statusCode).send(newUserSR);
+  }
+  delete newUserSR.data.password;
+  const idToken = (await signJWT(newUserSR.data, config.self.jwtSecret as string)).token;
+  // #endregion
+  // #region STEP: Emit 'USER_CREATED' Event
+  const serviceQueues = await getServiceQueues(req.redis, config.redisConfig.scope);
+  const userCreatedEvent = new ServiceEvent('USER_CREATED', newUserSR.data, idToken, null, config.self.serviceName, serviceQueues);
+  await sendToServiceQueues(req.channel, userCreatedEvent, serviceQueues);
+  // #endregion
+  // #region STEP: Emit 'SEND_VERIFICATION_SMS' Event, Send response
+  const commsQueue = await getServiceQueues(req.redis, config.redisConfig.scope, ['comms', 'event']);
+  const sendVerificationSMSJob = new ServiceEvent('SEND_VERIFICATION_SMS', newUserSR.data, idToken, null, config.self.serviceName, commsQueue);
+  await sendToServiceQueues(req.channel, sendVerificationSMSJob, commsQueue);
+  const sr = new ServiceResponse('Registration Successful', { user: newUserSR.data, idToken }, true, 201, null, null, null);
+  await logResponse(req, sr);
+  return res.status(sr.statusCode).send(sr);
+  // #endregion
+};
+
 export const onboardingHandler = async (req: Request, res: Response) => {
   // #region STEP: Check if user exists, Sanitize Data
   const { userId } = req.user;
@@ -70,6 +141,8 @@ export const onboardingHandler = async (req: Request, res: Response) => {
     username, password, confirmPassword, gender, idToken
   } = req.body;
   // #endregion
+  // #region STEP: TODO: If Phone Registration used, check if phoneNumber is verified
+  // #region STEP: TODO: If Email Registration used, check if Email is verified
   // #region STEP: Check if username is taken and passwords match
   const usernameTaken = await userService.findUserByUsername(username);
   if (usernameTaken.success) {

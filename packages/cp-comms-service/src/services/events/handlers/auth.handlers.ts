@@ -1,5 +1,6 @@
-import { sanitizeData, ServiceEvent, ServiceResponse } from '@cribplug/common';
-import { userCreateFields, userUpdateFields } from '../../../schema/user.schema';
+import {
+  sanitizeData, ServiceEvent, ServiceResponse, userCreateFields, userUpdateFields
+} from '@cribplug/common';
 import { config } from '../../../utils/config';
 import UserDBService from '../../user.service';
 
@@ -29,6 +30,38 @@ export const USER_CREATED = async (message: ServiceEvent) => {
   return sr;
 };
 
+export const SEND_VERIFICATION_EMAIL = async (message: ServiceEvent) => {
+  const { userId } = message.data;
+  const userExists = await userService.findUserById(userId);
+  if (!userExists.success) {
+    console.log(userExists.errors);
+    const sr = new ServiceResponse('User not found', null, true, 404, null, null, null);
+    return sr;
+  }
+  console.log(`${emoji} ${serviceName?.toUpperCase()} Handled Event: ${message.type}`);
+  // #region STEP: TODO: Send Verification Email
+  // TODO: Generate verification code - store in redis cribplug-email-verify:userId with expiration of 24 hours
+  // TODO: Build email template
+  // TODO: Send email
+  return userExists;
+};
+
+export const SEND_VERIFICATION_SMS = async (message: ServiceEvent) => {
+  const { userId } = message.data;
+  const userExists = await userService.findUserById(userId);
+  if (!userExists.success) {
+    console.log(userExists.errors);
+    const sr = new ServiceResponse('User not found', null, true, 404, null, null, null);
+    return sr;
+  }
+  console.log(`${emoji} ${serviceName?.toUpperCase()} Handled Event: ${message.type}`);
+  // #region STEP: TODO: Send Verification Email
+  // TODO: Generate verification code - store in redis cribplug-phone-verify:userId with expiration of 24 hours
+  // TODO: Build sms template
+  // TODO: Send sms
+  return userExists;
+};
+
 export const USER_UPDATED = async (message: ServiceEvent) => {
   const userData = sanitizeData(userUpdateFields, message.data);
   const { userId, version: newVersion } = message.data;
@@ -53,6 +86,19 @@ export const USER_UPDATED = async (message: ServiceEvent) => {
     console.log(`${emoji} ${serviceName?.toUpperCase()} Failed to Handle Event: ${message.type}`);
   }
   return sr;
+};
+
+export const USER_FIRST_LOGIN = async (message: ServiceEvent) => {
+  const { userId } = message.data;
+  const userExists = await userService.findUserById(userId);
+  if (!userExists.success) {
+    console.log(userExists.errors);
+    const sr = new ServiceResponse('User not found', null, true, 404, null, null, null);
+    return sr;
+  }
+  console.log(`${emoji} ${serviceName?.toUpperCase()} Handled Event: ${message.type}`);
+  // #region STEP: TODO: Send welcome email or message (depending on registration method)
+  return userExists;
 };
 
 export const USER_PURGED = async (message: ServiceEvent) => {
