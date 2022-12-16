@@ -9,12 +9,13 @@ import { logResponse } from '../middleware/logRequests';
 import { config } from '../utils/config';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
 
+const userService = new UserDBService();
+
 export const registerWithEmailHandler = async (req: Request, res: Response) => {
   // #region STEP: Check if user already exists, Sanitize Data
   const {
     email, firstname
   } = req.body;
-  const userService = new UserDBService();
   const userExists = await userService.findUserByEmail(email);
   if (userExists.success) {
     const sr = new ServiceResponse('Email already registered', null, false, 400, 'Email already registered', 'Email already registered', null);
@@ -57,7 +58,6 @@ export const registerWithPhoneHandler = async (req: Request, res: Response) => {
   const {
     phone, countryCode, firstname
   } = req.body;
-  const userService = new UserDBService();
   let parsedNumber: PhoneNumber | undefined;
   try {
     parsedNumber = parsePhoneNumberWithError(phone, countryCode);
@@ -84,8 +84,12 @@ export const registerWithPhoneHandler = async (req: Request, res: Response) => {
   }
   const userData = sanitizeData(userCreateFields, req.body);
   userData.phone = parsedNumber.number;
+  const { countryCallingCode, nationalNumber, number, country } = parsedNumber;
   userData.phoneData = {
-    ...parsedNumber,
+    countryCallingCode,
+    nationalNumber,
+    number,
+    country,
     isValid: parsedNumber.isValid(),
     isNonGeographic: parsedNumber.isNonGeographic(),
     type: parsedNumber.getType(),
@@ -131,7 +135,6 @@ export const onboardingHandler = async (req: Request, res: Response) => {
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
-  const userService = new UserDBService();
   const userExists = await userService.findUserById(userId);
   if (!userExists.success) {
     await logResponse(req, userExists);

@@ -94,6 +94,20 @@ export const emailLoginSchema = object({
   })
 });
 
+export const phoneLoginSchema = object({
+  body: object({
+    phone: string({
+      required_error: 'Phone number is required',
+    }), 
+    countryCode: string({
+      required_error: 'Country code is required',
+    }).min(2, 'Country code must be 2 Characters').max(2, 'Country code must be 2 characters'),
+    password: string({
+      required_error: 'Password is required',
+    })
+  })
+});
+
 export const updatePasswordSchema = object({
   body: object({
     password: string({
