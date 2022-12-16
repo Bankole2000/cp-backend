@@ -54,6 +54,22 @@ export const SEND_VERIFICATION_SMS = async (message: ServiceEvent) => {
   return userExists;
 };
 
+export const SEND_DEVICE_APPROVAL_EMAIL = async (message: ServiceEvent) => {
+  console.log({ message });
+  // #region STEP: TODO: Send device approval email
+  // #region STEP: TODO: implement device approval by email endpoint
+  // #region STEP: TODO: implement email viewed endpoint
+  return new ServiceResponse('Not yet handled', message, true, 200, null, null, null);
+};
+
+export const SEND_DEVICE_APPROVAL_SMS = async (message: ServiceEvent) => {
+  console.log({ message });
+  // #region STEP: TODO: Send device approval sms
+  // #region STEP: TODO: implement device approval by sms endpoint
+  // #region STEP: TODO: implement sms viewed endpoint
+  return new ServiceResponse('Not yet handled', message, true, 200, null, null, null);
+};
+
 export const USER_FIRST_LOGIN = async (message: ServiceEvent) => {
   const { userId } = message.data;
   const userExists = await userService.findUserById(userId);

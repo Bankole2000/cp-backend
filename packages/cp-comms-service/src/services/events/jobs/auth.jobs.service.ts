@@ -32,6 +32,20 @@ export const authQueueJobsHandler = async (msg: any, channel: Channel) => {
       }
       break;
     }
+    case 'SEND_DEVICE_APPROVAL_EMAIL': {
+      const result = await authJobs.SEND_DEVICE_APPROVAL_EMAIL(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
+    case 'SEND_DEVICE_APPROVAL_SMS': {
+      const result = await authJobs.SEND_DEVICE_APPROVAL_SMS(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
     case 'USER_FIRST_LOGIN': {
       const result = await authJobs.USER_FIRST_LOGIN(message);
       if (result.success) {

@@ -84,7 +84,9 @@ export const registerWithPhoneHandler = async (req: Request, res: Response) => {
   }
   const userData = sanitizeData(userCreateFields, req.body);
   userData.phone = parsedNumber.number;
-  const { countryCallingCode, nationalNumber, number, country } = parsedNumber;
+  const {
+    countryCallingCode, nationalNumber, number, country
+  } = parsedNumber;
   userData.phoneData = {
     countryCallingCode,
     nationalNumber,

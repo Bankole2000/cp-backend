@@ -3,11 +3,11 @@ import { parsePhoneNumberWithError, ParseError, PhoneNumber } from 'libphonenumb
 import {
   ServiceEvent, ServiceResponse, signJWT, verifyPassword
 } from '@cribplug/common';
+import { LoginType } from '@prisma/client';
 import { logResponse } from '../middleware/logRequests';
 import UserDBService from '../services/user.service';
 import { config } from '../utils/config';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
-import { LoginType } from '@prisma/client';
 
 const userService = new UserDBService();
 
@@ -39,7 +39,7 @@ export const emailLoginHandler = async (req: Request, res: Response) => {
         user: userExists.data, ip, userAgent, userAgentData: req.useragent, expiresIn: parseInt(config.self.accessTokenTTLMS as string, 10) / 2
       };
       await req.redis.client.connect();
-      await req.redis.client.setex(`${config.redisConfig.scope}:DVRequest:${userExists.data.email}:${ip}`, DVRequestData.expiresIn / 1000, JSON.stringify(DVRequestData));
+      await req.redis.client.setEx(`${config.redisConfig.scope}:DVRequest:${userExists.data.email}:${ip}`, DVRequestData.expiresIn / 1000, JSON.stringify(DVRequestData));
       await req.redis.client.disconnect();
       const se = new ServiceEvent('SEND_DEVICE_APPROVAL_EMAIL', DVRequestData, null, null, config.self.serviceName, commsQueue);
       await sendToServiceQueues(req.channel, se, commsQueue);
@@ -128,9 +128,9 @@ export const phoneLoginHandler = async (req: Request, res: Response) => {
         user: userExists.data, ip, userAgent, userAgentData: req.useragent, expiresIn: parseInt(config.self.accessTokenTTLMS as string, 10) / 2
       };
       await req.redis.client.connect();
-      await req.redis.client.setex(`${config.redisConfig.scope}:DVRequest:${userExists.data.email}:${ip}`, DVRequestData.expiresIn / 1000, JSON.stringify(DVRequestData));
+      await req.redis.client.setEx(`${config.redisConfig.scope}:DVRequest:${userExists.data.phone}:${ip}`, DVRequestData.expiresIn / 1000, JSON.stringify(DVRequestData));
       await req.redis.client.disconnect();
-      const se = new ServiceEvent('SEND_DEVICE_APPROVAL_EMAIL', DVRequestData, null, null, config.self.serviceName, commsQueue);
+      const se = new ServiceEvent('SEND_DEVICE_APPROVAL_SMS', DVRequestData, null, null, config.self.serviceName, commsQueue);
       await sendToServiceQueues(req.channel, se, commsQueue);
     }
     // #endregion
@@ -169,7 +169,7 @@ export const phoneLoginHandler = async (req: Request, res: Response) => {
   await sendToServiceQueues(req.channel, se, serviceQueues);
   await logResponse(req, sr);
   return res.status(sr.statusCode).send(sr);
-}
+};
 
 export const usernameLoginHandler = async (req: Request, res: Response) => {
   // #region STEP: Check user exists and Sanitize Data
@@ -199,7 +199,11 @@ export const usernameLoginHandler = async (req: Request, res: Response) => {
         user: userExists.data, ip, userAgent, userAgentData: req.useragent, expiresIn: parseInt(config.self.accessTokenTTLMS as string, 10) / 2
       };
       await req.redis.client.connect();
-      await req.redis.client.setex(`${config.redisConfig.scope}:DVRequest:${userExists.data.email}:${ip}`, DVRequestData.expiresIn / 1000, JSON.stringify(DVRequestData));
+      if (userExists.data.registeredVia === 'PHONE') {
+        await req.redis.client.setEx(`${config.redisConfig.scope}:DVRequest:${userExists.data.phone}:${ip}`, DVRequestData.expiresIn / 1000, JSON.stringify(DVRequestData));
+      } else {
+        await req.redis.client.setEx(`${config.redisConfig.scope}:DVRequest:${userExists.data.email}:${ip}`, DVRequestData.expiresIn / 1000, JSON.stringify(DVRequestData));
+      }
       await req.redis.client.disconnect();
       const se = new ServiceEvent('SEND_DEVICE_APPROVAL_EMAIL', DVRequestData, null, null, config.self.serviceName, commsQueue);
       await sendToServiceQueues(req.channel, se, commsQueue);
