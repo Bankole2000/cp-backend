@@ -70,6 +70,11 @@ export const USER_FIRST_LOGIN = async (message: ServiceEvent) => {
   return userExists;
 };
 
+export const USER_LOGGED_IN = async (message: ServiceEvent) => {
+  console.log({ message });
+  return new ServiceResponse('Not yet handled', message, true, 200, null, null, null);
+};
+
 export const USER_PURGED = async (message: ServiceEvent) => {
   const { userId } = message.data;
   const userExists = await userService.findUserById(userId);

@@ -25,6 +25,13 @@ export const authQueueJobsHandler = async (msg: any, channel: Channel) => {
       }
       break;
     }
+    case 'USER_LOGGED_IN': {
+      const result = await authJobs.USER_LOGGED_IN(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
     case 'USER_PURGED': {
       const result = await authJobs.USER_PURGED(message);
       if (result.success) {

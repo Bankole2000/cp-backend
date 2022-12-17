@@ -1,5 +1,5 @@
 import {
-  authDefaultExchangeHandler, authDefaultJobHandler, USER_CREATED, USER_UPDATED, USER_PURGED
+  authDefaultExchangeHandler, authDefaultJobHandler, USER_CREATED, USER_UPDATED, USER_PURGED, USER_LOGGED_IN,
 } from './auth.handlers';
 import { chatDefaultExchangeHandler, chatDefaultJobHandler } from './chat.handlers';
 import { commsDefaultExchangeHandler, commsDefaultJobHandler } from './comms.handlers';
@@ -15,6 +15,7 @@ export const authJobs = {
   authDefaultExchangeHandler,
   USER_CREATED,
   USER_UPDATED,
+  USER_LOGGED_IN,
   USER_PURGED
 };
 

@@ -56,6 +56,13 @@ export const USER_UPDATED = async (message: ServiceEvent) => {
   return sr;
 };
 
+export const USER_LOGGED_IN = async (message: ServiceEvent) => {
+  console.log({ message });
+  console.log('Handling Event: ', message.type);
+  const sr = new ServiceResponse('Message NOT Yet handled', message.type, true, 200, null, null, null, null);
+  return sr;
+};
+
 export const USER_PURGED = async (message: ServiceEvent) => {
   const { userId } = message.data;
   const userExists = await userService.findUserById(userId);

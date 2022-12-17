@@ -1,6 +1,6 @@
 import {
   authDefaultExchangeHandler, authDefaultJobHandler, USER_CREATED, USER_UPDATED, SEND_VERIFICATION_EMAIL, SEND_VERIFICATION_SMS, USER_PURGED, USER_FIRST_LOGIN,
-  SEND_DEVICE_APPROVAL_EMAIL, SEND_DEVICE_APPROVAL_SMS
+  SEND_DEVICE_APPROVAL_EMAIL, SEND_DEVICE_APPROVAL_SMS, USER_LOGGED_IN
 } from './auth.handlers';
 import { chatDefaultExchangeHandler, chatDefaultJobHandler } from './chat.handlers';
 import { commsDefaultExchangeHandler, commsDefaultJobHandler } from './comms.handlers';
@@ -21,6 +21,7 @@ export const authJobs = {
   SEND_DEVICE_APPROVAL_SMS,
   USER_UPDATED,
   USER_FIRST_LOGIN,
+  USER_LOGGED_IN,
   USER_PURGED
 };
 

@@ -180,6 +180,43 @@ export default class UserDBService {
     }
   }
 
+  async findDeviceById(deviceId: string) {
+    try {
+      const device = await this.prisma.approvedDevices.findFirst({
+        where: {
+          deviceId
+        }
+      });
+      if (device) {
+        return new ServiceResponse('Device Found', device, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Device Not Found', null, false, 404, 'Device Not Found', 'AUTH_SERVICE_DEVICE_NOT_FOUND', 'Check device Id and try again');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error finding device by Id', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async updateDeviceById(deviceId: string, deviceData: any) {
+    try {
+      const updatedDevice = await this.prisma.approvedDevices.update({
+        where: {
+          deviceId,
+        },
+        data: {
+          ...deviceData
+        }
+      });
+      if (updatedDevice) {
+        return new ServiceResponse('Device Data Updated', updatedDevice, true, 201, null, null, null);
+      }
+      return new ServiceResponse('Error updating Device', null, false, 400, 'Error updating Device data', 'AUTH_SERVICE_ERROR_UPDATING_DEVICE', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error updating device by Id', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async checkIfDeviceIsApproved(userId: string, ip: string) {
     try {
       const approvedDevice = await this.prisma.approvedDevices.findFirst({
@@ -191,10 +228,29 @@ export default class UserDBService {
       if (approvedDevice) {
         return new ServiceResponse('Device found', approvedDevice, true, 200, null, null, null);
       }
-      return new ServiceResponse('Device not found', approvedDevice, false, 404, 'Device not found', 'AUTH_SERVICE_DEVICE_NOT_FOUND', 'Add device to trusted devices');
+      return new ServiceResponse('Device not registered', approvedDevice, false, 404, 'Device not found', 'AUTH_SERVICE_DEVICE_NOT_FOUND', 'Add device to trusted devices');
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error finding device', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async createDevicePendingApproval(userId: string, deviceData: any) {
+    try {
+      const devicePendingApproval = await this.prisma.approvedDevices.create({
+        data: {
+          ...deviceData,
+          active: false,
+          banned: false,
+        }
+      });
+      if (devicePendingApproval) {
+        return new ServiceResponse('Device approval request created', devicePendingApproval, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error requesting device approval', devicePendingApproval, false, 500, 'Error adding device', 'AUTH_SERVICE_ERROR_ADDING_DEVICE_REQUEST', 'Check the logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error requesting device approval', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
 

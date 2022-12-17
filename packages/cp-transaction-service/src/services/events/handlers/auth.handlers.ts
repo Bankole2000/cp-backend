@@ -31,6 +31,13 @@ export const USER_FIRST_LOGIN = async (message: ServiceEvent) => {
   return userExists;
 };
 
+export const USER_LOGGED_IN = async (message: ServiceEvent) => {
+  console.log({ message });
+  console.log('Handling Event: ', message.type);
+  const sr = new ServiceResponse('Message NOT Yet handled', message.type, true, 200, null, null, null, null);
+  return sr;
+};
+
 export const USER_CREATED = async (message: ServiceEvent) => {
   const userData = sanitizeData(userCreateFields, message.data);
   const sr = await userService.createUser(userData);

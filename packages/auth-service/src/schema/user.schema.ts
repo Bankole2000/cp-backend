@@ -83,6 +83,95 @@ export const onboardingUsernameAndPasswordSchema = object({
   })
 });
 
+export const verifyDeviceLoginSchema = object({
+  body: object({
+    idToken: string({
+      required_error: 'Id Token is required',
+    }),
+    userId: string({
+      required_error: 'User id is required',
+    }),
+    code: string({
+      required_error: 'Verification Code is required',
+    }).min(6, 'Verification code must be at 6 characters long').max(6, 'Verification code must be 6 characters long'),
+    deviceId: string({
+      required_error: 'Device Id is required'
+    }),
+    type: string({
+      required_error: 'Verification Type is required'
+    })
+  })
+});
+
+export const verifyEmailDeviceLoginSchema = object({
+  body: object({
+    idToken: string({
+      required_error: 'Id Token is required',
+    }),
+    userId: string({
+      required_error: 'User id is required',
+    }),
+    email: string({
+      required_error: 'Email is required',
+    }).email('Email must be a valid email address'),
+    code: string({
+      required_error: 'Verification Code is required',
+    }).min(6, 'Verification code must be at 6 characters long').max(6, 'Verification code must be 6 characters long'),
+    deviceId: string({
+      required_error: 'Device Id is required'
+    }),
+    type: string({
+      required_error: 'Verification Type is required'
+    })
+  })
+});
+
+export const verifyPhoneDeviceLoginSchema = object({
+  body: object({
+    idToken: string({
+      required_error: 'Id Token is required',
+    }),
+    userId: string({
+      required_error: 'User id is required',
+    }),
+    phone: string({
+      required_error: 'Email is required',
+    }).email('Email must be a valid email address'),
+    code: string({
+      required_error: 'Verification Code is required',
+    }).min(6, 'Verification code must be at 6 characters long').max(6, 'Verification code must be 6 characters long'),
+    deviceId: string({
+      required_error: 'Device Id is required'
+    }),
+    type: string({
+      required_error: 'Verification Type is required'
+    })
+  })
+});
+
+export const verifyUsernameDeviceLoginSchema = object({
+  body: object({
+    idToken: string({
+      required_error: 'Id Token is required',
+    }),
+    userId: string({
+      required_error: 'User id is required',
+    }),
+    username: string({
+      required_error: 'Email is required',
+    }).email('Email must be a valid email address'),
+    code: string({
+      required_error: 'Verification Code is required',
+    }).min(6, 'Verification code must be at 6 characters long').max(6, 'Verification code must be 6 characters long'),
+    deviceId: string({
+      required_error: 'Device Id is required'
+    }),
+    type: string({
+      required_error: 'Verification Type is required'
+    })
+  })
+});
+
 export const emailLoginSchema = object({
   body: object({
     email: string({
@@ -98,13 +187,13 @@ export const phoneLoginSchema = object({
   body: object({
     phone: string({
       required_error: 'Phone number is required',
-    }), 
+    }),
     countryCode: string({
       required_error: 'Country code is required',
     }).min(2, 'Country code must be 2 Characters').max(2, 'Country code must be 2 characters'),
     password: string({
       required_error: 'Password is required',
-    })
+    }),
   })
 });
 

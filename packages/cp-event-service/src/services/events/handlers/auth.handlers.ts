@@ -81,6 +81,11 @@ export const USER_FIRST_LOGIN = async (message: ServiceEvent) => {
   return userExists;
 };
 
+export const USER_LOGGED_IN = async (message: ServiceEvent) => {
+  console.log({ message });
+  return new ServiceResponse('Not yet handled', message, true, 200, null, null, null);
+};
+
 export const USER_UPDATED = async (message: ServiceEvent) => {
   const userData = sanitizeData(userUpdateFields, message.data);
   const { userId, version: newVersion } = message.data;
