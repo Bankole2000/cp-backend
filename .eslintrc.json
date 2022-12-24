@@ -23,6 +23,7 @@
       "linebreak-style": "off",
       "max-len": "warn",
       "prettier/prettier": ["error"],
+      "vue/multi-word-component-names": "off",
       "import/prefer-default-export": "off",
       "comma-dangle": "off",
       "import/extensions": [

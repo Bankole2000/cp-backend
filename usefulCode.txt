@@ -52,3 +52,6 @@ export const sendToServiceQueues = async (channel: Channel, message: any, servic
 touch index.handlers.ts auth.handlers.ts chat.handlers.ts comms.handlers.ts feed.handlers.ts listing.handlers.ts notification.handlers.ts offer.handlers.ts profile.handlers.ts transaction.handlers.ts
 touch index.jobs.service.ts auth.jobs.service.ts chat.jobs.service.ts comms.jobs.service.ts feed.jobs.service.ts listing.jobs.service.ts notification.jobs.service.ts offer.jobs.service.ts profile.jobs.service.ts transaction.jobs.service.ts
 touch index.exchange.ts auth.exchange.ts chat.exchange.ts comms.exchange.ts feed.exchange.ts listing.exchange.ts notification.exchange.ts offer.exchange.ts profile.exchange.ts transaction.exchange.ts
+
+
+

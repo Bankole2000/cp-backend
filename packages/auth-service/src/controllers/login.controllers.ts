@@ -23,7 +23,7 @@ export const emailLoginHandler = async (req: Request, res: Response) => {
   const { password: hashedPassword } = userExists.data;
   const passwordMatch = await verifyPassword(password, hashedPassword);
   if (!passwordMatch) {
-    const sr = new ServiceResponse('Invalid Password', null, false, 400, 'Invalid Password', 'AUTH_SERVICE_INVALID_PASSWORD', 'Enter the correct password');
+    const sr = new ServiceResponse('Incorrect email and password', null, false, 400, 'Incorrect email and password', 'AUTH_SERVICE_INVALID_PASSWORD', 'Enter the correct password');
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
@@ -190,7 +190,7 @@ export const phoneLoginHandler = async (req: Request, res: Response) => {
   const { password: hashedPassword } = userExists.data;
   const passwordMatch = await verifyPassword(password, hashedPassword);
   if (!passwordMatch) {
-    const sr = new ServiceResponse('Invalid Password', null, false, 400, 'Invalid Password', 'AUTH_SERVICE_INVALID_PASSWORD', 'Enter the correct password');
+    const sr = new ServiceResponse('Incorrect phone number and password', null, false, 400, 'Incorrect phone number and password', 'AUTH_SERVICE_INVALID_PASSWORD', 'Enter the correct password');
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
@@ -338,7 +338,7 @@ export const usernameLoginHandler = async (req: Request, res: Response) => {
   const { password: hashedPassword } = userExists.data;
   const passwordMatch = await verifyPassword(password, hashedPassword);
   if (!passwordMatch) {
-    const sr = new ServiceResponse('Invalid Password', null, false, 400, 'Invalid Password', 'AUTH_SERVICE_INVALID_PASSWORD', 'Enter the correct password');
+    const sr = new ServiceResponse('Incorrect username and password', null, false, 400, 'Incorrect username and password', 'AUTH_SERVICE_INVALID_PASSWORD', 'Enter the correct password');
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }

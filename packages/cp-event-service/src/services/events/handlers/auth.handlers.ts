@@ -44,6 +44,7 @@ export const SEND_VERIFICATION_EMAIL = async (message: ServiceEvent) => {
 
 export const SEND_VERIFICATION_SMS = async (message: ServiceEvent) => {
   const { userId } = message.data;
+  console.log({ userId });
   const userExists = await userService.findUserById(userId);
   if (!userExists.success) {
     console.log(`${emoji} ${serviceName?.toUpperCase()} Error Handling Event: ${message.type}: ${userExists.errors}`);

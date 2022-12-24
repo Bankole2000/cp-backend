@@ -44,10 +44,10 @@ export const registerWithPhoneSchema = object({
       .max(2, 'Country code must be 2 characters'),
     firstname: string({
       required_error: 'First name is required',
-    }),
+    }).min(2, 'First name must be at least 2 characters'),
     lastname: string({
       required_error: 'Last name is required',
-    }),
+    }).min(2, 'Last name must be at least 2 characters'),
     tos: boolean({
       required_error: 'You must agree to the terms of service',
     }),

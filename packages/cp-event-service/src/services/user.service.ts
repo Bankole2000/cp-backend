@@ -23,7 +23,7 @@ export default class UserDBService {
       if (createdUser) {
         return new ServiceResponse('User created successfully', createdUser, true, 200, null, null, null);
       }
-      return new ServiceResponse('Failed to create User', createdUser, false, 400, 'Failed to create User', 'CHAT_SERVICE_ERROR_CREATING_USER', 'Check all fields and try again');
+      return new ServiceResponse('Failed to create User', createdUser, false, 400, 'Failed to create User', 'EVENT_SERVICE_ERROR_CREATING_USER', 'Check all fields and try again');
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error creating User', null, false, 500, error.message, error, null);
@@ -58,7 +58,7 @@ export default class UserDBService {
       if (user) {
         return new ServiceResponse('User found successfully', user, true, 200, null, null, null);
       }
-      return new ServiceResponse('User not found', user, false, 404, 'User not found', 'CHAT_SERVICE_USER_BY_ID_NOT_FOUND', 'Confirm that user exists');
+      return new ServiceResponse('User not found', user, false, 404, 'User not found', 'EVENT_SERVICE_USER_BY_ID_NOT_FOUND', 'Confirm that user exists');
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error finding User', null, false, 500, error.message, error, 'Check logs and database');
