@@ -312,6 +312,61 @@ export default class UserDBService {
     }
   }
 
+  async updateIpGeoData(ip: string, geoData: any) {
+    try {
+      const ipGeoData = await this.prisma.ipGeoData.update({
+        where: {
+          ip,
+        },
+        data: {
+          geoData,
+        }
+      });
+      if (ipGeoData) {
+        return new ServiceResponse('IP Geo Data updated', ipGeoData, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error updating IP Geo Data', ipGeoData, false, 400, 'Error updating IP Geo Data', 'AUTH_SERVICE_ERROR_UPDATING_IP_GEO_DATA', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error updating IP Geo Data', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async getIpGeoData(ip: string) {
+    try {
+      const ipGeoData = await this.prisma.ipGeoData.findUnique({
+        where: {
+          ip,
+        },
+      });
+      if (ipGeoData) {
+        return new ServiceResponse('IP Geo Data found', ipGeoData, true, 200, null, null, null);
+      }
+      return new ServiceResponse('IP Geo Data not found', ipGeoData, false, 404, 'IP Geo Data not found', 'AUTH_SERVICE_IP_GEO_DATA_NOT_FOUND', 'Confirm the IP and try again');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error finding IP Geo Data', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async storeIpGeoData(ip: string, geoData: any) {
+    try {
+      const ipGeoData = await this.prisma.ipGeoData.create({
+        data: {
+          ip,
+          geoData
+        }
+      });
+      if (ipGeoData) {
+        return new ServiceResponse('IP Geo Data stored', ipGeoData, true, 201, null, null, null);
+      }
+      return new ServiceResponse('Error storing IP Geo Data', ipGeoData, false, 400, 'Error storing IP Geo Data', 'AUTH_SERVICE_ERROR_STORING_IP_GEO_DATA', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error storing IP Geo Data', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   static async updateUserSessionsData(redis: RedisConnection, scope: string, sessionIds: string[], userData: any) {
     await redis.client.connect();
     const sessions = await redis.client.hmGet(`${scope}-logged-in`, sessionIds);

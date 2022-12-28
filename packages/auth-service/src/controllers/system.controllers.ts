@@ -73,3 +73,38 @@ export const getPhoneCountryCodes = async (req: Request, res: Response) => {
   await logResponse(req, sr);
   return res.status(sr.statusCode).send(sr);
 };
+
+export const getIpGeoData = async (req: Request, res: Response) => {
+  console.log('fetching IP Geo Data');
+  const { ip } = req.params;
+  const sr = await userService.getIpGeoData(ip);
+  await logResponse(req, sr);
+  return res.status(sr.statusCode).send(sr);
+};
+
+export const storeIpGeoData = async (req: Request, res: Response) => {
+  console.log('storing IP Geo Data');
+  const { ip, geoData } = req.body;
+  const ipExistsSR = await userService.getIpGeoData(ip);
+  if (ipExistsSR.success) {
+    const updateSr = await userService.updateIpGeoData(ip, geoData);
+    await logResponse(req, updateSr);
+    return res.status(updateSr.statusCode).send(updateSr);
+  }
+  const sr = await userService.storeIpGeoData(ip, geoData);
+  await logResponse(req, sr);
+  return res.status(sr.statusCode).send(sr);
+};
+
+export const updateIpGeoData = async (req: Request, res: Response) => {
+  const { ip, geoData } = req.body;
+  const ipExistsSR = await userService.getIpGeoData(ip);
+  if (ipExistsSR.success) {
+    const updateSr = await userService.updateIpGeoData(ip, geoData);
+    await logResponse(req, updateSr);
+    return res.status(updateSr.statusCode).send(updateSr);
+  }
+  const sr = await userService.storeIpGeoData(ip, geoData);
+  await logResponse(req, sr);
+  return res.status(sr.statusCode).send(sr);
+};

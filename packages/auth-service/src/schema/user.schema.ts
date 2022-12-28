@@ -9,6 +9,34 @@ export const emailRequiredSchema = object({
   })
 });
 
+export const ipGeoDataSchema = object({
+  body: object({
+    ip: string({
+      required_error: 'IP is required',
+    }).min(6, 'IP must be at least 6 characters'),
+    geoData: object({
+      phoneCode: string({
+        required_error: 'Phone code is required',
+      }).min(2, 'Phone code must be at least 2 characters'),
+      countryCode: string({
+        required_error: 'Country code is required',
+      }).min(2, 'Country code must be at least 2 characters').max(2, 'Country code must be 2 characters'),
+      name: string({
+        required_error: 'Country name is required',
+      }).min(1, 'Country name must be at least 1 character'),
+      iso3: string({
+        required_error: 'ISO3 is required',
+      }).min(3, 'ISO3 must be at least 3 characters').max(3, 'ISO3 must be 3 characters'),
+      currency: string({
+        required_error: 'Currency is required',
+      }).min(3, 'Currency must be at least 3 characters').max(3, 'Currency must be 3 characters'),
+      currencySymbol: string({
+        required_error: 'Currency symbol is required',
+      }).min(1, 'Currency symbol must be at least 1 character'),
+    }),
+  }),
+});
+
 export const registerWithEmailSchema = object({
   body: object({
     email: string({

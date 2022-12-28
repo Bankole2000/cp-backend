@@ -214,6 +214,14 @@ export const onboardingHandler = async (req: Request, res: Response) => {
   const sr = new ServiceResponse('Onboarding Successful', {
     accessToken, refreshToken, session, user: session.user
   }, true, 200, null, null, null);
+  res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    maxAge: 1000 * 60 * 60 * 24 * 7,
+  });
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    maxAge: parseInt(config.self.accessTokenTTLMS || '900000', 10),
+  });
   await UserDBService.cacheUserSession(req.redis, config.redisConfig.scope || '', session);
   const se = new ServiceEvent('USER_FIRST_LOGIN', session, idToken, accessToken, config.self.serviceName, serviceQueues);
   await sendToServiceQueues(req.channel, se, serviceQueues);

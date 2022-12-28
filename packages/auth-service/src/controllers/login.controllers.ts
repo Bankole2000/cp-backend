@@ -148,6 +148,10 @@ export const emailLoginHandler = async (req: Request, res: Response) => {
     httpOnly: true,
     maxAge: parseInt(config.self.refreshTokenTTLMS || '604800000', 10),
   });
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    maxAge: parseInt(config.self.accessTokenTTLMS || '900000', 10),
+  });
   // #endregion
   // #region STEP: Cache User Session, Emit 'USER_LOGGED_IN' Event and send response
   const sr = new ServiceResponse('Login Successful', {
@@ -314,6 +318,10 @@ export const phoneLoginHandler = async (req: Request, res: Response) => {
     httpOnly: true,
     maxAge: parseInt(config.self.refreshTokenTTLMS || '604800000', 10),
   });
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    maxAge: parseInt(config.self.accessTokenTTLMS || '900000', 10),
+  });
   // #endregion
   // #region STEP: Cache User Session, Emit 'USER_LOGGED_IN' Event and send response
   const sr = new ServiceResponse('Login Successful', {
@@ -465,6 +473,10 @@ export const usernameLoginHandler = async (req: Request, res: Response) => {
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 * 7,
   });
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    maxAge: parseInt(config.self.accessTokenTTLMS || '900000', 10),
+  });
   // #endregion
   // #region STEP: Cache User Session, Emit 'USER_LOGGED_IN' Event and send response
   const sr = new ServiceResponse('Login Successful', {
@@ -485,6 +497,7 @@ export const logoutHandler = async (req: Request, res: Response) => {
   const sr = await userService.invalidateUserSession(req.redis, config.redisConfig.scope || '', sessionId);
   if (sr.success) {
     res.clearCookie('refreshToken');
+    res.clearCookie('accessToken');
   }
   await logResponse(req, sr);
   return res.status(sr.statusCode).send(sr);

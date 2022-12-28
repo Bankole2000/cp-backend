@@ -34,12 +34,42 @@ export const requireLoggedInUser = async (req: Request, res: Response, next: Nex
 
 export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers.authorization;
+  console.log({ headers: req.headers });
+  console.log('here');
   if (!token) {
+    const refreshToken = req.cookies?.refreshToken ? req.cookies.refreshToken : req.headers['x-refresh-token'];
+    if (refreshToken) {
+      const { decoded: refreshDecoded } = await verifyToken(refreshToken, config.self.jwtSecret || '');
+      console.log({ refreshDecoded });
+      if (!refreshDecoded) {
+        req.user = null;
+        return next();
+      }
+      const userExists = await userService.findUserById(refreshDecoded.userId);
+      if (!userExists.success) {
+        req.user = null;
+        return next();
+      }
+      console.log('User found');
+      const { success, data: { sessionId, isValid, deviceId } } = await userService.getSessionById(refreshDecoded.sessionId);
+      console.log({ sessionFound: success, isValid, deviceId });
+      if (!success || !isValid) {
+        req.user = null;
+        return next();
+      }
+      const newAccessToken = (await signJWT({ ...userExists.data, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
+      res.locals.newAccessToken = newAccessToken;
+      res.setHeader('x-access-token', newAccessToken as string);
+      req.user = refreshDecoded;
+      return next();
+    }
+    console.log('No Token sent');
     req.user = null;
     return next();
   }
   const accessToken = token.split(' ')[1];
-  const refreshToken = req.cookies?.refreshToken || req.headers['x-refresh-token'];
+  const refreshToken = req.cookies?.refreshToken ? req.cookies.refreshToken : req.headers['x-refresh-token'];
+  console.log({ accessToken, refreshToken, cookies: req.cookies });
   if (!accessToken) {
     req.user = null;
     return next();
@@ -47,13 +77,16 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
   const {
     valid, decoded, error, expired
   } = await verifyToken(accessToken, config.self.jwtSecret || '');
+  console.log({ error, expired, valid });
   if (decoded && valid) {
+    console.log('accessToken checking user exists');
     const userExists = await userService.findUserById(decoded.userId);
     if (!userExists.success) {
       req.user = null;
       return next();
     }
     const { success, data } = await userService.getSessionById(decoded.sessionId);
+    console.log('accessToken checking session exists');
     if (!success || !data.isValid) {
       req.user = null;
       return next();
@@ -65,8 +98,10 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     req.user = null;
     return next();
   }
+  console.log('Using refresh token');
   if (expired && refreshToken) {
     const { decoded: refreshDecoded } = await verifyToken(refreshToken, config.self.jwtSecret || '');
+    console.log({ refreshDecoded });
     if (!refreshDecoded) {
       req.user = null;
       return next();
@@ -76,7 +111,9 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
+    console.log('User found');
     const { success, data: { sessionId, isValid, deviceId } } = await userService.getSessionById(refreshDecoded.sessionId);
+    console.log({ sessionFound: success, isValid, deviceId });
     if (!success || !isValid) {
       req.user = null;
       return next();
