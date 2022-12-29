@@ -14,6 +14,9 @@ router.post('/email', validate(registerWithEmailSchema, 'Registration'), registe
 router.post('/phone', validate(registerWithPhoneSchema, 'Registration'), registerWithPhoneHandler);
 // Onboarding set username and password
 router.post('/onboarding/username', validate(onboardingUsernameAndPasswordSchema, 'Onboarding'), requireUserFromIdToken, onboardingHandler);
+// Onboarding set password if forgotten and verified
+
+
 // Signup with username and password
 // router.post('/email', )
 // Signup with google

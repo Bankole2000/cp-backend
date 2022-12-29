@@ -254,3 +254,93 @@ export const onboardingHandler = async (req: Request, res: Response) => {
   return res.status(sr.statusCode).send(sr);
   // #endregion
 };
+
+export const setNewPasswordHandler = async (req: Request, res: Response) => {
+  const { userId } = req.user;
+  if (!userId) {
+    const sr = new ServiceResponse('Invalid IdToken', null, false, 400, 'Error', 'AUTH_SERVICE_INVALID_IDTOKEN', 'Send idToken in headers or body');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  const userExists = await userService.findUserById(userId);
+  if (!userExists.success) {
+    await logResponse(req, userExists);
+    return res.status(userExists.statusCode).send(userExists);
+  }
+  const {
+    password, confirmPassword, idToken, userId: sentUserId, type, email, phone,
+  } = req.body;
+  if (type === 'EMAIL') {
+    if (!email || email !== userExists.data.email) {
+      const sr = new ServiceResponse(
+        'Invalid email',
+        null,
+        false,
+        400,
+        'Error',
+        'AUTH_SERVICE_EMAIL_MISMATCH',
+        'Send matching email in body',
+      );
+      await logResponse(req, sr);
+      return res.status(sr.statusCode).send(sr);
+    }
+  }
+  if (type === 'PHONE') {
+    if (!phone || phone !== userExists.data.phone) {
+      const sr = new ServiceResponse(
+        'Invalid phone number',
+        null,
+        false,
+        400,
+        'Error',
+        'AUTH_SERVICE_PHONE_MISMATCH',
+        'Send matching phone number in body',
+      );
+      await logResponse(req, sr);
+      return res.status(sr.statusCode).send(sr);
+    }
+  }
+  if (userId !== sentUserId) {
+    const sr = new ServiceResponse(
+      'Invalid userId',
+      null,
+      false,
+      400,
+      'Error',
+      'AUTH_SERVICE_INVALID_USERID',
+      'Send matching userId in body',
+    );
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  if (password !== confirmPassword) {
+    const sr = new ServiceResponse(
+      'Password and confirm password do not match',
+      null,
+      false,
+      400,
+      'Password and confirm password do not match',
+      'AUTH_SERVICE_PASSWORD_MISMATCH',
+      'Enter the same password in both fields',
+    );
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  const hashedPassword = await hashPassword(password);
+  const { onboardingStatus } = userExists.data;
+  const obSet = new Set(onboardingStatus);
+  obSet.add('PASSWORD_SET');
+  const updatedUser = await userService.updateUser(userId, {
+    password: hashedPassword, onboardingStatus: [...obSet]
+  });
+  if (!updatedUser.success) {
+    await logResponse(req, updatedUser);
+    return res.status(updatedUser.statusCode).send(updatedUser);
+  }
+  const serviceQueues = await getServiceQueues(req.redis, config.redisConfig.scope);
+  const userUpdatedEvent = new ServiceEvent('USER_UPDATED', updatedUser.data, idToken, null, config.self.serviceName, serviceQueues);
+  await sendToServiceQueues(req.channel, userUpdatedEvent, serviceQueues);
+  const sr = new ServiceResponse('Password Updated', updatedUser.data, true, 200, null, null, null);
+  await logResponse(req, sr);
+  return res.status(sr.statusCode).send(sr);
+};

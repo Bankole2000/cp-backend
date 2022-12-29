@@ -131,6 +131,14 @@ export const verifyDeviceLoginSchema = object({
   })
 });
 
+export const forgotPasswordSchema = object({
+  body: object({
+    field: string({
+      required_error: 'Field type is required',
+    }).min(1, 'Field Type must be at least 1 character long'),
+  }),
+});
+
 export const sendOTPSchema = object({
   body: object({
     idToken: string({

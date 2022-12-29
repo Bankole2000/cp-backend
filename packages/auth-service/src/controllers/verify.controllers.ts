@@ -8,6 +8,7 @@ import { logResponse } from '../middleware/logRequests';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
 import UserDBService from '../services/user.service';
 import { config } from '../utils/config';
+import { parsePhoneNumberWithError, ParseError } from 'libphonenumber-js';
 
 const userService = new UserDBService();
 const { self, redisConfig } = config;
@@ -367,4 +368,67 @@ export const sendEmailDeviceVerificationHandler = async (req: Request, res: Resp
 
 export const sendPhoneDeviceVerificationHandler = async (req: Request, res: Response) => {
   res.send('Phone Verification code sent');
+};
+
+
+export const forgotPasswordHandler = async (req: Request, res: Response) => {
+  const { username, email, phone, countryCode, field } = req.body;
+  let user;
+  if (field === 'username') {
+    user = (await userService.findUserByUsername(username)).data;
+  }
+  if (field === 'phone') {
+    let parsedNumber;
+    try {
+      parsedNumber = parsePhoneNumberWithError(phone, countryCode);
+    } catch (error: any) {
+      if (error instanceof ParseError) {
+        const sr = new ServiceResponse('Error parsing phone number', null, false, 400, error.message, error, 'Check phone number and country code');
+        await logResponse(req, sr);
+        return res.status(sr.statusCode).send(sr);
+      }
+      const sr = new ServiceResponse('Invalid phone number', null, false, 400, error.message, error, 'Check phone number and country code');
+      await logResponse(req, sr);
+      return res.status(sr.statusCode).send(sr);
+    }
+    if (!parsedNumber || !parsedNumber.isValid()) {
+      const sr = new ServiceResponse('Invalid phone number', null, false, 400, 'Invalid phone number', 'AUTH_SERVICE_INVALID_PHONE_NUMBER', 'Check phone number and country code');
+      await logResponse(req, sr);
+      return res.status(sr.statusCode).send(sr);
+    }
+    user = (await userService.findUserByPhoneNumber(parsedNumber.number)).data;
+  }
+  if (field === 'email') {
+    user = (await userService.findUserByEmail(email)).data;
+  }
+  if (!user) {
+    const sr = new ServiceResponse('User not found', null, false, 404, 'User not found', 'AUTH_SERVICE_USER_NOT_FOUND', 'User not found');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  const idToken = (await signJWT(user, config.self.jwtSecret as string)).token;
+  const OTP = generateOTP(6, { lowerCaseAlphabets: false, upperCaseAlphabets: true, specialChars: false });
+  const verifData = {
+    userId: user.userId,
+    phone: user.phone,
+    email: user.email,
+    OTP,
+    type: user.registeredVia === 'PHONE' ? 'PHONE' : 'EMAIL',
+    expiresIn: 60 * 30 * 1000
+  };
+  const commsQueue = await getServiceQueues(req.redis, config.redisConfig.scope, ['comms', 'event']);
+  await req.redis.client.connect();
+  await req.redis.client.setEx(`${config.redisConfig.scope}:OTP:${verifData.type}:${verifData.userId}`, verifData.expiresIn / 1000, JSON.stringify(verifData));
+  await req.redis.client.disconnect();
+  const se = new ServiceEvent('USER_FORGOT_PASSWORD', { user, idToken, verifData}, idToken, null, config.self.serviceName, commsQueue);
+  await sendToServiceQueues(req.channel, se, commsQueue);
+  const userVerifData = { 
+    userId: user.userId,
+    phone: user.phone,
+    email: user.email,
+    type: verifData.type,
+  };
+  const sr = new ServiceResponse('OTP sent', { user, idToken, verifData: userVerifData }, true, 200, null, null, null);
+  await logResponse(req, sr);
+  return res.status(sr.statusCode).send(sr);
 };
