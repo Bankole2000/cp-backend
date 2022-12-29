@@ -1,6 +1,7 @@
 import {
   ServiceEvent, ServiceResponse, signJWT, verifyToken
 } from '@cribplug/common';
+import { generate as generateOTP } from 'otp-generator';
 import { LoginType } from '@prisma/client';
 import { Request, Response } from 'express';
 import { logResponse } from '../middleware/logRequests';
@@ -28,6 +29,174 @@ export const verifyEmailHandler = async (req: Request, res: Response) => {
 
   await userService.updateUser(user.data.userId, { verified: true });
   return res.send('Email verified');
+};
+
+export const resendOTPHandler = async (req: Request, res: Response) => {
+  const {
+    type, email, phone, userId, idToken
+  } = req.body;
+  const userExistsSR = await userService.findUserById(req.user.userId);
+  if (!userExistsSR.success) {
+    await logResponse(req, userExistsSR);
+    return res.status(userExistsSR.statusCode).send(userExistsSR);
+  }
+  const { data: user } = userExistsSR;
+  if (user.userId !== userId) {
+    const sr = new ServiceResponse('User Id does not match', null, false, 403, 'Invalid or unauthorized request - User does not match', 'AUTH_SERVICE_USER_ID_MISMATCH', 'Please user the userId associated with your account');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  const OTP = generateOTP(6, { lowerCaseAlphabets: false, upperCaseAlphabets: true, specialChars: false });
+  let verifData;
+  let se;
+  const commsQueue = await getServiceQueues(req.redis, config.redisConfig.scope, ['comms', 'event']);
+  if (type === 'EMAIL') {
+    if (user.email !== email) {
+      const sr = new ServiceResponse('Email does not match', null, false, 403, 'Invalid or unauthorized request - Email does not match', 'AUTH_SERVICE_EMAIL_MISMATCH', 'Please use the email associated with your account');
+      await logResponse(req, sr);
+      return res.status(sr.statusCode).send(sr);
+    }
+    verifData = {
+      email,
+      OTP,
+      type,
+      userId: user.userId,
+      expiresIn: 60 * 30 * 1000,
+    };
+    se = new ServiceEvent('SEND_VERIFICATION_EMAIL', { user, idToken, verifData }, idToken, null, config.self.serviceName, commsQueue);
+  }
+  if (type === 'PHONE') {
+    if (user.phone !== phone) {
+      const sr = new ServiceResponse('Phone does not match', null, false, 403, 'Invalid or unauthorized request - Phone does not match', 'AUTH_SERVICE_PHONE_MISMATCH', 'Please use the phone number associated with your account');
+      await logResponse(req, sr);
+      return res.status(sr.statusCode).send(sr);
+    }
+    verifData = {
+      phone,
+      OTP,
+      type,
+      userId: user.userId,
+      expiresIn: 60 * 30 * 1000,
+    };
+    se = new ServiceEvent('SEND_VERIFICATION_SMS', { user, idToken, verifData }, idToken, null, config.self.serviceName, commsQueue);
+  }
+  if (!verifData) {
+    const sr = new ServiceResponse('Invalid verification type', null, false, 400, 'Invalid or unauthorized request - Invalid verification type', 'AUTH_SERVICE_INVALID_VERIFICATION_TYPE', 'Please use a valid verification type');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  await req.redis.client.connect();
+  await req.redis.client.setEx(`${config.redisConfig.scope}:OTP:${verifData.type}:${verifData.userId}`, verifData.expiresIn / 1000, JSON.stringify(verifData));
+  await req.redis.client.disconnect();
+  await sendToServiceQueues(req.channel, se, commsQueue);
+  const sr = new ServiceResponse('OTP resent', null, true, 200, null, null, null);
+  await logResponse(req, sr);
+  return res.status(sr.statusCode).send(sr);
+};
+
+export const verifyOTPHandler = async (req: Request, res: Response) => {
+  const {
+    OTP, type, email, phone, userId
+  } = req.body;
+  const userExistsSR = await userService.findUserById(req.user.userId);
+  if (!userExistsSR.success) {
+    await logResponse(req, userExistsSR);
+    return res.status(userExistsSR.statusCode).send(userExistsSR);
+  }
+  const { data: user } = userExistsSR;
+  await req.redis.client.connect();
+  const codeKey = `${redisConfig.scope}:OTP:${type}:${user.userId}`;
+  const verifData = await req.redis.client.get(codeKey);
+  if (!verifData) {
+    await req.redis.client.disconnect();
+    const sr = new ServiceResponse('OTP invalid or expired', null, false, 403, 'Invalid or unauthorized request - OTP not found', 'AUTH_SERVICE_OTP_NOT_FOUND', 'Please request for a new OTP');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  const parsedVerifData = JSON.parse(verifData);
+  if (parsedVerifData.OTP !== OTP) {
+    await req.redis.client.disconnect();
+    const sr = new ServiceResponse('Incorrect OTP', null, false, 403, 'Invalid or unauthorized request - OTP mismatch', 'AUTH_SERVICE_OTP_MISMATCH', 'Please provide the correct OTP');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  if (parsedVerifData.userId !== user.userId || parsedVerifData.userId !== userId) {
+    await req.redis.client.disconnect();
+    const sr = new ServiceResponse('Unauthorized', null, false, 403, 'Invalid or unauthorized request - User Id mismatch', 'AUTH_SERVICE_USER_ID_MISMATCH', 'Only the user can verify the OTP');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  if (type === 'EMAIL') {
+    if (user.email !== email || parsedVerifData.email !== email) {
+      const sr = new ServiceResponse('Unauthorized', null, false, 403, 'Invalid or unauthorized request - Email mismatch', 'AUTH_SERVICE_EMAIL_MISMATCH', 'Please provide the email that matches the user');
+      await logResponse(req, sr);
+      return res.status(sr.statusCode).send(sr);
+    }
+    const updateUserSR = await userService.updateUser(user.userId, { emailVerified: true });
+    if (!updateUserSR.success) {
+      await logResponse(req, updateUserSR);
+      return res.status(updateUserSR.statusCode).send(updateUserSR);
+    }
+    await req.redis.client.del(codeKey);
+    await req.redis.client.disconnect();
+    const { data: updatedUser } = updateUserSR;
+    const serviceQueues = await getServiceQueues(req.redis, config.redisConfig.scope);
+    const se = new ServiceEvent('USER_UPDATED', updatedUser, req.body.idToken, null, config.self.serviceName, serviceQueues);
+    await sendToServiceQueues(req.channel, se, serviceQueues);
+    const activeSessionsSR = await userService.getUserActiveSessions(user.userId);
+    console.log({ activeSessionsSR });
+    if (!activeSessionsSR.success) {
+      const sr = new ServiceResponse('Email Verified', updatedUser, true, 200, null, null, null);
+      await logResponse(req, sr);
+      return res.status(sr.statusCode).send(sr);
+    }
+    const { data: activeSessions } = activeSessionsSR;
+    const activeSessionIds = activeSessions.map((session: any) => session.sessionId);
+    console.log({ activeSessionIds });
+    if (activeSessionIds.length) {
+      await UserDBService.updateUserSessionsData(req.redis, config.redisConfig.scope as string, activeSessionIds, updatedUser);
+    }
+    const sr = new ServiceResponse('Email Verified', updatedUser, true, 200, null, null, null);
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  if (type === 'PHONE') {
+    if (user.phone !== phone || parsedVerifData.phone !== phone) {
+      const sr = new ServiceResponse('Unauthorized', null, false, 403, 'Invalid or unauthorized request - Email mismatch', 'AUTH_SERVICE_EMAIL_MISMATCH', 'Please provide the email that matches the user');
+      await logResponse(req, sr);
+      return res.status(sr.statusCode).send(sr);
+    }
+    const updateUserSR = await userService.updateUser(user.userId, { phoneVerified: true });
+    if (!updateUserSR.success) {
+      await logResponse(req, updateUserSR);
+      return res.status(updateUserSR.statusCode).send(updateUserSR);
+    }
+    const { data: updatedUser } = updateUserSR;
+    await req.redis.client.del(codeKey);
+    await req.redis.client.disconnect();
+    const serviceQueues = await getServiceQueues(req.redis, config.redisConfig.scope);
+    const se = new ServiceEvent('USER_UPDATED', updatedUser, req.body.idToken, null, config.self.serviceName, serviceQueues);
+    await sendToServiceQueues(req.channel, se, serviceQueues);
+    const activeSessionsSR = await userService.getUserActiveSessions(user.userId);
+    console.log({ activeSessionsSR });
+    if (!activeSessionsSR.success) {
+      const sr = new ServiceResponse('Phone number Verified', updatedUser, true, 200, null, null, null);
+      await logResponse(req, sr);
+      return res.status(sr.statusCode).send(sr);
+    }
+    const { data: activeSessions } = activeSessionsSR;
+    const activeSessionIds = activeSessions.map((session: any) => session.sessionId);
+    console.log({ activeSessionIds });
+    if (activeSessionIds.length) {
+      await UserDBService.updateUserSessionsData(req.redis, config.redisConfig.scope as string, activeSessionIds, updatedUser);
+    }
+    const sr = new ServiceResponse('Phone number Verified', updatedUser, true, 200, null, null, null);
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  const sr = new ServiceResponse('Invalid Verification Type', null, false, 400, 'Invalid Verification Type', 'AUTH_SERVICE_INVALID_VERIFICATION_TYPE', 'Please provide a valid verification type');
+  await logResponse(req, sr);
+  return res.status(sr.statusCode).send(sr);
 };
 
 export const verifyDeviceLoginHandler = async (req: Request, res: Response) => {

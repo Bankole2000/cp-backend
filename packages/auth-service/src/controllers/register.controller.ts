@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { generate as generateOTP } from 'otp-generator';
 import { parsePhoneNumberWithError, ParseError, PhoneNumber } from 'libphonenumber-js';
 import {
   ServiceResponse, sanitizeData, ServiceEvent, signJWT, hashPassword, userCreateFields, allRoles
@@ -45,7 +46,19 @@ export const registerWithEmailHandler = async (req: Request, res: Response) => {
   // #endregion
   // #region STEP: Emit 'SEND_VERIFICATION_EMAIL' Event, Send response
   const commsQueue = await getServiceQueues(req.redis, config.redisConfig.scope, ['comms', 'event']);
-  const sendVerificationEmailJob = new ServiceEvent('SEND_VERIFICATION_EMAIL', newUserSR.data, idToken, null, config.self.serviceName, commsQueue);
+  const OTP = generateOTP(6, { lowerCaseAlphabets: false, upperCaseAlphabets: true, specialChars: false });
+  console.log({ OTP });
+  const verifData = {
+    userId: newUserSR.data.userId,
+    email: newUserSR.data.email,
+    OTP,
+    type: 'EMAIL',
+    expiresIn: 60 * 30 * 1000
+  };
+  await req.redis.client.connect();
+  await req.redis.client.setEx(`${config.redisConfig.scope}:OTP:${verifData.type}:${verifData.userId}`, verifData.expiresIn / 1000, JSON.stringify(verifData));
+  await req.redis.client.disconnect();
+  const sendVerificationEmailJob = new ServiceEvent('SEND_VERIFICATION_EMAIL', { user: newUserSR.data, idToken, verifData }, idToken, null, config.self.serviceName, commsQueue);
   await sendToServiceQueues(req.channel, sendVerificationEmailJob, commsQueue);
   const sr = new ServiceResponse('Registration Successful', { user: newUserSR.data, idToken }, true, 201, null, null, null);
   await logResponse(req, sr);
@@ -120,8 +133,20 @@ export const registerWithPhoneHandler = async (req: Request, res: Response) => {
   await sendToServiceQueues(req.channel, userCreatedEvent, serviceQueues);
   // #endregion
   // #region STEP: Emit 'SEND_VERIFICATION_SMS' Event, Send response
+  const OTP = generateOTP(6, { lowerCaseAlphabets: false, upperCaseAlphabets: true, specialChars: false });
+  console.log({ OTP });
+  const verifData = {
+    userId: newUserSR.data.userId,
+    phone: newUserSR.data.phone,
+    OTP,
+    type: 'PHONE',
+    expiresIn: 60 * 30 * 1000
+  };
+  await req.redis.client.connect();
+  await req.redis.client.setEx(`${config.redisConfig.scope}:OTP:${verifData.type}:${verifData.userId}`, verifData.expiresIn / 1000, JSON.stringify(verifData));
+  await req.redis.client.disconnect();
   const commsQueue = await getServiceQueues(req.redis, config.redisConfig.scope, ['comms', 'event']);
-  const sendVerificationSMSJob = new ServiceEvent('SEND_VERIFICATION_SMS', newUserSR.data, idToken, null, config.self.serviceName, commsQueue);
+  const sendVerificationSMSJob = new ServiceEvent('SEND_VERIFICATION_SMS', { user: newUserSR.data, idToken, verifData }, idToken, null, config.self.serviceName, commsQueue);
   await sendToServiceQueues(req.channel, sendVerificationSMSJob, commsQueue);
   const sr = new ServiceResponse('Registration Successful', { user: newUserSR.data, idToken }, true, 201, null, null, null);
   await logResponse(req, sr);

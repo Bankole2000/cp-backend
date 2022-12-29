@@ -53,7 +53,7 @@ export const registerWithEmailSchema = object({
     }).refine((data) => data === true, 'You must agree to the terms of service'),
     dob: string({
       required_error: 'Date of birth is required',
-    })
+    }).min(1, 'Verification Type must be at least 1 character long')
   }).refine((data) => isOfAge(data.dob, 16), {
     message: 'You must be at least 16 years old to register',
     path: ['dob'],
@@ -64,7 +64,7 @@ export const registerWithPhoneSchema = object({
   body: object({
     phone: string({
       required_error: 'Phone number is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     countryCode: string({
       required_error: 'Country code is required',
     })
@@ -81,7 +81,7 @@ export const registerWithPhoneSchema = object({
     }),
     dob: string({
       required_error: 'Date of birth is required',
-    })
+    }).min(1, 'Verification Type must be at least 1 character long')
   }).refine((data) => isOfAge(data.dob, 16), {
     message: 'You must be at least 16 years old to register',
     path: ['dob'],
@@ -92,10 +92,10 @@ export const onboardingUsernameAndPasswordSchema = object({
   body: object({
     idToken: string({
       required_error: 'Id Token is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     username: string({
       required_error: 'Username is required',
-    }).refine((data) => isValidUserName(data), 'Username can only have letters, numbers, and underscores'),
+    }).refine((data) => isValidUserName(data), 'Username can only have lowercase (small) letters, numbers, and underscores'),
     gender: string({
       required_error: 'Gender is required',
     }).refine((data) => ['MALE', 'FEMALE', 'OTHER'].includes(data), 'Gender must be either male, female, or other'),
@@ -115,19 +115,50 @@ export const verifyDeviceLoginSchema = object({
   body: object({
     idToken: string({
       required_error: 'Id Token is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     userId: string({
       required_error: 'User id is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     code: string({
       required_error: 'Verification Code is required',
     }).min(6, 'Verification code must be at 6 characters long').max(6, 'Verification code must be 6 characters long'),
     deviceId: string({
       required_error: 'Device Id is required'
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     type: string({
       required_error: 'Verification Type is required'
-    })
+    }).min(1, 'Verification Type must be at least 1 character long')
+  })
+});
+
+export const sendOTPSchema = object({
+  body: object({
+    idToken: string({
+      required_error: 'Id Token is required',
+    }).min(1, 'Id Token must be at least 1 character long'),
+    userId: string({
+      required_error: 'User Id is required',
+    }).min(1, 'User Id must be at least 1 character long'),
+    type: string({
+      required_error: 'Verification Type is required',
+    }).min(1, 'Verification Type must be at least 1 character long'),
+  }),
+});
+
+export const verifyOTPSchema = object({
+  body: object({
+    idToken: string({
+      required_error: 'Id Token is required',
+    }).min(1, 'Verification Type must be at least 1 character long'),
+    userId: string({
+      required_error: 'User Id is required',
+    }).min(1, 'Verification Type must be at least 1 character long'),
+    OTP: string({
+      required_error: 'Verification Code is required',
+    }).min(6, 'Verification code must be at 6 characters long').max(6, 'Verification code must be 6 characters long'),
+    type: string({
+      required_error: 'Verification Type is required'
+    }).min(1, 'Verification Type must be at least 1 character long')
   })
 });
 
@@ -135,10 +166,10 @@ export const verifyEmailDeviceLoginSchema = object({
   body: object({
     idToken: string({
       required_error: 'Id Token is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     userId: string({
       required_error: 'User id is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     email: string({
       required_error: 'Email is required',
     }).email('Email must be a valid email address'),
@@ -147,10 +178,10 @@ export const verifyEmailDeviceLoginSchema = object({
     }).min(6, 'Verification code must be at 6 characters long').max(6, 'Verification code must be 6 characters long'),
     deviceId: string({
       required_error: 'Device Id is required'
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     type: string({
       required_error: 'Verification Type is required'
-    })
+    }).min(1, 'Verification Type must be at least 1 character long')
   })
 });
 
@@ -158,10 +189,10 @@ export const verifyPhoneDeviceLoginSchema = object({
   body: object({
     idToken: string({
       required_error: 'Id Token is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     userId: string({
       required_error: 'User id is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     phone: string({
       required_error: 'Email is required',
     }).email('Email must be a valid email address'),
@@ -170,10 +201,10 @@ export const verifyPhoneDeviceLoginSchema = object({
     }).min(6, 'Verification code must be at 6 characters long').max(6, 'Verification code must be 6 characters long'),
     deviceId: string({
       required_error: 'Device Id is required'
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     type: string({
       required_error: 'Verification Type is required'
-    })
+    }).min(1, 'Verification Type must be at least 1 character long')
   })
 });
 
@@ -181,10 +212,10 @@ export const verifyUsernameDeviceLoginSchema = object({
   body: object({
     idToken: string({
       required_error: 'Id Token is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     userId: string({
       required_error: 'User id is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     username: string({
       required_error: 'Email is required',
     }).email('Email must be a valid email address'),
@@ -193,10 +224,10 @@ export const verifyUsernameDeviceLoginSchema = object({
     }).min(6, 'Verification code must be at 6 characters long').max(6, 'Verification code must be 6 characters long'),
     deviceId: string({
       required_error: 'Device Id is required'
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     type: string({
       required_error: 'Verification Type is required'
-    })
+    }).min(1, 'Verification Type must be at least 1 character long')
   })
 });
 
@@ -215,13 +246,13 @@ export const phoneLoginSchema = object({
   body: object({
     phone: string({
       required_error: 'Phone number is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
     countryCode: string({
       required_error: 'Country code is required',
     }).min(2, 'Country code must be 2 Characters').max(2, 'Country code must be 2 characters'),
     password: string({
       required_error: 'Password is required',
-    }),
+    }).min(1, 'Verification Type must be at least 1 character long'),
   })
 });
 
