@@ -1,0 +1,29 @@
+>>>: Service Startup: 
+check for <appname>-feed hash in redis store
+- if doesn't exist, create and add global field
+
+>>>: Generating Feeds
+When new post is published, add postId to global list, and country list
+For global list Fetch from post service order by createdAt?
+for country list fetch from post service filter by country Code order by createdAt?
+?? Suggested posts
+?? Promoted posts
+?? Posts by tags or by search params
+When user is created, userId is used as key in <appname>-feed hash in redis store
+if post author is followed by logged in user, 
+  then postId is added to userId feed list in redis (lpush)
+
+When user requests feed,
+take 9 postIds from user feed list in redis
+  lrange <username>:feed 0 4
+take 3 postIds from promoted posts
+add promoted postIds to userFeed List PostIds (at intervals of 3)
+fetch post Data (how to get promoted posts data??)
+add post Ids to userFeed in storage (as fed posts)
+send posts to client.
+
+NOTE: No need to log feed request response
+
+
+
+

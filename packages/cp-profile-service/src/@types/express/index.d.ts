@@ -6,7 +6,7 @@ declare namespace Express {
   export interface Request {
     channel?: Channel;
     user?: any;
-    redis?: RedisConnection;
+    redis?: RedisCustomClient;
     requestLog: any;
     // mqConnection?: Connection;
   }

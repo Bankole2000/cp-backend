@@ -102,6 +102,9 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       const createdUser = await userService.createUser(userData);
       if (createdUser.success) {
         req.user = { ...user, deviceId, sessionId };
+        const newAccessToken = (await signJWT({ ...user, deviceId, sessionId }, self.jwtSecret as string, { expiresIn: self.accessTokenTTL })).token;
+        res.locals.newAccessToken = newAccessToken;
+        res.setHeader('x-access-token', newAccessToken as string);
         return next();
       }
       req.user = null;
@@ -132,13 +135,13 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
 export const requireRole = (roles: string[]) => (req: Request, res: Response, next: NextFunction) => {
   const { user } = req;
   if (!user) {
-    const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'AUTH_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
+    const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'PROFILE_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
     logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
   const isAuthorized = roles.some((role) => user.roles.includes(role));
   if (!isAuthorized) {
-    const sr = new ServiceResponse('Unauthorized', null, false, 403, 'Unauthorized', 'AUTH_SERVICE_USER_NOT_AUTHORIZED', 'You do not have the role(s) or permission(s) to perform this action');
+    const sr = new ServiceResponse('Unauthorized', null, false, 403, 'Unauthorized', 'PROFILE_SERVICE_USER_NOT_AUTHORIZED', 'You do not have the role(s) or permission(s) to perform this action');
     logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }

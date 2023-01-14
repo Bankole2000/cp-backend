@@ -27,9 +27,21 @@ model User {
   dob           DateTime
   tos           Boolean   @db.Boolean
   version       Int       @default(0)
+  followers     String[]
+  following     String[]
+  feed          Feed?
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   deletedAt     DateTime?
+}
+
+model Feed {
+  id        String   @id @default(uuid())
+  user      User     @relation(fields: [userId], references: [userId])
+  userId    String   @unique
+  posts     String[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model RequestLog {

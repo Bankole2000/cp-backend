@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import {
   getDriver, Driver, ServiceResponse, RedisConnection
 } from '@cribplug/common';
+import prisma from '../lib/prisma';
 
 export default class UserDBService {
   prisma: PrismaClient;
@@ -9,7 +10,7 @@ export default class UserDBService {
   driver: Driver;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prisma = prisma;
     this.driver = getDriver();
   }
 
@@ -43,6 +44,75 @@ export default class UserDBService {
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error updating User', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async updateUserProfileImage(userId: string, imageUrl: string, imageSecureUrl: string, imageData: any) {
+    try {
+      const updatedUser = await this.prisma.profile.update({
+        where: {
+          userId,
+        },
+        data: {
+          imageUrl,
+          imageSecureUrl,
+          imageData,
+        },
+      });
+      if (updatedUser) {
+        return new ServiceResponse('User updated successfully', updatedUser, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error updating user', updatedUser, false, 400, 'Error updating User', 'CHAT_SERVICE_ERROR_UPDATING_USER', 'Check fields, service logs and db');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error updating User', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async updateUserWallpaperImage(userId: string, wallpaperUrl: string, wallpaperSecureUrl: string, wallpaperData: any) {
+    try {
+      const updatedUser = await this.prisma.profile.update({
+        where: {
+          userId,
+        },
+        data: {
+          wallpaperUrl,
+          wallpaperSecureUrl,
+          wallpaperData,
+        },
+      });
+      if (updatedUser) {
+        return new ServiceResponse('User updated successfully', updatedUser, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error updating user', updatedUser, false, 400, 'Error updating User', 'CHAT_SERVICE_ERROR_UPDATING_USER', 'Check fields, service logs and db');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error updating User', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async getProfileByUserId(userId: string) {
+    try {
+      const user = await this.prisma.profile.findUnique({
+        where: {
+          userId,
+        },
+        include: {
+          _count: {
+            select: {
+              followers: true,
+              following: true,
+            }
+          }
+        }
+      });
+      if (user) {
+        return new ServiceResponse('User found successfully', user, true, 200, null, null, null);
+      }
+      return new ServiceResponse('User not found', user, false, 404, 'User not found', 'PROFILE_SERVICE_USER_BY_ID_NOT_FOUND', 'Confirm that user exists');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error finding User', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
 

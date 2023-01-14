@@ -26,6 +26,12 @@ model Profile {
   displayname            String?         @db.VarChar(100)
   dob                    DateTime
   tos                    Boolean         @db.Boolean
+  imageUrl               String?         @db.Text
+  imageSecureUrl         String?         @db.Text
+  imageData              Json?           @default("{}") @db.Json
+  wallpaperUrl           String?         @db.Text
+  wallpaperSecureUrl     String?         @db.Text
+  wallpaperData          Json?           @default("{}") @db.Json
   isPrivate              Boolean         @default(false)
   instagramHandle        String?         @db.VarChar(100)
   twitterHandle          String?         @db.VarChar(100)
@@ -36,6 +42,7 @@ model Profile {
   listingsCount          Int?            @default(0)
   offersCount            Int?            @default(0)
   postCount              Int?            @default(0)
+  serviceCount           Int?            @default(0)
   followers              Follows[]       @relation("following")
   following              Follows[]       @relation("follower")
   receivedFollowRequests FollowRequest[] @relation("UserToBeFollowed")

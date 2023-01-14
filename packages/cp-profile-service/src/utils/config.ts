@@ -16,6 +16,12 @@ export const config = {
     scope: process.env.REDIS_PUBSUB_SCOPE,
     // pubsubURL: process.env. '',
   },
+  cloudinary: {
+    url: process.env.CLOUDINARY_URL,
+    cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+    apiKey: process.env.CLOUDINARY_API_KEY,
+    apiSecret: process.env.CLOUDINARY_API_SECRET,
+  },
   rabbitMQConfig: {
     url: process.env.RABBITMQ_URL,
     exchange: process.env.RABBITMQ_EX,

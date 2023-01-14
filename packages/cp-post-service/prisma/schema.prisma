@@ -1,0 +1,164 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  userId            String             @id @default(uuid())
+  email             String?
+  emailVerified     Boolean            @default(false) @db.Boolean
+  phone             String?
+  phoneData         Json?              @default("{}") @db.Json
+  phoneVerified     Boolean            @default(false) @db.Boolean
+  registeredVia     String?
+  username          String             @unique @default(uuid())
+  gender            String?
+  roles             String[]           @default(["USER"])
+  firstname         String?            @db.VarChar(100)
+  lastname          String?            @db.VarChar(100)
+  displayname       String?            @db.VarChar(100)
+  dob               DateTime
+  posts             Post[]
+  userLikedPosts    UserLikesPost[]    @relation("UserLikesPost")
+  userLikedComments UserLikesComment[] @relation("UserLikesComment")
+  comments          Comment[]          @relation("UserAuthorsComment")
+  viewed            View[]             @relation("UserViewedPost")
+  tos               Boolean            @db.Boolean
+  version           Int                @default(0)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+  deletedAt         DateTime?
+}
+
+model Post {
+  id             String          @id @default(uuid())
+  title          String
+  content        String
+  published      Boolean         @default(false)
+  allowComments  Boolean         @default(true)
+  showLikesCount Boolean         @default(true)
+  authorId       String
+  media          Media[]         @relation("PostHasMedia")
+  tags           Tag[]
+  author         User            @relation(fields: [authorId], references: [userId])
+  comments       Comment[]       @relation("PostHasComment")
+  views          View[]          @relation("PostHasViews")
+  likedBy        UserLikesPost[] @relation("PostLikedByUser")
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  deletedAt      DateTime?
+}
+
+model Media {
+  id        String   @id @default(uuid())
+  type      String
+  url       String
+  order     Int      @default(0)
+  data      Json
+  post      Post     @relation("PostHasMedia", fields: [postId], references: [id])
+  postId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Tag {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @unique
+  posts     Post[]
+  createdAt DateTime @default(now())
+}
+
+model UserLikesPost {
+  user    User     @relation("UserLikesPost", fields: [userId], references: [userId])
+  userId  String
+  post    Post     @relation("PostLikedByUser", fields: [postId], references: [id])
+  postId  String
+  likedAt DateTime @default(now())
+
+  @@id([postId, userId])
+}
+
+model UserLikesComment {
+  user      User     @relation("UserLikesComment", fields: [userId], references: [userId])
+  userId    String
+  comment   Comment  @relation("CommentLikedByUser", fields: [commentId], references: [id])
+  commentId String
+  likedAt   DateTime @default(now())
+
+  @@id([commentId, userId])
+}
+
+model Comment {
+  id        String   @id @default(uuid())
+  content   String
+  createdAt DateTime @default(now())
+
+  author   User   @relation("UserAuthorsComment", fields: [authorId], references: [userId])
+  authorId String
+
+  post   Post   @relation("PostHasComment", fields: [postId], references: [id])
+  postId String
+
+  parentComment   Comment? @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
+  parentCommentId String?
+
+  childComments Comment[] @relation("CommentParentsComment")
+
+  likedBy UserLikesComment[] @relation("CommentLikedByUser")
+}
+
+model View {
+  post      Post     @relation("PostHasViews", fields: [postId], references: [id])
+  postId    String
+  user      User     @relation("UserViewedPost", fields: [userId], references: [userId])
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  length    Int      @default(0)
+
+  @@id([postId, userId])
+}
+
+model RequestLog {
+  id            String    @unique @default(uuid())
+  ip            String?
+  userAgent     String?
+  userAgentData Json?     @default("{}") @db.Json
+  method        String
+  path          String
+  originalUrl   String
+  params        Json      @default("{}") @db.Json
+  body          Json      @default("{}") @db.Json
+  query         Json      @default("{}") @db.Json
+  response      Json      @default("{}") @db.Json
+  user          Json?     @default("{}") @db.Json
+  userId        String?
+  success       Boolean   @default(false)
+  responseData  Json?     @default("{}") @db.Json
+  time          Int?      @default(0)
+  status        Int?
+  message       String?
+  error         ErrorLog?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model ErrorLog {
+  id        String      @unique @default(uuid())
+  request   RequestLog? @relation(fields: [requestId], references: [id], onDelete: Cascade)
+  requestId String?     @unique
+  error     String?     @db.VarChar(1000)
+  errors    Json?       @default("{}") @db.Json
+  status    Int
+  fix       String?     @db.VarChar(1000)
+  resolved  Boolean     @default(false)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}

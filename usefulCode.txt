@@ -54,4 +54,67 @@ touch index.jobs.service.ts auth.jobs.service.ts chat.jobs.service.ts comms.jobs
 touch index.exchange.ts auth.exchange.ts chat.exchange.ts comms.exchange.ts feed.exchange.ts listing.exchange.ts notification.exchange.ts offer.exchange.ts profile.exchange.ts transaction.exchange.ts
 
 
+// Cloudinary upload sample
+const res = await cloudinary.uploader.upload(coverPhoto, {
+        overwrite: true,
+        public_id: 'cover',
+        apiKey: '...',
+        upload_preset: 'ml_default',
+        folder: `...`,
+    });
+    Base64
 
+model User {
+  id           BigInt   @id @default(autoincrement())
+  firstName    String   @db.VarChar(50)
+  middleName   String   @db.VarChar(50)
+  lastName     String   @db.VarChar(50)
+  mobile       String?  @unique @db.VarChar(15)
+  email        String   @unique @db.VarChar(50)
+  passwordHash String   @db.VarChar(32)
+  registeredAt DateTime
+  lastLogin    DateTime
+  intro        String?  @db.TinyText
+  profile      String?  @db.Text
+
+  role Role[]
+}
+
+model Role {
+  id          BigInt   @id @default(autoincrement())
+  title       String   @db.VarChar(75)
+  slug        String   @db.VarChar(100)
+  description String   @db.TinyText
+  content     String   @db.Text
+  active      Int      @db.TinyInt
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  permissions Permission[]
+
+  user   User?   @relation(fields: [userId], references: [id])
+  userId BigInt?
+}
+
+model Permission {
+  id          BigInt @id @default(autoincrement())
+  title       String @db.VarChar(75)
+  slug        String @db.VarChar(100)
+  content     String @db.Text
+  description String @db.TinyText
+  active      Int    @db.TinyInt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  roles Role[]
+}
+
+[
+  {
+    url: "https://foo.com",
+    privacy: "FOLLOWERS",
+  }
+]
+
+["https://foo.com", "http://twitter.com/bar", "https://instagram/foo"]

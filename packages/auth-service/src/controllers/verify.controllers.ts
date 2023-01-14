@@ -4,11 +4,11 @@ import {
 import { generate as generateOTP } from 'otp-generator';
 import { LoginType } from '@prisma/client';
 import { Request, Response } from 'express';
+import { parsePhoneNumberWithError, ParseError } from 'libphonenumber-js';
 import { logResponse } from '../middleware/logRequests';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
 import UserDBService from '../services/user.service';
 import { config } from '../utils/config';
-import { parsePhoneNumberWithError, ParseError } from 'libphonenumber-js';
 
 const userService = new UserDBService();
 const { self, redisConfig } = config;
@@ -221,6 +221,7 @@ export const verifyDeviceLoginHandler = async (req: Request, res: Response) => {
     await logResponse(req, userExists);
     return res.status(userExists.statusCode).send(userExists);
   }
+  console.log({ sent: req.body[type.toLowerCase()], existing: userExists.data[type.toLowerCase()] });
   if (req.body[type.toLowerCase()] !== userExists.data[type.toLowerCase()]) {
     const sr = new ServiceResponse('This token is not for this user', null, false, 403, 'User Type Data mismatch', 'AUTH_SERVICE_USER_DATAPOINT_MISMATCH', 'please provide the user data that matches the verification type');
     await logResponse(req, sr);
@@ -370,9 +371,10 @@ export const sendPhoneDeviceVerificationHandler = async (req: Request, res: Resp
   res.send('Phone Verification code sent');
 };
 
-
 export const forgotPasswordHandler = async (req: Request, res: Response) => {
-  const { username, email, phone, countryCode, field } = req.body;
+  const {
+    username, email, phone, countryCode, field
+  } = req.body;
   let user;
   if (field === 'username') {
     user = (await userService.findUserByUsername(username)).data;
@@ -420,9 +422,9 @@ export const forgotPasswordHandler = async (req: Request, res: Response) => {
   await req.redis.client.connect();
   await req.redis.client.setEx(`${config.redisConfig.scope}:OTP:${verifData.type}:${verifData.userId}`, verifData.expiresIn / 1000, JSON.stringify(verifData));
   await req.redis.client.disconnect();
-  const se = new ServiceEvent('USER_FORGOT_PASSWORD', { user, idToken, verifData}, idToken, null, config.self.serviceName, commsQueue);
+  const se = new ServiceEvent('USER_FORGOT_PASSWORD', { user, idToken, verifData }, idToken, null, config.self.serviceName, commsQueue);
   await sendToServiceQueues(req.channel, se, commsQueue);
-  const userVerifData = { 
+  const userVerifData = {
     userId: user.userId,
     phone: user.phone,
     email: user.email,

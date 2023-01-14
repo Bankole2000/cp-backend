@@ -25,6 +25,11 @@ export const registerWithEmailHandler = async (req: Request, res: Response) => {
   }
   const userData = sanitizeData(userCreateFields, req.body);
   userData.displayname = `${firstname}`;
+  if (!userData.tos) {
+    const sr = new ServiceResponse('You need to accept the terms and conditions', null, false, 400, 'TOS not accepted', 'TOS not accepted', 'Please accept terms and conditions');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
   // #endregion
   // #region STEP: Create new user
   if (userData.email === config.self.adminEmail) {
@@ -96,6 +101,11 @@ export const registerWithPhoneHandler = async (req: Request, res: Response) => {
     return res.status(sr.statusCode).send(sr);
   }
   const userData = sanitizeData(userCreateFields, req.body);
+  if (!userData.tos) {
+    const sr = new ServiceResponse('You need to accept the terms and conditions', null, false, 400, 'TOS not accepted', 'TOS not accepted', 'Please accept terms and conditions');
+    await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
   userData.phone = parsedNumber.number;
   const {
     countryCallingCode, nationalNumber, number, country

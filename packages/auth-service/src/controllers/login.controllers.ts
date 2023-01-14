@@ -382,13 +382,14 @@ export const usernameLoginHandler = async (req: Request, res: Response) => {
       userAgentData: req.useragent,
       expiresIn: parseInt(config.self.accessTokenTTLMS as string, 10)
     };
+    console.log(DVRequestData.expiresIn);
     const idToken = (await signJWT(tokenData, config.self.jwtSecret as string)).token;
     await req.redis.client.connect();
     await req.redis.client.setEx(`${config.redisConfig.scope}:DVRequest:${DVCacheData.type}:${userExists.data.username}:${DVCacheData.deviceId}`, DVRequestData.expiresIn / 1000, JSON.stringify(DVCacheData));
     await req.redis.client.disconnect();
     const commsQueue = await getServiceQueues(req.redis, config.redisConfig.scope, ['comms', 'event']);
     const se = userExists.data.registeredVia === 'PHONE'
-      ? new ServiceEvent('SEND_DEVICE_APPROVAL_EMAIL', DVRequestData, null, null, config.self.serviceName, commsQueue)
+      ? new ServiceEvent('SEND_DEVICE_APPROVAL_SMS', DVRequestData, null, null, config.self.serviceName, commsQueue)
       : new ServiceEvent('SEND_DEVICE_APPROVAL_EMAIL', DVRequestData, null, null, config.self.serviceName, commsQueue);
     await sendToServiceQueues(req.channel, se, commsQueue);
     // #endregion
