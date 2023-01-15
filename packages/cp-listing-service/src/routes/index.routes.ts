@@ -8,12 +8,14 @@ import { notFoundHandler } from '../middleware/errorHandler';
 import { config } from '../utils/config';
 import { amenityRoutes } from './amenities.routes';
 import { listingRoutes } from './listing.routes';
+import { settingsRoutes } from './settings.routes';
 
 const { basePath } = config.self;
 
 export default (app: Express): void => {
   app.use(`${basePath}/test`, testRoutes);
   app.use(`${basePath}/listings`, listingRoutes);
+  app.use(`${basePath}/settings`, settingsRoutes);
   app.use(`${basePath}/amenity`, amenityRoutes);
   app.use(`${basePath}/houserules`, testRoutes);
   app.use(`${basePath}/currencies`, testRoutes);

@@ -10,6 +10,7 @@ const userService = new UserDBService();
 const { self, redisConfig } = config;
 
 export const requireLoggedInUser = async (req: Request, res: Response, next: NextFunction) => {
+  console.log({ user: req.user });
   if (!req.user) {
     const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'LISTING_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
     await logResponse(req, sr);
@@ -136,6 +137,22 @@ export const allowOnly = (allowedRoles: string[]) => async (req: Request, res: R
   if (!allowedRoles.includes(req.user.role)) {
     const sr = new ServiceResponse('Unauthorized', null, false, 401, 'Unauthorized', 'LISTING_SERVICE_USER_NOT_AUTHORIZED', 'You are not authorized to perform this action');
     await logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  return next();
+};
+
+export const requireRole = (roles: string[]) => (req: Request, res: Response, next: NextFunction) => {
+  const { user } = req;
+  if (!user) {
+    const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'LISTING_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
+    logResponse(req, sr);
+    return res.status(sr.statusCode).send(sr);
+  }
+  const isAuthorized = roles.some((role) => user.roles.includes(role));
+  if (!isAuthorized) {
+    const sr = new ServiceResponse('Unauthorized', null, false, 403, 'Unauthorized', 'LISTING_SERVICE_USER_NOT_AUTHORIZED', 'You do not have the role(s) or permission(s) to perform this action');
+    logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
   return next();
