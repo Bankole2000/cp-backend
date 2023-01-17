@@ -118,3 +118,8 @@ model Permission {
 ]
 
 ["https://foo.com", "http://twitter.com/bar", "https://instagram/foo"]
+
+npm run release -- --first-release
+npm run release:minor
+npm run release:patch
+npm run release:major
