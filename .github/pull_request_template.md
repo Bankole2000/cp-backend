@@ -17,7 +17,7 @@ $ lerna exec npm run dev
 # Run only the backend api
 $ lerna exec --parallel --ignore cribplug npm run dev
 ```
-After services are started, check sample services are running on specified ports (e.g. auth service on port 7700) e.g `localhost:7700/api/v1/auth/data`, 
+After services are started, check sample services are running on specified ports (e.g. auth service on port 7700) e.g `localhost:7700/api/v1/auth/test`, 
 
 #### Any background context you want to provide?
 N/a
