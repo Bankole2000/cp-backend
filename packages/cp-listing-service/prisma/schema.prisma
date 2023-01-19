@@ -33,14 +33,14 @@ model User {
 }
 
 model Listing {
-  listingId                   String          @id @default(uuid())
-  title                       String          @db.VarChar(255)
-  shortDescription            String?         @db.VarChar(255)
-  longDescription             String?         @db.Text
-  basicPrice                  Decimal?        @default(0.00) @db.Decimal(10, 2)
-  pricePerWeekend             Decimal?        @default(0.00) @db.Decimal(10, 2)
-  pricePerWeek                Decimal?        @default(0.00) @db.Decimal(10, 2)
-  pricePerMonth               Decimal?        @default(0.00) @db.Decimal(10, 2)
+  listingId                   String                @id @default(uuid())
+  title                       String                @db.VarChar(255)
+  shortDescription            String?               @db.VarChar(255)
+  longDescription             String?               @db.Text
+  basicPrice                  Decimal?              @default(0.00) @db.Decimal(10, 2)
+  pricePerWeekend             Decimal?              @default(0.00) @db.Decimal(10, 2)
+  pricePerWeek                Decimal?              @default(0.00) @db.Decimal(10, 2)
+  pricePerMonth               Decimal?              @default(0.00) @db.Decimal(10, 2)
   guestCapacity               Int?
   guestArrivalDaysNotice      Int?
   guestBookingMonthsInAdvance Int?
@@ -53,31 +53,40 @@ model Listing {
   listingPurposeSubgroup      String
   noOfBedrooms                Int?
   noOfBathrooms               Int?
-  listingTypeData             ListingType     @relation("ListingType", fields: [listingType], references: [listingType])
-  listingPurposeData          ListingPurpose  @relation("ListingPurpose", fields: [listingPurpose], references: [listingPurpose])
-  listingPurposeSubgroupData  PurposeSubgroup @relation(fields: [listingPurposeSubgroup], references: [purposeSubgroup])
-  version                     Int             @default(0)
-  createdAt                   DateTime        @default(now())
-  updatedAt                   DateTime        @updatedAt
+  amenities                   ListingHasAmenities[]
+  listingTypeData             ListingType           @relation("ListingType", fields: [listingType], references: [listingType])
+  listingPurposeData          ListingPurpose        @relation("ListingPurpose", fields: [listingPurpose], references: [listingPurpose])
+  listingPurposeSubgroupData  PurposeSubgroup       @relation(fields: [listingPurposeSubgroup], references: [purposeSubgroup])
+  version                     Int                   @default(0)
+  createdAt                   DateTime              @default(now())
+  updatedAt                   DateTime              @updatedAt
 }
 
 model ListingType {
-  listingType String    @id @unique
-  title       String
-  description String?
-  listings    Listing[] @relation("ListingType")
-  isActive    Boolean   @default(true)
-  icon        String?
+  listingType     String    @id @unique
+  title           String
+  descriptionHTML String
+  descriptionText String
+  isActive        Boolean   @default(true)
+  mdiIcon         String
+  faIcon          String
+  listings        Listing[] @relation("ListingType")
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 model ListingPurpose {
   listingPurpose   String            @id @unique
   title            String
-  purposeSubgroups PurposeSubgroup[]
-  description      String?
-  listings         Listing[]         @relation("ListingPurpose")
+  descriptionHTML  String
+  descriptionText  String
   isActive         Boolean           @default(true)
-  icon             String?
+  faIcon           String
+  mdiIcon          String
+  listings         Listing[]         @relation("ListingPurpose")
+  purposeSubgroups PurposeSubgroup[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
 }
 
 model PurposeSubgroup {
@@ -85,9 +94,48 @@ model PurposeSubgroup {
   listingPurpose    ListingPurpose @relation(fields: [listingPurposeKey], references: [listingPurpose])
   listingPurposeKey String
   title             String
-  description       String?
+  descriptionHTML   String
+  descriptionText   String
   listings          Listing[]
   isActive          Boolean        @default(true)
+  faIcon            String
+  mdiIcon           String
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+}
+
+model ListingHasAmenities {
+  listing     Listing  @relation(fields: [listingId], references: [listingId])
+  listingId   String
+  amenityData Amenity  @relation(fields: [amenity], references: [amenity])
+  amenity     String
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@id([listingId, amenity])
+}
+
+model Amenity {
+  amenity             String                @id @unique
+  title               String                @db.VarChar(255)
+  description         String
+  amenityCategory     String
+  faIcon              String
+  mdiIcon             String
+  listings            ListingHasAmenities[]
+  amenityCategoryData AmenityCategory       @relation(fields: [amenityCategory], references: [amenityCategory])
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+}
+
+model AmenityCategory {
+  amenityCategory String    @id @unique
+  title           String    @db.VarChar(255)
+  description     String?   @db.VarChar(255)
+  amenities       Amenity[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }
 
 model RequestLog {
@@ -116,32 +164,13 @@ model RequestLog {
 
 model ErrorLog {
   id        String      @unique @default(uuid())
-  request   RequestLog? @relation(fields: [requestId], references: [id], onDelete: Cascade)
   requestId String?     @unique
   error     String?     @db.VarChar(1000)
   errors    Json?       @default("{}") @db.Json
   status    Int
   fix       String?     @db.VarChar(1000)
   resolved  Boolean     @default(false)
+  request   RequestLog? @relation(fields: [requestId], references: [id], onDelete: Cascade)
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
-}
-
-model Amenity {
-  amenityId         String          @id @default(uuid())
-  title             String          @db.VarChar(255)
-  description       String?
-  amenityCategory   AmenityCategory @relation(fields: [amenityCategoryId], references: [amenityCategoryId])
-  amenityCategoryId String
-  createdAt         DateTime        @default(now())
-  updatedAt         DateTime        @updatedAt
-}
-
-model AmenityCategory {
-  amenityCategoryId String    @id @default(uuid())
-  title             String    @db.VarChar(255)
-  description       String?   @db.VarChar(255)
-  amenities         Amenity[]
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
 }

@@ -1,4 +1,6 @@
-import { ServiceResponse } from '@cribplug/common';
+import {
+  ServiceResponse, mdiIconsList, faIconsList
+} from '@cribplug/common';
 import { Request, Response } from 'express';
 import { logResponse } from '../middleware/logRequests';
 
@@ -11,7 +13,9 @@ export const testEndpointHandler = async (req: Request, res: Response) => {
   }
   const sr = new ServiceResponse('Success', {
     path: '/test',
-    message: '/test route working'
+    message: '/test route working',
+    mdiIconsList,
+    faIconsList
   }, true, 200, null, null, null);
   await logResponse(req, sr);
   return res.status(sr.statusCode).send(sr);
