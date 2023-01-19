@@ -205,8 +205,6 @@ Link is the normal appearance, hover is when you mouse over, active is the state
 
 <span class="grey--text text--lighten-1">4</span>
 
-google maps api key = AIzaSyAom4fLGWx87Qe9Nbj-jU0hd-EIzubuRz8
-
 Airbnb questions
   Step 1. What kind of place do you have
     - place type - Options - ['Entire Place', 'Private Room', 'Shared Room']
