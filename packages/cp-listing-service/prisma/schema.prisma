@@ -48,15 +48,16 @@ model Listing {
   bookingStayDaysMax          Int?
   latitude                    Decimal?
   longitude                   Decimal?
-  listingType                 String
-  listingPurpose              String
-  listingPurposeSubgroup      String
+  listingType                 String?
+  listingPurpose              String?
+  listingPurposeSubgroup      String?
   noOfBedrooms                Int?
   noOfBathrooms               Int?
+  isPublished                 Boolean               @default(false) @db.Boolean
   amenities                   ListingHasAmenities[]
-  listingTypeData             ListingType           @relation("ListingType", fields: [listingType], references: [listingType])
-  listingPurposeData          ListingPurpose        @relation("ListingPurpose", fields: [listingPurpose], references: [listingPurpose])
-  listingPurposeSubgroupData  PurposeSubgroup       @relation(fields: [listingPurposeSubgroup], references: [purposeSubgroup])
+  listingTypeData             ListingType?          @relation("ListingType", fields: [listingType], references: [listingType])
+  listingPurposeData          ListingPurpose?       @relation("ListingPurpose", fields: [listingPurpose], references: [listingPurpose])
+  listingPurposeSubgroupData  PurposeSubgroup?      @relation(fields: [listingPurposeSubgroup], references: [purposeSubgroup])
   version                     Int                   @default(0)
   createdAt                   DateTime              @default(now())
   updatedAt                   DateTime              @updatedAt

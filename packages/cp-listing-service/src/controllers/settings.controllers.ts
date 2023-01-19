@@ -136,6 +136,11 @@ export const deleteSubgroupHandler = async (req: Request, res: Response) => {
     const sr = new ServiceResponse('Subgroup does not belong to purpose', subgroupExistsSR.data, false, 400, 'Subgroup does not belong to purpose', 'LISTING_SERVICE_SUBGROUP_PURPOSE_MISMATCH', 'Use matching purpose and subgroup keys');
     return res.status(sr.statusCode).json(sr);
   }
+  const { _count: count } = subgroupExistsSR.data;
+  if (count.listings) {
+    const sr = new ServiceResponse('Subgroups with listings cannot be deleted', subgroupExistsSR.data, false, 400, 'Subgroup has listings', 'LISTING_SERVICE_SUBGROUP_HAS_LISTINGS', 'Subgroup has listings');
+    return res.status(sr.statusCode).json(sr);
+  }
   const delSubgroupSR = await listingService.deletePurposeSubgroup(subgroupId);
   if (res.locals.newAccessToken) delSubgroupSR.newAccessToken = res.locals.newAccessToken;
   return res.status(delSubgroupSR.statusCode).json(delSubgroupSR);
