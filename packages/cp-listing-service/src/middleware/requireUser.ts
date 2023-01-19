@@ -33,7 +33,8 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
   }
   const {
     valid, decoded, error, expired
-  } = await verifyToken(accessToken, self.jwtSecret || '');
+  } = await verifyToken(accessToken, config.self.jwtSecret || '');
+
   if (decoded && valid) {
     const userExists = await userService.findUserById(decoded.userId);
     if (!userExists.success) {
@@ -63,6 +64,7 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
+
     const {
       isValid, user, deviceId, sessionId
     } = JSON.parse(session);
@@ -70,15 +72,19 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
+
     req.user = { ...user, deviceId, sessionId };
     return next();
   }
   if (!refreshToken) {
+    console.log('line 80');
     req.user = null;
     return next();
   }
+  console.log('line 84');
   if (expired && refreshToken) {
-    const { decoded: refreshDecoded } = await verifyToken(refreshToken, self.jwtSecret || '');
+    console.log('line 86');
+    const { decoded: refreshDecoded } = await verifyToken(refreshToken, config.self.jwtSecret || '');
     if (!refreshDecoded) {
       req.user = null;
       return next();
@@ -101,6 +107,9 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       const createdUser = await userService.createUser(userData);
       if (createdUser.success) {
         req.user = { ...user, deviceId, sessionId };
+        const newAccessToken = (await signJWT({ ...user, deviceId, sessionId }, self.jwtSecret as string, { expiresIn: self.accessTokenTTL })).token;
+        res.locals.newAccessToken = newAccessToken;
+        res.setHeader('x-access-token', newAccessToken as string);
         return next();
       }
       req.user = null;

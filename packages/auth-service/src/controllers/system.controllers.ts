@@ -45,14 +45,14 @@ export const systemPurgeUserHandler = async (req: Request, res: Response) => {
 export const getPhoneCountryCodes = async (req: Request, res: Response) => {
   const countryCodes = getCountries();
   const countryPhoneObject: { [key: string]: any } = {};
-  const indices = Object.keys(countries);
-  indices.forEach((index) => {
-    if (!countries[parseInt(index, 10)]) {
-      return;
-    }
+  // const indices = Object.keys(countries);
+  countries.forEach((country) => {
+    // if (!countries[parseInt(index, 10)]) {
+    //   return;
+    // }
     const {
       phone_code: phoneCode, name, iso2: countryCode, iso3, currency, currency_symbol: currencySymbol,
-    } = countries[parseInt(index, 10)];
+    } = country;
     countryPhoneObject[countryCode] = {
       phoneCode: `${phoneCode.charAt(0) === '+' ? '' : '+'}${phoneCode}`,
       name,
