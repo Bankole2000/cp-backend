@@ -673,4 +673,25 @@ dark: {
           error: colors.deepOrange.accent4,
           success: colors.green.accent3
         }
-  
+
+
+User Incentives
+ - Gamification
+ - Fun + New (+safety)
+ - Feedback loop
+ - Some kind of point system
+ - Referral bonuses
+ - Referral statistics (gamified referrals)
+ - User Badges & awards.
+ - (Gas - case study)
+ - Democratization of real-estate (anyone can be a real-estate agent)
+
+Plan
+ - Marketing
+ - MVP
+ - Business side of things
+ - End goal
+ - Business model
+ - What user needs are fulfilled by the app
+ - Technical prioritization - User prioritization
+ - 

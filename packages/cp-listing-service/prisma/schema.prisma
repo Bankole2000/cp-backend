@@ -91,18 +91,18 @@ model ListingPurpose {
 }
 
 model PurposeSubgroup {
-  purposeSubgroup   String         @id @unique
-  listingPurpose    ListingPurpose @relation(fields: [listingPurposeKey], references: [listingPurpose])
-  listingPurposeKey String
-  title             String
-  descriptionHTML   String
-  descriptionText   String
-  listings          Listing[]
-  isActive          Boolean        @default(true)
-  faIcon            String
-  mdiIcon           String
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  purposeSubgroup    String         @id @unique
+  listingPurposeData ListingPurpose @relation(fields: [listingPurpose], references: [listingPurpose])
+  listingPurpose     String
+  title              String
+  descriptionHTML    String
+  descriptionText    String
+  listings           Listing[]
+  isActive           Boolean        @default(true)
+  faIcon             String
+  mdiIcon            String
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
 }
 
 model ListingHasAmenities {
@@ -120,7 +120,8 @@ model ListingHasAmenities {
 model Amenity {
   amenity             String                @id @unique
   title               String                @db.VarChar(255)
-  description         String
+  descriptionHTML     String?
+  descriptionText     String?
   amenityCategory     String
   faIcon              String
   mdiIcon             String
@@ -133,7 +134,8 @@ model Amenity {
 model AmenityCategory {
   amenityCategory String    @id @unique
   title           String    @db.VarChar(255)
-  description     String?   @db.VarChar(255)
+  descriptionHTML String?   @db.VarChar(255)
+  descriptionText String?   @db.VarChar(255)
   amenities       Amenity[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
