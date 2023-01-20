@@ -12,6 +12,8 @@ import {
   deleteTypeSchema,
   listingTypeSchema, listingTypeUpdateSchema,
 } from '../schema/listing.schema';
+import { amenityRoutes } from './settings/amenity.routes';
+import { categoryRoutes } from './settings/category.routes';
 import { purposeRoutes } from './settings/purpose.routes';
 import { subgroupRoutes } from './settings/subgroup.routes';
 
@@ -20,6 +22,8 @@ const router = Router();
 router.get('/', testEndpointHandler);
 router.use('/purposes', purposeRoutes);
 router.use('/subgroups', subgroupRoutes);
+router.use('/amenities', amenityRoutes);
+router.use('/amenity-categories', categoryRoutes);
 
 // #region >>>: Listing Types
 router.get('/types', getListingTypesHandler);

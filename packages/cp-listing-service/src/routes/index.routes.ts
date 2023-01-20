@@ -20,10 +20,7 @@ export default (app: Express): void => {
   app.use(`${basePath}/houserules`, testRoutes);
   app.use(`${basePath}/currencies`, testRoutes);
   app.use(`${basePath}/locations`, testRoutes);
-  // app.use(`${basePath}/register`, registerRoutes);
-  // app.use(`${basePath}/login`, loginRoutes);
-  // app.use(`${basePath}/currentuser`, currentUserRoutes);
-  // app.use(`${basePath}/logout`, testRoutes);
+
   app.use(`${basePath}/data`, dataRoutes);
 
   app.use('*', notFoundHandler);
