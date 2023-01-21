@@ -1,4 +1,5 @@
 https://mdisearch.com/ - search mdi icons
 https://fontawesome.com/v4/icons/ - search font awesome icons
+https://fontawesome.com/search?o=r&m=free - search font awesome v5 icons
 
 TODO: listings having multiple purposes

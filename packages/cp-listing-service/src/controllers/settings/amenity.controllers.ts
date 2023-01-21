@@ -1,60 +1,145 @@
 import { ServiceResponse } from '@cribplug/common';
 import { Request, Response } from 'express';
-import { createCategoryFields, updateCategoryFields } from '../../schema/amenity.schema';
+import {
+  createAmenityFields,
+  createCategoryFields,
+  updateAmenityFields,
+  updateCategoryFields
+} from '../../schema/amenity.schema';
 import { sanitizeData, stripHTML } from '../../schema/listing.schema';
-
+import { db } from '../../lib/lokijs';
 import AmenityDBService from '../../services/amenity.service';
+import {
+  deleteCache,
+  setCache
+} from '../../services/cache.service';
+import { config } from '../../utils/config';
+
+const { basePath } = config.self;
 
 const amenityService = new AmenityDBService();
 
 export const getAllAmenitiesHandler = async (req: Request, res: Response) => {
+  console.log({ req });
   const amenities = await amenityService.getAllAmenities();
+  await setCache(req.redis, req.originalUrl, amenities, 3600);
   return res.status(amenities.statusCode).json(amenities);
 };
 
 export const createAmenityHandler = async (req: Request, res: Response) => {
-  const sr = new ServiceResponse('Not Implemented', null, false, 200, 'Not Implemented', 'LISTING_SERVICE_NOT_IMPLEMENTED', 'This feature is not yet implemented');
-  return res.status(sr.statusCode).json(sr);
+  const { categorykey } = req.params;
+  const amenityData = sanitizeData(createAmenityFields, req.body);
+  amenityData.amenityCategory = categorykey;
+  if (amenityData.descriptionHTML) {
+    amenityData.descriptionText = stripHTML(amenityData.descriptionHTML);
+  }
+  const amenity = await amenityService.createAmenity(amenityData);
+  if (amenity.success) {
+    db.getCollection('amenities').insert(amenity.data);
+    db.saveDatabase();
+    await deleteCache(req.redis, [req.originalUrl, `${basePath}/settings/amenities`]);
+  }
+  return res.status(amenity.statusCode).json(amenity);
+};
+
+export const updateAmenityHandler = async (req: Request, res: Response) => {
+  const { amenitykey } = req.params;
+  const { newkey } = req.query;
+  const amenityData = sanitizeData(updateAmenityFields, req.body);
+  const amenityExists = await amenityService.getAmenityByKey(amenitykey);
+  if (!amenityExists.success) {
+    return res.status(amenityExists.statusCode).json(amenityExists);
+  }
+  if (amenityData.descriptionHTML) {
+    amenityData.descriptionText = stripHTML(amenityData.descriptionHTML);
+  }
+  if (newkey) {
+    amenityData.amenity = newkey;
+  }
+  const amenity = await amenityService.updateAmenity(amenitykey, amenityData);
+  if (amenity.success) {
+    const amenities = db.getCollection('amenities');
+    let oldamenity = amenities.findOne({ amenity: amenitykey });
+    oldamenity = { ...amenity, ...amenity.data };
+    amenities.update(oldamenity);
+    db.save();
+    await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/amenity-categories`]);
+  }
+  return res.status(amenity.statusCode).json(amenity);
 };
 
 export const createAmenityCategoryHandler = async (req: Request, res: Response) => {
   const categoryData = sanitizeData(createCategoryFields, req.body);
-  const categoryExists = await amenityService.getCategoryByKey(categoryData.amenityCategory);
-  if (categoryExists.success) {
-    const sr = new ServiceResponse('Amenity category already exists', null, false, 400, 'Amenity category already exists', 'LISTING_SERVICE_AMENITY_CATEGORY_ALREADY_EXISTS', 'Check amenity category and try again');
-    return res.status(sr.statusCode).json(sr);
-  }
   if (categoryData.descriptionHTML) {
     categoryData.descriptionText = stripHTML(categoryData.descriptionHTML);
   }
   const amenityCategory = await amenityService.createAmenityCategory(categoryData);
+  if (amenityCategory.success) {
+    db.getCollection('amenityCategories').insert(amenityCategory.data);
+    db.saveDatabase();
+    await deleteCache(req.redis, [req.originalUrl, `${basePath}/settings/amenities`]);
+  }
   return res.status(amenityCategory.statusCode).json(amenityCategory);
 };
 
 export const updateAmenityCategoryHandler = async (req: Request, res: Response) => {
   const { categorykey } = req.params;
   const { newkey } = req.query;
-  if (newkey) {
-    const categoryExists = await amenityService.getCategoryByKey(newkey as string);
-    if (categoryExists.success) {
-      const sr = new ServiceResponse('Amenity category already exists', null, false, 400, 'Amenity category already exists', 'LISTING_SERVICE_AMENITY_CATEGORY_ALREADY_EXISTS', 'Check amenity category and try again');
-      return res.status(sr.statusCode).json(sr);
-    }
-  }
-  const categoryExists = await amenityService.getCategoryByKey(categorykey);
-  if (!categoryExists.success) {
-    return res.status(categoryExists.statusCode).json(categoryExists);
-  }
   const categoryData = sanitizeData(updateCategoryFields, req.body);
   if (categoryData.descriptionHTML) {
     categoryData.descriptionText = stripHTML(categoryData.descriptionHTML);
   }
   if (newkey) categoryData.amenityCategory = newkey as string;
   const amenityCategory = await amenityService.updateAmenityCategory(categorykey, categoryData);
+  if (amenityCategory.success) {
+    const categories = db.getCollection('amenityCategories');
+    let category = categories.findOne({ amenityCategory: categorykey });
+    category = { ...category, ...amenityCategory.data };
+    categories.update(category);
+    if (newkey) {
+      const relatedAmenities = db.getCollection('amenities').find({ amenityCategory: categorykey });
+      relatedAmenities.forEach((amenity) => {
+        // eslint-disable-next-line no-param-reassign
+        amenity.amenityCategory = newkey as string;
+        db.getCollection('amenities').update(amenity);
+      });
+    }
+    db.save();
+    await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/amenity-categories`]);
+  }
   return res.status(amenityCategory.statusCode).json(amenityCategory);
 };
 
+export const deleteAmenityHandler = async (req: Request, res: Response) => {
+  console.log({ req });
+  const { amenitykey } = req.params;
+  const amenityExists = await amenityService.getAmenityByKey(amenitykey);
+  const { _count: count } = amenityExists.data;
+  if (count.listings) {
+    const sr = new ServiceResponse(
+      'Amenity is in use and cannot be deleted',
+      amenityExists.data,
+      false,
+      400,
+      'Amenity is in use and cannot be deleted',
+      'LISTING_SERVICE_ERROR_AMENITY_HAS_LISTINGS',
+      'Remove the amenity from all listings before deleting it'
+    );
+    return res.status(sr.statusCode).json(sr);
+  }
+  const amenity = await amenityService.deleteAmenity(amenitykey);
+  if (amenity.success) {
+    const amenities = db.getCollection('amenities');
+    const oldamenity = amenities.findOne({ amenity: amenitykey });
+    amenities.remove(oldamenity);
+    db.saveDatabase();
+    await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/amenity-categories`]);
+  }
+  return res.status(amenity.statusCode).json(amenity);
+};
+
 export const deleteAmenityCategoryHandler = async (req: Request, res: Response) => {
+  console.log({ req });
   const { categorykey } = req.params;
   const categoryExists = await amenityService.getCategoryByKey(categorykey);
   if (!categoryExists.success) {
@@ -66,10 +151,30 @@ export const deleteAmenityCategoryHandler = async (req: Request, res: Response) 
     return res.status(sr.statusCode).json(sr);
   }
   const amenityCategory = await amenityService.deleteAmenityCategory(categorykey);
+  if (amenityCategory.success) {
+    const categories = db.getCollection('amenityCategories');
+    const category = categories.findOne({ amenityCategory: categorykey });
+    categories.remove(category);
+    db.saveDatabase();
+    await deleteCache(req.redis, [`${basePath}/settings/amenity-categories`]);
+  }
   return res.status(amenityCategory.statusCode).json(amenityCategory);
 };
 
-export const getAllAmenityCategories = async (req: Request, res: Response) => {
+export const getAllAmenityCategoriesHandler = async (req: Request, res: Response) => {
+  console.log({ req });
   const amenityCategories = await amenityService.getAmenityCategories();
+  await setCache(req.redis, req.originalUrl, amenityCategories, 3600);
   return res.status(amenityCategories.statusCode).json(amenityCategories);
+};
+
+export const getCategoryAmenitiesHandler = async (req: Request, res: Response) => {
+  const { categorykey } = req.params;
+  const categoryExists = await amenityService.getCategoryByKey(categorykey);
+  if (!categoryExists.success) {
+    return res.status(categoryExists.statusCode).json(categoryExists);
+  }
+  const amenities = await amenityService.getAmentiesByCategory(categorykey);
+  await setCache(req.redis, req.originalUrl, amenities, 3600);
+  return res.status(amenities.statusCode).json(amenities);
 };
