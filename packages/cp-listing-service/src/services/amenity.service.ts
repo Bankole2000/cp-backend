@@ -58,6 +58,30 @@ export default class AmenityDBService {
     }
   }
 
+  async getAmenityByKey(amenityKey: string) {
+    try {
+      const amenity = await this.prisma.amenity.findUnique({
+        where: {
+          amenity: amenityKey,
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
+        }
+      });
+      if (amenity) {
+        return new ServiceResponse('Amenity found', amenity, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Amenity not found', null, false, 404, 'Amenity not found', 'LISTING_SERVICE_AMENITY_NOT_FOUND', 'Check amenity and try again');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting amenity', null, false, 500, error.message, error, 'Check database and logs');
+    }
+  }
+
   async updateAmenityCategory(categoryKey: string, categoryData: any) {
     try {
       const updatedCategory = await this.prisma.amenityCategory.update({
@@ -139,6 +163,13 @@ export default class AmenityDBService {
       const newAmenity = await this.prisma.amenity.create({
         data: {
           ...amenityData,
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
         }
       });
       if (newAmenity) {
@@ -150,6 +181,89 @@ export default class AmenityDBService {
     } catch (error: any) {
       console.log({ error });
       const sr = new ServiceResponse('Error creating amenity', null, false, 500, error.message, error, 'Check database and logs');
+      return sr;
+    }
+  }
+
+  async getAmentiesByCategory(categoryKey: string) {
+    try {
+      const amenities = await this.prisma.amenity.findMany({
+        where: {
+          amenityCategory: categoryKey,
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
+        }
+      });
+      if (amenities) {
+        const sr = new ServiceResponse('Category Amenities fetched', amenities, true, 200, null, null, null);
+        return sr;
+      }
+      const sr = new ServiceResponse('Error fetching category amenities', null, false, 404, 'Error fetching category amenities', 'LISTING_SERVICE_ERROR_FETCHING_AMENITIES', 'Check all fields and try again');
+      return sr;
+    } catch (error: any) {
+      console.log({ error });
+      const sr = new ServiceResponse('Error fetching amenities', null, false, 500, error.message, error, 'Check database and logs');
+      return sr;
+    }
+  }
+
+  async updateAmenity(amenityKey: string, amenityData: any) {
+    try {
+      const updatedAmenity = await this.prisma.amenity.update({
+        where: {
+          amenity: amenityKey,
+        },
+        data: {
+          ...amenityData,
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
+        }
+      });
+      if (updatedAmenity) {
+        const sr = new ServiceResponse('Amenity updated', updatedAmenity, true, 200, null, null, null);
+        return sr;
+      }
+      const sr = new ServiceResponse('Error updating amenity', updatedAmenity, false, 400, 'Error updating amenity', 'LISTING_SERVICE_ERROR_UPDATING_AMENITY', 'Check all fields and try again');
+      return sr;
+    } catch (error: any) {
+      console.log({ error });
+      const sr = new ServiceResponse('Error updating amenity', null, false, 500, error.message, error, 'Check database and logs');
+      return sr;
+    }
+  }
+
+  async deleteAmenity(amenityKey: string) {
+    try {
+      const deletedAmenity = await this.prisma.amenity.delete({
+        where: {
+          amenity: amenityKey,
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
+        }
+      });
+      if (deletedAmenity) {
+        const sr = new ServiceResponse('Amenity deleted', deletedAmenity, true, 200, null, null, null);
+        return sr;
+      }
+      const sr = new ServiceResponse('Error deleting amenity', null, false, 500, 'Error deleting amenity', 'LISTING_SERVICE_ERROR_DELETING_AMENITY', 'Check all fields and try again');
+      return sr;
+    } catch (error: any) {
+      const sr = new ServiceResponse('Error deleting amenity', null, false, 500, error.message, error, 'Check database and logs');
       return sr;
     }
   }

@@ -12,6 +12,7 @@ export const validate = (schema: AnyZodObject, schemaName: string) => (req: Requ
     });
     return next();
   } catch (error: any) {
+    console.log({ error });
     const sr = new ServiceResponse(
       `${schemaName} validation failed`,
       null,

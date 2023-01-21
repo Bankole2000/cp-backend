@@ -28,6 +28,7 @@ export default class RequestService {
     const {
       error: message, errors, fix, statusCode
     } = errorReponse;
+    console.log({ errors });
     try {
       const createdError = await this.prisma.errorLog.create({
         data: {

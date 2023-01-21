@@ -1,20 +1,34 @@
 import { ServiceResponse } from '@cribplug/common';
 import { Request, Response } from 'express';
+import { db } from '../../lib/lokijs';
+import { config } from '../../utils/config';
 import {
-  listingPurposeCreateFields, listingTypeCreateFields, listingTypeUpdateFields, purposeSubgroupCreateFields, purposeSubgroupUpdateFields, sanitizeData, stripHTML
+  sanitizeData,
+  stripHTML
 } from '../../schema/listing.schema';
+import {
+  listingPurposeCreateFields,
+  listingTypeUpdateFields,
+  purposeSubgroupCreateFields,
+  purposeSubgroupUpdateFields,
+} from '../../schema/purpose.schema';
+import { deleteCache, setCache } from '../../services/cache.service';
 import ListingPurposeDBService from '../../services/purpose.service';
+
+const { basePath } = config.self;
 
 const purposeService = new ListingPurposeDBService();
 
 export const getListingPurposesHandler = async (req: Request, res: Response) => {
   const listingPurposes = await purposeService.getListingPurposes();
+  await setCache(req.redis, req.originalUrl, listingPurposes);
   return res.status(listingPurposes.statusCode).json(listingPurposes);
 };
 
 export const getListingPurposeDetailsHandler = async (req: Request, res: Response) => {
   const { purposeId } = req.params;
   const listingPurpose = await purposeService.getListingPurposeDetails(purposeId);
+  await setCache(req.redis, req.originalUrl, listingPurpose);
   return res.status(listingPurpose.statusCode).json(listingPurpose);
 };
 
@@ -27,6 +41,10 @@ export const createListingPurposeHandler = async (req: Request, res: Response) =
     return res.status(sr.statusCode).json(sr);
   }
   const lpsr = await purposeService.createListingPurpose(listingPurposeData);
+  if (lpsr.success) {
+    db.getCollection('purposes').insert(lpsr.data);
+    db.saveDatabase();
+  }
   if (res.locals.newAccessToken) lpsr.newAccessToken = res.locals.newAccessToken;
   return res.status(lpsr.statusCode).json(lpsr);
 };
@@ -47,6 +65,22 @@ export const updateListingPurposeHandler = async (req: Request, res: Response) =
   if (listingPurposeData.descriptionHTML) listingPurposeData.descriptionText = stripHTML(listingPurposeData.descriptionHTML);
   if (newkey) listingPurposeData.listingPurpose = newkey;
   const lpsr = await purposeService.updateListingPurpose(purposeId, listingPurposeData);
+  if (lpsr.success) {
+    const purposes = db.getCollection('purposes');
+    let purpose = purposes.findOne({ listingPurpose: purposeId });
+    purpose = { ...purpose, ...lpsr.data };
+    purposes.update(purpose);
+    if (newkey) {
+      const purposeSubgroups = db.getCollection('subgroups').find({ listingPurpose: purposeId });
+      purposeSubgroups.forEach((subgroup) => {
+        // eslint-disable-next-line no-param-reassign
+        subgroup.listingPurpose = newkey;
+        db.getCollection('subgroups').update(subgroup);
+      });
+    }
+    db.saveDatabase();
+    await deleteCache(req.redis, [req.originalUrl, `${basePath}/settings/purposes`]);
+  }
   if (res.locals.newAccessToken) lpsr.newAccessToken = res.locals.newAccessToken;
   return res.status(lpsr.statusCode).json(lpsr);
 };
@@ -67,12 +101,20 @@ export const deleteListingPurposeHandler = async (req: Request, res: Response) =
     return res.status(sr.statusCode).json(sr);
   }
   const lpsr = await purposeService.deleteListingPurpose(purposeId);
+  if (lpsr.success) {
+    const purposes = db.getCollection('purposes');
+    const purpose = purposes.findOne({ listingPurpose: purposeId });
+    purposes.remove(purpose);
+    db.saveDatabase();
+    await deleteCache(req.redis, [req.originalUrl, `${basePath}/settings/purposes`]);
+  }
   if (res.locals.newAccessToken) lpsr.newAccessToken = res.locals.newAccessToken;
   return res.status(lpsr.statusCode).json(lpsr);
 };
 
 export const getAllSubgroupsHandler = async (req: Request, res: Response) => {
   const subgroups = await purposeService.getAllSubgroups();
+  await setCache(req.redis, req.originalUrl, subgroups);
   return res.status(subgroups.statusCode).json(subgroups);
 };
 
@@ -81,6 +123,7 @@ export const getPurposeSubgroupsHandler = async (req: Request, res: Response) =>
   const purposeExistsSR = await purposeService.getListingPurposeByKey(purposeId);
   if (!purposeExistsSR.success) return res.status(purposeExistsSR.statusCode).json(purposeExistsSR);
   const subgroupsSR = await purposeService.getSubgroupsByPurpose(purposeId);
+  await setCache(req.redis, req.originalUrl, subgroupsSR);
   return res.status(subgroupsSR.statusCode).json(subgroupsSR);
 };
 
@@ -96,6 +139,11 @@ export const createSubgroupHandler = async (req: Request, res: Response) => {
   }
   subgroupData.descriptionText = stripHTML(subgroupData.descriptionHTML);
   const subgroupSR = await purposeService.createPurposeSubgroup(purposeId, subgroupData);
+  if (subgroupSR.success) {
+    db.getCollection('subgroups').insert(subgroupSR.data);
+    db.saveDatabase();
+    await deleteCache(req.redis, [`${basePath}/settings/subgroups`, `${basePath}/settings/purposes`, `${basePath}/settings/purposes/${purposeId}`]);
+  }
   if (res.locals.newAccessToken) subgroupSR.newAccessToken = res.locals.newAccessToken;
   return res.status(subgroupSR.statusCode).json(subgroupSR);
 };
@@ -113,15 +161,27 @@ export const updateSubgroupHandler = async (req: Request, res: Response) => {
   const purposeExistsSR = await purposeService.getListingPurposeByKey(purposeId);
   if (!purposeExistsSR.success) return res.status(purposeExistsSR.statusCode).json(purposeExistsSR);
   const subgroupExistsSR = await purposeService.getSubgroupByKey(subgroupId);
-  if (!subgroupExistsSR.success) return res.status(subgroupExistsSR.statusCode).json(subgroupExistsSR);
+  if (!subgroupExistsSR.success) {
+    return res.status(subgroupExistsSR.statusCode).json(subgroupExistsSR);
+  }
   if (subgroupExistsSR.data.listingPurpose !== purposeId) {
     const sr = new ServiceResponse('Subgroup does not belong to purpose', subgroupExistsSR.data, false, 400, 'Subgroup does not belong to purpose', 'LISTING_SERVICE_SUBGROUP_PURPOSE_MISMATCH', 'Use matching purpose and subgroup');
     return res.status(sr.statusCode).json(sr);
   }
   const subgroupData = sanitizeData(purposeSubgroupUpdateFields, req.body);
-  if (subgroupData.descriptionHTML) subgroupData.descriptionText = stripHTML(subgroupData.descriptionHTML);
+  if (subgroupData.descriptionHTML) {
+    subgroupData.descriptionText = stripHTML(subgroupData.descriptionHTML);
+  }
   if (newkey) subgroupData.purposeSubgroup = newkey;
   const subgroupSR = await purposeService.updatePurposeSubgroup(subgroupId, subgroupData);
+  if (subgroupSR.success) {
+    const subgroups = db.getCollection('subgroups');
+    let subgroup = subgroups.findOne({ purposeSubgroup: subgroupId });
+    subgroup = { ...subgroup, ...subgroupSR.data };
+    subgroups.update(subgroup);
+    db.saveDatabase();
+    await deleteCache(req.redis, [`${basePath}/settings/subgroups`, `${basePath}/settings/purposes/${purposeId}`, `${basePath}/settings/purposes/${purposeId}/subgroups`]);
+  }
   if (res.locals.newAccessToken) subgroupSR.newAccessToken = res.locals.newAccessToken;
   return res.status(subgroupSR.statusCode).json(subgroupSR);
 };
@@ -131,7 +191,9 @@ export const deleteSubgroupHandler = async (req: Request, res: Response) => {
   const purposeExistsSR = await purposeService.getListingPurposeByKey(purposeId);
   if (!purposeExistsSR.success) return res.status(purposeExistsSR.statusCode).json(purposeExistsSR);
   const subgroupExistsSR = await purposeService.getSubgroupByKey(subgroupId);
-  if (!subgroupExistsSR.success) return res.status(subgroupExistsSR.statusCode).json(subgroupExistsSR);
+  if (!subgroupExistsSR.success) {
+    return res.status(subgroupExistsSR.statusCode).json(subgroupExistsSR);
+  }
   if (subgroupExistsSR.data.listingPurpose !== purposeId) {
     const sr = new ServiceResponse('Subgroup does not belong to purpose', subgroupExistsSR.data, false, 400, 'Subgroup does not belong to purpose', 'LISTING_SERVICE_SUBGROUP_PURPOSE_MISMATCH', 'Use matching purpose and subgroup keys');
     return res.status(sr.statusCode).json(sr);
@@ -142,6 +204,11 @@ export const deleteSubgroupHandler = async (req: Request, res: Response) => {
     return res.status(sr.statusCode).json(sr);
   }
   const delSubgroupSR = await purposeService.deletePurposeSubgroup(subgroupId);
+  if (delSubgroupSR.success) {
+    db.getCollection('subgroups').remove({ purposeSubgroup: subgroupId });
+    db.saveDatabase();
+    await deleteCache(req.redis, [`${basePath}/settings/subgroups`, `${basePath}/settings/purposes`, `${basePath}/settings/purposes/${purposeId}`, `${basePath}/settings/purposes/${purposeId}/subgroups`]);
+  }
   if (res.locals.newAccessToken) delSubgroupSR.newAccessToken = res.locals.newAccessToken;
   return res.status(delSubgroupSR.statusCode).json(delSubgroupSR);
 };

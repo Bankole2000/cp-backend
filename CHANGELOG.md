@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.1.0](https://github.com/Bankole2000/cp-backend/compare/v1.0.0...v1.1.0) (2023-01-21)
+
+
+### Features
+
+* **listing:** admin can crud amenities ([af6fced](https://github.com/Bankole2000/cp-backend/commits/af6fcedf229c50636421c6bedaaf96ea582a003d))
+* **listings:** admin can crud listing purposes and subgroups ([f0ee5e7](https://github.com/Bankole2000/cp-backend/commits/f0ee5e710d8ad3fe70e62882b019cf73cbb9c2de))
+* **listings:** crud amenity categories ([4c9f472](https://github.com/Bankole2000/cp-backend/commits/4c9f4724af385e9e56173427ce9d69afd3c3fdf9))
+
+
+### Bug Fixes
+
+* options with listings cannot be deleted ([1578a05](https://github.com/Bankole2000/cp-backend/commits/1578a052fe80e624adfa8af7daef422adebaeafb))
+* removed sensitive data ([995dfec](https://github.com/Bankole2000/cp-backend/commits/995dfecdf5306247161069cb190c7b748bc7de10))
+
+
+* **listing purpose:** renamed listingPurposeKey to listingPurpose on subgroup schema ([950dbc3](https://github.com/Bankole2000/cp-backend/commits/950dbc3a8db4bc9a48514389ef6af5ddf7a13555))
+
 ## 1.0.0 (2023-01-17)
 
 

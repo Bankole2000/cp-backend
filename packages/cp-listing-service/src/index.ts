@@ -7,6 +7,7 @@ import { config } from './utils/config';
 import routes from './routes/index.routes';
 import { serviceEvents } from './services/events.service';
 import { getUserIfLoggedIn } from './middleware/requireUser';
+import { initLokiDB } from './utils/lokidb';
 
 const { self, rabbitMQConfig, redisConfig } = config;
 const PORT = self.port;
@@ -39,6 +40,7 @@ httpServer.listen(PORT, async () => {
     });
     app.use(getUserIfLoggedIn);
   }
+  await initLokiDB();
   await serviceUp(redis, config);
   await serviceEvents(channel);
   routes(app);

@@ -221,11 +221,7 @@ export default class ListingPurposeDBService {
     try {
       const newPurposeSubgroup = await this.prisma.purposeSubgroup.create({
         data: {
-          listingPurpose: {
-            connect: {
-              listingPurpose
-            }
-          },
+          listingPurpose,
           ...purposeSubgroupData
         }
       });
