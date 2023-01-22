@@ -4,7 +4,7 @@ import {
 } from '@cribplug/common';
 import prisma from '../lib/prisma';
 
-export default class ListingDBService {
+export default class ListingTypeDBService {
   prisma: PrismaClient;
 
   driver: Driver;
@@ -16,7 +16,15 @@ export default class ListingDBService {
 
   async getListingTypes() {
     try {
-      const listingTypes = await this.prisma.listingType.findMany();
+      const listingTypes = await this.prisma.listingType.findMany({
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
+        }
+      });
       return new ServiceResponse('Listing Types retrieved successfully', listingTypes, true, 200, null, null, null);
     } catch (error: any) {
       console.log({ error });
@@ -30,6 +38,13 @@ export default class ListingDBService {
       const listingTypeData = await this.prisma.listingType.findUnique({
         where: {
           listingType
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
         }
       });
       if (listingTypeData) {

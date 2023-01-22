@@ -22,7 +22,7 @@ const amenityService = new AmenityDBService();
 export const getAllAmenitiesHandler = async (req: Request, res: Response) => {
   console.log({ req });
   const amenities = await amenityService.getAllAmenities();
-  await setCache(req.redis, req.originalUrl, amenities, 3600);
+  await setCache(req.redis, req.originalUrl, amenities);
   return res.status(amenities.statusCode).json(amenities);
 };
 
@@ -37,7 +37,7 @@ export const createAmenityHandler = async (req: Request, res: Response) => {
   if (amenity.success) {
     db.getCollection('amenities').insert(amenity.data);
     db.saveDatabase();
-    await deleteCache(req.redis, [req.originalUrl, `${basePath}/settings/amenities`]);
+    await deleteCache(req.redis, [`${basePath}/settings/amenities`]);
   }
   return res.status(amenity.statusCode).json(amenity);
 };
@@ -164,7 +164,7 @@ export const deleteAmenityCategoryHandler = async (req: Request, res: Response) 
 export const getAllAmenityCategoriesHandler = async (req: Request, res: Response) => {
   console.log({ req });
   const amenityCategories = await amenityService.getAmenityCategories();
-  await setCache(req.redis, req.originalUrl, amenityCategories, 3600);
+  await setCache(req.redis, req.originalUrl, amenityCategories);
   return res.status(amenityCategories.statusCode).json(amenityCategories);
 };
 
@@ -175,6 +175,6 @@ export const getCategoryAmenitiesHandler = async (req: Request, res: Response) =
     return res.status(categoryExists.statusCode).json(categoryExists);
   }
   const amenities = await amenityService.getAmentiesByCategory(categorykey);
-  await setCache(req.redis, req.originalUrl, amenities, 3600);
+  await setCache(req.redis, req.originalUrl, amenities);
   return res.status(amenities.statusCode).json(amenities);
 };

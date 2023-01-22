@@ -50,7 +50,8 @@ const typeParam = {
     typeId: string({
       required_error: 'Listing type key is required',
     }).min(1, 'Listing type key must be at least 1 character long')
-      .refine((data) => resourceExists('types', 'key', data), 'Invalid listing type key'),
+      .refine((val) => /^[A-Z_]+$/.test(val), 'Listing Type must be in all caps and underscore separated, e.g. LISTING_TYPE')
+      .refine((data) => resourceExists('listingTypes', 'listingType', data), 'Invalid listing type key'),
   })
 };
 
@@ -58,7 +59,7 @@ const newkeyQuery = {
   query: object({
     newkey: string().min(1, 'Listing Type must be at least 1 character long')
       .refine((val) => /^[A-Z_]+$/.test(val), 'Listing Type must be in all caps and underscore separated, e.g. LISTING_TYPE')
-      .refine((val) => !resourceExists('types', 'key', val), 'Listing Type already exists')
+      .refine((val) => !resourceExists('listingTypes', 'listingType', val), 'Listing Type already exists')
       .optional(),
   }).optional(),
 };
@@ -69,7 +70,7 @@ export const createListingTypeSchema = object({
       required_error: 'Listing Type Key is required',
     }).min(1, 'Listing Type must be at least 1 character long')
       .refine((val) => /^[A-Z_]+$/.test(val), 'Listing Type must be in all caps and underscore separated, e.g. LISTING_TYPE')
-      .refine((val) => !resourceExists('types', 'key', val), 'Listing Type already exists'),
+      .refine((val) => !resourceExists('listingTypes', 'listingType', val), 'Listing Type already exists'),
     ...commonRequiredFields,
   })
 });
@@ -83,3 +84,6 @@ export const updateListingTypeSchema = object({
 export const deleteListingTypeSchema = object({
   ...typeParam,
 });
+
+export const listingTypeCreateFields = ['listingType', 'title', 'descriptionHTML', 'isActive', 'faIcon', 'mdiIcon'];
+export const listingTypeUpdateFields = ['title', 'descriptionHTML', 'isActive', 'faIcon', 'mdiIcon'];
