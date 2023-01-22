@@ -54,6 +54,7 @@ model Listing {
   noOfBedrooms                Int?
   noOfBathrooms               Int?
   isPublished                 Boolean               @default(false) @db.Boolean
+  houseRules                  ListingHasHouseRule[]
   amenities                   ListingHasAmenities[]
   listingTypeData             ListingType?          @relation("ListingType", fields: [listingType], references: [listingType])
   listingPurposeData          ListingPurpose?       @relation("ListingPurpose", fields: [listingPurpose], references: [listingPurpose])
@@ -61,6 +62,33 @@ model Listing {
   version                     Int                   @default(0)
   createdAt                   DateTime              @default(now())
   updatedAt                   DateTime              @updatedAt
+}
+
+model ListingHasHouseRule {
+  listing       Listing   @relation(fields: [listingId], references: [listingId])
+  listingId     String
+  houseRuleData HouseRule @relation(fields: [houseRule], references: [houseRule])
+  houseRule     String
+  description   String?
+  isAllowed     Boolean   @default(true) @db.Boolean
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@id([listingId, houseRule])
+}
+
+model HouseRule {
+  houseRule       String                @id @unique
+  title           String
+  descriptionHTML String?
+  descriptionText String?
+  faIconTrue      String
+  faIconFalse     String
+  mdiIconTrue     String
+  mdiIconFalse    String
+  listings        ListingHasHouseRule[]
+  createdAt       DateTime              @default(now())
+  updatedAt       DateTime              @updatedAt
 }
 
 model ListingType {
