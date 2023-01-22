@@ -1,5 +1,10 @@
 import { Router } from 'express';
-import { createListingTypeHandler, deleteListingTypeHandler, getListingTypesHandler, updateListingTypeHandler } from '../../controllers/settings/listingType.controllers';
+import {
+  createListingTypeHandler,
+  deleteListingTypeHandler,
+  getListingTypesHandler,
+  updateListingTypeHandler
+} from '../../controllers/settings/listingType.controllers';
 import { requireLoggedInUser, requireRole } from '../../middleware/requireUser';
 import { validate } from '../../middleware/validateRequests';
 import { createListingTypeSchema, deleteListingTypeSchema, updateListingTypeSchema } from '../../schema/listingType.schema';
