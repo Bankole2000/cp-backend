@@ -1,8 +1,6 @@
 import { Express } from 'express';
 // import { currentUserRoutes } from './currentuser.routes';
 import { dataRoutes } from './data.routes';
-// import { loginRoutes } from './login.routes';
-// import { registerRoutes } from './register.routes';
 import { testRoutes } from './test.routes';
 import { notFoundHandler } from '../middleware/errorHandler';
 import { config } from '../utils/config';

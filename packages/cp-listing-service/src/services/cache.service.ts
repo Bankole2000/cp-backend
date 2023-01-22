@@ -21,7 +21,7 @@ export const setCache = async (
   redis: RedisConnection,
   key: string,
   value: any,
-  ttlSeconds = 3600
+  ttlSeconds = 60
 ) => {
   await redis.client.connect();
   await redis.client.setEx(getCacheKey(key), ttlSeconds, JSON.stringify(value));
@@ -31,6 +31,8 @@ export const setCache = async (
 export const deleteCache = async (redis: RedisConnection, keys: string[]) => {
   await redis.client.connect();
   keys.forEach(async (key) => {
+    console.log({key: getCacheKey(key)})
+    console.log('Deleting cache: ', key);
     await redis.client.del(getCacheKey(key));
   });
   await redis.client.disconnect();
@@ -40,7 +42,7 @@ export const getOrSetCache = async (
   redis: RedisConnection,
   key: string,
   callback: any,
-  ttlSeconds = 3600,
+  ttlSeconds = 60,
 ) => {
   await redis.client.connect();
   const cachedValue = await redis.client.get(getCacheKey(key));
