@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.1](https://github.com/Bankole2000/cp-backend/compare/v1.1.0...v1.1.1) (2023-01-22)
+
+
+### Features
+
+* **listings:** admin can crud listing space types ([1f4a482](https://github.com/Bankole2000/cp-backend/commits/1f4a48282c98a3afaaec8a97a229ca74fef3d814))
+
+
+* **listings:** organized listing routes ([5bd4a5b](https://github.com/Bankole2000/cp-backend/commits/5bd4a5b84cdfc6f380a125b2e364804fc9edba23))
+
 ## [1.1.0](https://github.com/Bankole2000/cp-backend/compare/v1.0.0...v1.1.0) (2023-01-21)
 
 
