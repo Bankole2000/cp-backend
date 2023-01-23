@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.1.2](https://github.com/Bankole2000/cp-backend/compare/v1.1.1...v1.1.2) (2023-01-23)
+
+
+### Features
+
+* **listings:** admin can crud listing house rules ([5feacbd](https://github.com/Bankole2000/cp-backend/commits/5feacbddfa4f4bf789a8961cca2119892349f863))
+* **listings:** wip house rules mischema migrations ([1b57873](https://github.com/Bankole2000/cp-backend/commits/1b57873794fbcfbd58429f84c9bbebd64a57f54c))
+* **listings:** wip house rules settings endpoints ([c729cc1](https://github.com/Bankole2000/cp-backend/commits/c729cc1cc2aaa61489bde77ea3340aaea5a1abcc))
+
 ### [1.1.1](https://github.com/Bankole2000/cp-backend/compare/v1.1.0...v1.1.1) (2023-01-22)
 
 

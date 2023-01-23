@@ -29,12 +29,10 @@ export const setCache = async (
 };
 
 export const deleteCache = async (redis: RedisConnection, keys: string[]) => {
+  const formattedKeys = keys.map(getCacheKey);
+  console.log({ formattedKeys });
   await redis.client.connect();
-  keys.forEach(async (key) => {
-    console.log({key: getCacheKey(key)})
-    console.log('Deleting cache: ', key);
-    await redis.client.del(getCacheKey(key));
-  });
+  await redis.client.del(formattedKeys);
   await redis.client.disconnect();
 };
 
