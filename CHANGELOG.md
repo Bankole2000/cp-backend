@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/Bankole2000/cp-backend/compare/v1.1.2...v1.2.0) (2023-01-27)
+
+
+### Features
+
+* **listings:** users can create listings ([c8b2f56](https://github.com/Bankole2000/cp-backend/commits/c8b2f56870f750706d681535b36443938ba54565))
+
+
+* **storage:** added pocket base storage ([d9f53b7](https://github.com/Bankole2000/cp-backend/commits/d9f53b7d9f875274b88291673869f4b0fac7d5f6))
+
 ### [1.1.2](https://github.com/Bankole2000/cp-backend/compare/v1.1.1...v1.1.2) (2023-01-23)
 
 
