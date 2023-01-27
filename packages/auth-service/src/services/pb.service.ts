@@ -12,7 +12,7 @@ export default class PBService {
   }
 
   async findUserById(userId: string) {
-    const filter = `userId="${userId}"`;
+    const filter = `id="${userId}"`;
     console.log({ filter });
     try {
       const res = await this.pb.collection('users').getFirstListItem(filter);
@@ -21,6 +21,20 @@ export default class PBService {
         return new ServiceResponse('User found', res, true, 200, null, null, null);
       }
       return new ServiceResponse('User not found', null, false, 404, null, null, null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error finding user', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async getUserById(userId: string) {
+    try {
+      const res = await this.pb.collection('users').getOne(userId);
+      console.log({ res });
+      if (res) {
+        return new ServiceResponse('User found', res, true, 200, null, null, null);
+      }
+      return new ServiceResponse('User not found', res, false, 404, null, null, null);
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error finding user', null, false, 500, error.message, error, 'Check logs and database');

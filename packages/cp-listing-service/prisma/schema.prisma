@@ -34,7 +34,7 @@ model User {
 }
 
 model Listing {
-  listingId                   String                @id @default(uuid())
+  listingId                   String                @id @unique
   title                       String                @db.VarChar(255)
   caption                     String                @db.VarChar(255)
   longDescription             String?               @db.Text
@@ -56,8 +56,8 @@ model Listing {
   noOfBathrooms               Int?
   images                      ListingImage[]
   isPublished                 Boolean               @default(false) @db.Boolean
-  createdBy                   User                  @relation(fields: [createdByUserId], references: [userId])
-  createdByUserId             String
+  createdByData               User                  @relation(fields: [createdBy], references: [userId])
+  createdBy                   String
   houseRules                  ListingHasHouseRule[]
   amenities                   ListingHasAmenities[]
   listingTypeData             ListingType?          @relation("ListingType", fields: [listingType], references: [listingType])
@@ -71,11 +71,10 @@ model Listing {
 
 model ListingImage {
   id          String   @id @unique
-  listing     Listing  @relation(fields: [listingId], references: [listingId])
-  listingId   String
+  listingData Listing  @relation(fields: [listing], references: [listingId])
+  listing     String
   imageUrl    String
   image       String
-  listingPbId String?
   order       Int?
   created     DateTime @default(now())
   updated     DateTime @updatedAt

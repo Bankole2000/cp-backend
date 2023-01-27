@@ -57,7 +57,7 @@ export default class ListingDBService {
       const listing = await this.prisma.listing.create({
         data: {
           ...listingData,
-          createdByUserId: userId,
+          createdBy: userId,
         },
       });
       if (listing) {

@@ -158,4 +158,6 @@ export default class PBService {
       return new ServiceResponse('Error creating listing', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
+
+  // async addListingImage()
 }

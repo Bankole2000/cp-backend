@@ -43,6 +43,18 @@ export const registerWithEmailHandler = async (req: Request, res: Response) => {
     userData.roles = allRoles as string[];
   }
   userData.registeredVia = 'EMAIL' as LoginType;
+  const pbUser = await pb.createUser({
+    ...userData,
+    password: userData.email,
+    passwordConfirm: userData.email
+  });
+  if (!pbUser.success) {
+    await logResponse(req, pbUser);
+    return res.status(pbUser.statusCode).send(pbUser);
+  }
+  userData.userId = pbUser.data.id;
+  userData.createdAt = new Date(pbUser.data.created);
+  userData.updatedAt = new Date(pbUser.data.updated);
   const newUserSR = await userService.createUser(userData);
   if (!newUserSR.success) {
     await logResponse(req, newUserSR);
@@ -136,6 +148,18 @@ export const registerWithPhoneHandler = async (req: Request, res: Response) => {
     userData.roles = allRoles as string[];
   }
   userData.registeredVia = 'PHONE' as LoginType;
+  const pbUser = await pb.createUser({
+    ...userData,
+    password: userData.phone,
+    passwordConfirm: userData.phone
+  });
+  if (!pbUser.success) {
+    await logResponse(req, pbUser);
+    return res.status(pbUser.statusCode).send(pbUser);
+  }
+  userData.userId = pbUser.data.id;
+  userData.createdAt = new Date(pbUser.data.created);
+  userData.updatedAt = new Date(pbUser.data.updated);
   const newUserSR = await userService.createUser(userData);
   if (!newUserSR.success) {
     await logResponse(req, newUserSR);
@@ -150,7 +174,11 @@ export const registerWithPhoneHandler = async (req: Request, res: Response) => {
   await sendToServiceQueues(req.channel, userCreatedEvent, serviceQueues);
   // #endregion
   // #region STEP: Emit 'SEND_VERIFICATION_SMS' Event, Send response
-  const OTP = generateOTP(6, { lowerCaseAlphabets: false, upperCaseAlphabets: true, specialChars: false });
+  const OTP = generateOTP(6, {
+    lowerCaseAlphabets: false,
+    upperCaseAlphabets: true,
+    specialChars: false
+  });
   console.log({ OTP });
   const verifData = {
     userId: newUserSR.data.userId,
@@ -228,58 +256,29 @@ export const onboardingHandler = async (req: Request, res: Response) => {
   console.log({ user: updatedUser.data });
   // TODO: create pocketbase user here
   await pb.authenticateAdmin(pocketbase.adminEmail || '', pocketbase.adminPassword || '');
-  const pbUserExists = await pb.findUserById(updatedUser.data.userId);
+  const pbUserExists = await pb.getUserById(updatedUser.data.userId);
   if (!pbUserExists.success) {
     const newPBUserData = {
-      username,
-      userId: updatedUser.data.userId,
-      email: updatedUser.data.email,
-      roles: updatedUser.data.roles,
+      ...updatedUser.data,
+      id: updatedUser.data.userId,
       verified: updatedUser.data.emailVerified || updatedUser.data.phoneVerified,
       password,
       passwordConfirm: confirmPassword,
-      firstname: updatedUser.data.firstname,
-      lastname: updatedUser.data.lastname,
-      phone: updatedUser.data.phone,
       emailVisibility: true,
     };
     await pb.createUser(newPBUserData);
   } else {
     const updatedPBUserData = {
-      username,
-      userId: updatedUser.data.userId,
-      email: updatedUser.data.email,
-      roles: updatedUser.data.roles,
+      ...updatedUser.data,
       verified: updatedUser.data.emailVerified || updatedUser.data.phoneVerified,
       password,
       passwordConfirm: confirmPassword,
-      firstname: updatedUser.data.firstname,
-      lastname: updatedUser.data.lastname,
-      phone: updatedUser.data.phone,
       emailVisibility: true,
     };
     await pb.updateUser(pbUserExists.data.id, updatedPBUserData);
   }
 
   console.log({ pbUser: pbUserExists.data });
-  // try {
-  //   console.log({ pbUserExists });
-  //   console.log({ userData: updatedUser.data, pbUrl: config.pocketbase.url });
-  //   const userRecord = await pb.collection('users').create({
-  //     username,
-  //     userId: updatedUser.data.userId,
-  //     email: updatedUser.data.email,
-  //     password,
-  //     passwordConfirm: confirmPassword,
-  //     firstname: updatedUser.data.firstname,
-  //     lastname: updatedUser.data.lastname,
-  //     phone: updatedUser.data.phone,
-  //     emailVisibility: true,
-  //   });
-  //   console.log({ userRecord });
-  // } catch (error: any) {
-  //   console.log({ error, data: error.data, info: error.data.data });
-  // }
   const serviceQueues = await getServiceQueues(req.redis, config.redisConfig.scope);
   const userUpdatedEvent = new ServiceEvent('USER_UPDATED', updatedUser.data, idToken, null, config.self.serviceName, serviceQueues);
   await sendToServiceQueues(req.channel, userUpdatedEvent, serviceQueues);
