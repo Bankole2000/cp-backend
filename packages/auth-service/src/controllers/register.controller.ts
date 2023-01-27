@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+// import 'cross-fetch/polyfill';
 import { generate as generateOTP } from 'otp-generator';
 import { parsePhoneNumberWithError, ParseError, PhoneNumber } from 'libphonenumber-js';
 import {
@@ -6,11 +7,17 @@ import {
 } from '@cribplug/common';
 import { LoginType } from '@prisma/client';
 import UserDBService from '../services/user.service';
+import PocketbaseService from '../services/pb.service';
 import { logResponse } from '../middleware/logRequests';
 import { config } from '../utils/config';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires, import/no-unresolved
+// const PocketBase = require('pocketbase/cjs');
+
 const userService = new UserDBService();
+const { pocketbase } = config;
+const pb = new PocketbaseService(pocketbase.url as string);
 
 export const registerWithEmailHandler = async (req: Request, res: Response) => {
   // #region STEP: Check if user already exists, Sanitize Data
@@ -218,6 +225,61 @@ export const onboardingHandler = async (req: Request, res: Response) => {
     await logResponse(req, updatedUser);
     return res.status(updatedUser.statusCode).send(updatedUser);
   }
+  console.log({ user: updatedUser.data });
+  // TODO: create pocketbase user here
+  await pb.authenticateAdmin(pocketbase.adminEmail || '', pocketbase.adminPassword || '');
+  const pbUserExists = await pb.findUserById(updatedUser.data.userId);
+  if (!pbUserExists.success) {
+    const newPBUserData = {
+      username,
+      userId: updatedUser.data.userId,
+      email: updatedUser.data.email,
+      roles: updatedUser.data.roles,
+      verified: updatedUser.data.emailVerified || updatedUser.data.phoneVerified,
+      password,
+      passwordConfirm: confirmPassword,
+      firstname: updatedUser.data.firstname,
+      lastname: updatedUser.data.lastname,
+      phone: updatedUser.data.phone,
+      emailVisibility: true,
+    };
+    await pb.createUser(newPBUserData);
+  } else {
+    const updatedPBUserData = {
+      username,
+      userId: updatedUser.data.userId,
+      email: updatedUser.data.email,
+      roles: updatedUser.data.roles,
+      verified: updatedUser.data.emailVerified || updatedUser.data.phoneVerified,
+      password,
+      passwordConfirm: confirmPassword,
+      firstname: updatedUser.data.firstname,
+      lastname: updatedUser.data.lastname,
+      phone: updatedUser.data.phone,
+      emailVisibility: true,
+    };
+    await pb.updateUser(pbUserExists.data.id, updatedPBUserData);
+  }
+
+  console.log({ pbUser: pbUserExists.data });
+  // try {
+  //   console.log({ pbUserExists });
+  //   console.log({ userData: updatedUser.data, pbUrl: config.pocketbase.url });
+  //   const userRecord = await pb.collection('users').create({
+  //     username,
+  //     userId: updatedUser.data.userId,
+  //     email: updatedUser.data.email,
+  //     password,
+  //     passwordConfirm: confirmPassword,
+  //     firstname: updatedUser.data.firstname,
+  //     lastname: updatedUser.data.lastname,
+  //     phone: updatedUser.data.phone,
+  //     emailVisibility: true,
+  //   });
+  //   console.log({ userRecord });
+  // } catch (error: any) {
+  //   console.log({ error, data: error.data, info: error.data.data });
+  // }
   const serviceQueues = await getServiceQueues(req.redis, config.redisConfig.scope);
   const userUpdatedEvent = new ServiceEvent('USER_UPDATED', updatedUser.data, idToken, null, config.self.serviceName, serviceQueues);
   await sendToServiceQueues(req.channel, userUpdatedEvent, serviceQueues);
@@ -238,14 +300,26 @@ export const onboardingHandler = async (req: Request, res: Response) => {
     await logResponse(req, createSessionSR);
     return res.status(createSessionSR.statusCode).send(createSessionSR);
   }
+  const pbAuthData = await pb.authenticateUser(
+    updatedUser.data.username,
+    password,
+  );
+  // if ((updatedUser.data.emailVerified || updatedUser.data.phoneVerified)) {
+  //   await pb.confirmVerification(pbAuthData.data.token);
+  // }
+  console.log({ pbAuthData });
   const { data: session } = createSessionSR;
   if (session.user.password) delete session.user.password;
   if (session.device.deviceData) delete session.device.deviceData;
   // #endregion
   // #region STEP: Generate Tokens, Emit 'USER_FIRST_LOGIN' Event, Send response
   const { user, device: { deviceId }, sessionId } = session;
-  const accessToken = (await signJWT({ ...user, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
-  const refreshToken = (await signJWT({ ...user, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.refreshTokenTTL })).token;
+  const accessToken = (await signJWT({
+    ...user, sessionId, deviceId, pbToken: pbAuthData.data.token, pbUser: pbAuthData.data.record
+  }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
+  const refreshToken = (await signJWT({
+    ...user, sessionId, deviceId, pbToken: pbAuthData.data.token, pbUser: pbAuthData.data.record
+  }, config.self.jwtSecret as string, { expiresIn: config.self.refreshTokenTTL })).token;
   const sr = new ServiceResponse('Onboarding Successful', {
     accessToken, refreshToken, session, user: session.user
   }, true, 200, null, null, null);
@@ -346,6 +420,11 @@ export const setNewPasswordHandler = async (req: Request, res: Response) => {
   if (!updatedUser.success) {
     await logResponse(req, updatedUser);
     return res.status(updatedUser.statusCode).send(updatedUser);
+  }
+  const pbAdminAuth = await pb.authenticateAdmin(pocketbase.adminEmail || '', pocketbase.adminPassword || '');
+  if (pbAdminAuth.success) {
+    await pb.confirmPasswordReset(pbAdminAuth.data.token, password, confirmPassword);
+    await pb.logout();
   }
   const serviceQueues = await getServiceQueues(req.redis, config.redisConfig.scope);
   const userUpdatedEvent = new ServiceEvent('USER_UPDATED', updatedUser.data, idToken, null, config.self.serviceName, serviceQueues);
