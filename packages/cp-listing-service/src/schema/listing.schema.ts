@@ -1,4 +1,21 @@
 import { isValidDate } from '@cribplug/common';
+import {
+  object, string
+} from 'zod';
+
+export const createListingSchema = object({
+  body: object({
+    title: string({
+      required_error: 'title is required',
+    }).min(1, 'title must be at least 1 character long'),
+    caption: string({
+      required_error: 'caption is required',
+    }).min(1, 'shortDescription must be at least 1 character long').max(160, 'caption must be at most 160 characters long'),
+    longDescription: string({}).min(1, 'longDescription must be at least 1 character long').optional(),
+  })
+});
+
+export const createListingFields = ['title', 'caption', 'longDescription'];
 
 const htmlRegex = /<\/?[^>]+(>|$)/gi;
 export const stripHTML = (html: string) => html.replace(htmlRegex, '');

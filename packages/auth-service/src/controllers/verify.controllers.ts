@@ -8,10 +8,12 @@ import { parsePhoneNumberWithError, ParseError } from 'libphonenumber-js';
 import { logResponse } from '../middleware/logRequests';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
 import UserDBService from '../services/user.service';
+import PBService from '../services/pb.service';
 import { config } from '../utils/config';
 
 const userService = new UserDBService();
-const { self, redisConfig } = config;
+const { self, pocketbase, redisConfig } = config;
+const pb = new PBService(pocketbase.url as string);
 
 export const verifyEmailHandler = async (req: Request, res: Response) => {
   const { email, token } = req.query;
@@ -163,7 +165,7 @@ export const verifyOTPHandler = async (req: Request, res: Response) => {
   }
   if (type === 'PHONE') {
     if (user.phone !== phone || parsedVerifData.phone !== phone) {
-      const sr = new ServiceResponse('Unauthorized', null, false, 403, 'Invalid or unauthorized request - Email mismatch', 'AUTH_SERVICE_EMAIL_MISMATCH', 'Please provide the email that matches the user');
+      const sr = new ServiceResponse('Unauthorized', null, false, 403, 'Invalid or unauthorized request - Phone mismatch', 'AUTH_SERVICE_PHONE_MISMATCH', 'Please provide the phone number that matches the user');
       await logResponse(req, sr);
       return res.status(sr.statusCode).send(sr);
     }
@@ -291,8 +293,13 @@ export const verifyDeviceLoginHandler = async (req: Request, res: Response) => {
   if (session.user.password) delete session.user.password;
   if (session.device.deviceData) delete session.device.deviceData;
   const { user, sessionId } = session;
-  const accessToken = (await signJWT({ ...user, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
-  const refreshToken = (await signJWT({ ...user, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.refreshTokenTTL })).token;
+  const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
+  const accessToken = (await signJWT({
+    ...user, sessionId, deviceId, pbUser, pbToken
+  }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
+  const refreshToken = (await signJWT({
+    ...user, sessionId, deviceId, pbUser, pbToken
+  }, config.self.jwtSecret as string, { expiresIn: config.self.refreshTokenTTL })).token;
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     maxAge: parseInt(config.self.refreshTokenTTLMS || '604800000', 10),

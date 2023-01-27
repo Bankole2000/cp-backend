@@ -11,31 +11,32 @@ datasource db {
 }
 
 model User {
-  userId        String    @id @default(uuid())
-  email         String?
-  emailVerified Boolean   @default(false) @db.Boolean
-  phone         String?
-  phoneData     Json?     @default("{}") @db.Json
-  phoneVerified Boolean   @default(false) @db.Boolean
-  registeredVia String?
-  username      String    @unique @default(uuid())
-  gender        String?
-  roles         String[]  @default(["USER"])
-  firstname     String?   @db.VarChar(100)
-  lastname      String?   @db.VarChar(100)
-  displayname   String?   @db.VarChar(100)
-  dob           DateTime
-  tos           Boolean   @db.Boolean
-  version       Int       @default(0)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  deletedAt     DateTime?
+  userId          String    @id @default(uuid())
+  email           String?
+  emailVerified   Boolean   @default(false) @db.Boolean
+  phone           String?
+  phoneData       Json?     @default("{}") @db.Json
+  phoneVerified   Boolean   @default(false) @db.Boolean
+  registeredVia   String?
+  username        String    @unique @default(uuid())
+  gender          String?
+  roles           String[]  @default(["USER"])
+  firstname       String?   @db.VarChar(100)
+  lastname        String?   @db.VarChar(100)
+  displayname     String?   @db.VarChar(100)
+  dob             DateTime
+  tos             Boolean   @db.Boolean
+  createdListings Listing[]
+  version         Int       @default(0)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
 }
 
 model Listing {
-  listingId                   String                @id @default(uuid())
+  listingId                   String                @id @unique
   title                       String                @db.VarChar(255)
-  shortDescription            String?               @db.VarChar(255)
+  caption                     String                @db.VarChar(255)
   longDescription             String?               @db.Text
   basicPrice                  Decimal?              @default(0.00) @db.Decimal(10, 2)
   pricePerWeekend             Decimal?              @default(0.00) @db.Decimal(10, 2)
@@ -53,7 +54,10 @@ model Listing {
   listingPurposeSubgroup      String?
   noOfBedrooms                Int?
   noOfBathrooms               Int?
+  images                      ListingImage[]
   isPublished                 Boolean               @default(false) @db.Boolean
+  createdByData               User                  @relation(fields: [createdBy], references: [userId])
+  createdBy                   String
   houseRules                  ListingHasHouseRule[]
   amenities                   ListingHasAmenities[]
   listingTypeData             ListingType?          @relation("ListingType", fields: [listingType], references: [listingType])
@@ -62,6 +66,18 @@ model Listing {
   version                     Int                   @default(0)
   createdAt                   DateTime              @default(now())
   updatedAt                   DateTime              @updatedAt
+  deletedAt                   DateTime?
+}
+
+model ListingImage {
+  id          String   @id @unique
+  listingData Listing  @relation(fields: [listing], references: [listingId])
+  listing     String
+  imageUrl    String
+  image       String
+  order       Int?
+  created     DateTime @default(now())
+  updated     DateTime @updatedAt
 }
 
 model ListingHasHouseRule {

@@ -1,10 +1,12 @@
 import { ServiceResponse, signJWT, verifyToken } from '@cribplug/common';
 import { Request, Response, NextFunction } from 'express';
 import UserDBService from '../services/user.service';
+import PBService from '../services/pb.service';
 import { config } from '../utils/config';
 import { logResponse } from './logRequests';
 
 const userService = new UserDBService();
+const pb = new PBService(config.pocketbase.url as string);
 
 export const requireUserFromIdToken = async (req: Request, res: Response, next: NextFunction) => {
   const idToken = req.headers['x-user-id-token'] || req.body.idToken;
@@ -57,7 +59,12 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
         req.user = null;
         return next();
       }
-      const newAccessToken = (await signJWT({ ...userExists.data, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
+      const { pbUser: oldUser, pbToken: oldToken } = refreshDecoded;
+      await pb.saveAuth(oldToken, oldUser);
+      const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
+      const newAccessToken = (await signJWT({
+        ...userExists.data, sessionId, deviceId, pbToken, pbUser
+      }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
       res.locals.newAccessToken = newAccessToken;
       res.setHeader('x-access-token', newAccessToken as string);
       req.user = refreshDecoded;
@@ -87,10 +94,23 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     }
     const { success, data } = await userService.getSessionById(decoded.sessionId);
     console.log('accessToken checking session exists');
-    if (!success || !data.isValid) {
+    console.log({ success, data });
+    if (!success) {
       req.user = null;
       return next();
     }
+    if (!data) {
+      req.user = null;
+      return next();
+    }
+    if (!data.isValid) {
+      req.user = null;
+      return next();
+    }
+    // const { pbUser, pbToken } = decoded;
+    // const result = await pb.saveAuth(pbToken, pbUser);
+    // console.log({ result });
+    console.log('Reached here');
     req.user = decoded;
     return next();
   }
@@ -118,7 +138,12 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
-    const newAccessToken = (await signJWT({ ...userExists.data, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
+    const { pbUser: oldUser, pbToken: oldToken } = refreshDecoded;
+    await pb.saveAuth(oldToken, oldUser);
+    const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
+    const newAccessToken = (await signJWT({
+      ...userExists.data, sessionId, deviceId, pbUser, pbToken
+    }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
     res.locals.newAccessToken = newAccessToken;
     res.setHeader('x-access-token', newAccessToken as string);
     req.user = refreshDecoded;
@@ -128,7 +153,11 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
   return next();
 };
 
-export const requireRole = (roles: string[]) => (req: Request, res: Response, next: NextFunction) => {
+export const requireRole = (roles: string[]) => (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { user } = req;
   if (!user) {
     const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'AUTH_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');

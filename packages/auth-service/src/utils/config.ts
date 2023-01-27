@@ -25,4 +25,9 @@ export const config = {
     exchange: process.env.RABBITMQ_EX,
     exqueue: process.env.RABBITMQ_X_QUEUE
   },
+  pocketbase: {
+    url: process.env.POCKETBASE_URL,
+    adminEmail: process.env.PB_ADMIN_EMAIL,
+    adminPassword: process.env.PB_ADMIN_PASSWORD,
+  }
 };

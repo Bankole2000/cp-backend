@@ -7,10 +7,12 @@ import {
 import { LoginType } from '@prisma/client';
 import { logResponse } from '../middleware/logRequests';
 import UserDBService from '../services/user.service';
+import PocketbaseService from '../services/pb.service';
 import { config } from '../utils/config';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
 
 const userService = new UserDBService();
+const pb = new PocketbaseService(config.pocketbase.url as string);
 
 export const emailLoginHandler = async (req: Request, res: Response) => {
   // #region STEP: Check user exists and Sanitize Data
@@ -27,6 +29,7 @@ export const emailLoginHandler = async (req: Request, res: Response) => {
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
+  const { token: pbToken, record: pbUser } = (await pb.authenticateUser(userExists.data.username, password)).data;
   // #endregion
   // #region STEP: Check if device is trusted
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || null;
@@ -142,8 +145,12 @@ export const emailLoginHandler = async (req: Request, res: Response) => {
   if (session.user.password) delete session.user.password;
   if (session.device.deviceData) delete session.device.deviceData;
   const { user, device: { deviceId }, sessionId } = session;
-  const accessToken = (await signJWT({ ...user, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
-  const refreshToken = (await signJWT({ ...user, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.refreshTokenTTL })).token;
+  const accessToken = (await signJWT({
+    ...user, sessionId, deviceId, pbToken, pbUser
+  }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
+  const refreshToken = (await signJWT({
+    ...user, sessionId, deviceId, pbToken, pbUser
+  }, config.self.jwtSecret as string, { expiresIn: config.self.refreshTokenTTL })).token;
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     maxAge: parseInt(config.self.refreshTokenTTLMS || '604800000', 10),
@@ -198,8 +205,11 @@ export const phoneLoginHandler = async (req: Request, res: Response) => {
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
+  const { token: pbToken, record: pbUser } = (await pb.authenticateUser(userExists.data.username, password)).data;
+  console.log({ pbToken, pbUser });
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || null;
   const userAgent = req.headers['user-agent'];
+  console.log('Reached Here - 211');
   const deviceApproved = await userService.checkIfDeviceIsApproved(userExists.data.userId, ip as string);
   if (!deviceApproved.success) {
     // #region STEP: If device not trusted - Send email to user to approve device
@@ -312,8 +322,12 @@ export const phoneLoginHandler = async (req: Request, res: Response) => {
   if (session.user.password) delete session.user.password;
   if (session.device.deviceData) delete session.device.deviceData;
   const { user, device: { deviceId }, sessionId } = session;
-  const accessToken = (await signJWT({ ...user, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
-  const refreshToken = (await signJWT({ ...user, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.refreshTokenTTL })).token;
+  const accessToken = (await signJWT({
+    ...user, sessionId, deviceId, pbToken, pbUser
+  }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
+  const refreshToken = (await signJWT({
+    ...user, sessionId, deviceId, pbToken, pbUser
+  }, config.self.jwtSecret as string, { expiresIn: config.self.refreshTokenTTL })).token;
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     maxAge: parseInt(config.self.refreshTokenTTLMS || '604800000', 10),
@@ -350,6 +364,7 @@ export const usernameLoginHandler = async (req: Request, res: Response) => {
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
+  const { token: pbToken, record: pbUser } = (await pb.authenticateUser(username, password)).data;
   // #endregion
   // #region STEP: Check if device is trusted
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || null;
@@ -468,8 +483,12 @@ export const usernameLoginHandler = async (req: Request, res: Response) => {
   if (session.user.password) delete session.user.password;
   if (session.device.deviceData) delete session.device.deviceData;
   const { user, device: { deviceId }, sessionId } = session;
-  const accessToken = (await signJWT({ ...user, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
-  const refreshToken = (await signJWT({ ...user, sessionId, deviceId }, config.self.jwtSecret as string, { expiresIn: config.self.refreshTokenTTL })).token;
+  const accessToken = (await signJWT({
+    ...user, sessionId, deviceId, pbToken, pbUser
+  }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
+  const refreshToken = (await signJWT({
+    ...user, sessionId, deviceId, pbToken, pbUser
+  }, config.self.jwtSecret as string, { expiresIn: config.self.refreshTokenTTL })).token;
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     maxAge: 1000 * 60 * 60 * 24 * 7,
@@ -496,6 +515,8 @@ export const logoutHandler = async (req: Request, res: Response) => {
   // #region STEP: Invalidate User Session
   const { sessionId } = req.user;
   const sr = await userService.invalidateUserSession(req.redis, config.redisConfig.scope || '', sessionId);
+  await pb.saveAuth(req.user.pbToken, req.user.pbUser);
+  await pb.logout();
   if (sr.success) {
     res.clearCookie('refreshToken');
     res.clearCookie('accessToken');

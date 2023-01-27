@@ -3,3 +3,13 @@ https://fontawesome.com/v4/icons/ - search font awesome icons
 https://fontawesome.com/search?o=r&m=free - search font awesome v5 icons
 
 TODO: listings having multiple purposes
+
+TODO: listing views count (and maybe length??)
+
+TODO: listing reviews & ratings
+
+TODO: listing currency
+
+TODO: listing availability
+
+TODO: listing management (i.e. Host can allow certain users manage a listing)

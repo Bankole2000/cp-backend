@@ -1,6 +1,9 @@
 import {
   sanitizeData, ServiceEvent, ServiceResponse, userCreateFields, userUpdateFields
 } from '@cribplug/common';
+import fs from 'fs';
+import path from 'path';
+import cloudinary from '../../../utils/cloudinary';
 import { config } from '../../../utils/config';
 import UserDBService from '../../user.service';
 
@@ -73,6 +76,33 @@ export const USER_PURGED = async (message: ServiceEvent) => {
   }
   const sr = await userService.purgeUserAccount(userId);
   if (sr.success) {
+    if (sr.data.imageUrl) {
+      await cloudinary.uploader.destroy(sr.data.imageData.public_id);
+    }
+    if (sr.data.wallpaperUrl) {
+      await cloudinary.uploader.destroy(sr.data.wallpaperData.public_id);
+    }
+    const folder = path.join(`${__dirname}`, `/../../../../uploads/${sr.data.username}/`);
+    fs.access(folder, (error) => {
+      if (error) {
+        console.log(error);
+      } else {
+        fs.readdir(folder, (err, files) => {
+          if (err) {
+            console.log(err);
+          } else {
+            files.forEach((file) => {
+              if (
+                file === sr.data.username
+                || file.includes(`${sr.data.username}-`)
+                || file === `wallpaper-${sr.data.username}`) {
+                fs.unlinkSync(`${folder}${file}`);
+              }
+            });
+          }
+        });
+      }
+    });
     console.log(`${emoji} ${serviceName?.toUpperCase()} Handled Event: ${message.type}`);
   } else {
     console.log(`${emoji} ${serviceName?.toUpperCase()} Failed to Handle Event: ${message.type}`);

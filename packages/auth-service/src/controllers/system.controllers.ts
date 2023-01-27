@@ -4,10 +4,12 @@ import { Request, Response } from 'express';
 import { logResponse } from '../middleware/logRequests';
 import { getServiceQueues, sendToServiceQueues } from '../services/events.service';
 import UserDBService from '../services/user.service';
+import PBService from '../services/pb.service';
 import { config } from '../utils/config';
 
-const { self, redisConfig } = config;
+const { self, redisConfig, pocketbase } = config;
 const userService = new UserDBService();
+const pb = new PBService(pocketbase.url as string);
 
 // #region TODO: Purge Request Logs Hander, all, by UserId, if error, by ErrorId, self
 // #region TODO: Purge Sessions Handler, all, by UserId, self
@@ -37,6 +39,12 @@ export const systemPurgeUserHandler = async (req: Request, res: Response) => {
     const userAccessToken = req.headers.authorization?.split(' ')[1] || null;
     const se = new ServiceEvent('USER_PURGED', { userId }, null, userAccessToken, self.serviceName, serviceQueues);
     await sendToServiceQueues(req.channel, se, serviceQueues);
+    const pbUser = await pb.findUserById(userId);
+    if (!pbUser.success) {
+      return res.status(pbUser.statusCode).send(pbUser);
+    }
+    await pb.authenticateAdmin(pocketbase.adminEmail || '', pocketbase.adminPassword || '');
+    await pb.deleteUser(pbUser.data.id);
   }
   await logResponse(req, purgeUserSR);
   return res.status(purgeUserSR.statusCode).send(purgeUserSR);
