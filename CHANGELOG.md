@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/Bankole2000/cp-backend/compare/v1.2.1...v1.3.0) (2023-01-28)
+
+
+### Features
+
+* **listings:** upload, delete, reorder listing images ([1e3d163](https://github.com/Bankole2000/cp-backend/commits/1e3d1633512fd4e4d545e1a7818f7338a18f6b6d))
+
+
+### Bug Fixes
+
+* fixed .env.example ([74daf74](https://github.com/Bankole2000/cp-backend/commits/74daf74aaa220f7e752a90c29078a6eaeae7064b))
+
 ### [1.2.1](https://github.com/Bankole2000/cp-backend/compare/v1.2.0...v1.2.1) (2023-01-27)
 
 
