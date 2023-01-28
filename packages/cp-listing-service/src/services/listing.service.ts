@@ -219,7 +219,7 @@ export default class ListingDBService {
     }
   }
 
-  async reorderImagesForward(order: number, listingId: string, imageId: string) {
+  async reorderImagesForward(order: number, listingId: string, imageId: string, stop = 0) {
     try {
       const reorderedImages = await this.prisma.listingImage.updateMany({
         where: {
@@ -229,7 +229,8 @@ export default class ListingDBService {
             },
             {
               order: {
-                gte: order
+                gte: order,
+                lt: stop
               }
             },
             {
@@ -255,7 +256,7 @@ export default class ListingDBService {
     }
   }
 
-  async reorderImagesBackward(order: number, listingId: string, imageId: string) {
+  async reorderImagesBackward(order: number, listingId: string, imageId: string, stop = 0) {
     try {
       const reorderedImages = await this.prisma.listingImage.updateMany({
         where: {
@@ -265,7 +266,8 @@ export default class ListingDBService {
             },
             {
               order: {
-                lte: order
+                lte: order, 
+                gt: stop,
               }
             },
             {

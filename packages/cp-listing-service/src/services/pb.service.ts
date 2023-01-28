@@ -12,7 +12,7 @@ export default class PBService {
   }
 
   async findUserById(userId: string) {
-    const filter = `userId="${userId}"`;
+    const filter = `id="${userId}"`;
     console.log({ filter });
     try {
       const res = await this.pb.collection('users').getFirstListItem(filter);

@@ -98,7 +98,7 @@ export const deleteListingImageHandler = async (req: Request, res: Response) => 
   const sr = await listingService.deleteListingImage(imageId);
   if (sr.success && success) {
     if (sr.data.order < data.length - 1) {
-      const ordersr = await listingService.reorderImagesBackward(sr.data.order, listingId, imageId);
+      const ordersr = await listingService.reorderImagesBackward(sr.data.order, listingId, imageId, data.length);
       console.log({ ordersr });
     }
   }
@@ -128,10 +128,10 @@ export const reorderListingImagesHandler = async (req: Request, res: Response) =
   const updateImage = await listingService.setImageOrder(order, imageId);
   if (updateImage.success) {
     if (order < currentImage.data.order) {
-      await listingService.reorderImagesForward(order, listingId, imageId);
+      await listingService.reorderImagesForward(order, listingId, imageId, currentImage.data.order);
     }
     if (order > currentImage.data.order) {
-      await listingService.reorderImagesBackward(order, listingId, imageId);
+      await listingService.reorderImagesBackward(order, listingId, imageId, currentImage.data.order);
     }
   }
   return res.status(updateImage.statusCode).send(updateImage);
