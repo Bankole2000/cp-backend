@@ -161,3 +161,14 @@ Multiple issues	Use full syntax for each issue	Resolves #10, resolves #123, reso
 Consider encryption between client and server 
 utf-16?
 
+client.records.create('groups', record, { '$autoCancel': false });
+
+function importRecordsInParallel(records) {
+    const promises = records.map((record) => {
+        return client.records.create("example", record, {
+            '$autoCancel': false,
+        });
+    })
+
+    return Promise.all(promises);
+}
