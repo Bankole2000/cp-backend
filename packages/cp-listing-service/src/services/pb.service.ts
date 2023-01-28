@@ -159,5 +159,66 @@ export default class PBService {
     }
   }
 
-  // async addListingImage()
+  async getListingImages(listingId: string) {
+    console.log({ listingId });
+    try {
+      const res = await this.pb.collection('listingImages').getList(1, 50, {
+        filter: `listing="${listingId}"`
+      });
+      console.log({ res });
+      if (res.items) {
+        return new ServiceResponse('Listing Images fetched', res.items, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Listing Images not fetched', null, false, 400, 'Error fetching listing Images in Pocketbase', 'LISTING_SERVICE_PB_ERROR_FETCHING_LISTING_IMAGES', null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error fetching listing Images', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async addListingImage(imageData: any) {
+    try {
+      const res = await this.pb.collection('listingImages').create(imageData);
+      console.log({ res });
+      if (res) {
+        return new ServiceResponse('Listing Image added', res, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Listing Image not added', res, false, 400, 'Error adding listing Image in Pocketbase', 'LISTING_SERVICE_PB_ERROR_ADDING_LISTING_IMAGE', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error adding listing Image', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async generateImageUrl(record: any, filename: string) {
+    return this.pb.getFileUrl(record, filename);
+  }
+
+  async getListingImage(listingImageId: string) {
+    try {
+      const res = await this.pb.collection('listingImages').getOne(listingImageId);
+      console.log({ res });
+      if (res) {
+        return new ServiceResponse('Listing Image fetched', res, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Listing Image not fetched', res, false, 400, 'Error fetching listing Image in Pocketbase', 'LISTING_SERVICE_PB_ERROR_FETCHING_LISTING_IMAGE', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error fetching listing Image', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async deleteListingImage(listingImageId: string) {
+    try {
+      const res = await this.pb.collection('listingImages').delete(listingImageId);
+      console.log({ res });
+      if (res) {
+        return new ServiceResponse('Listing Image deleted', res, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Listing Image not deleted', res, false, 400, 'Error deleting listing Image in Pocketbase', 'LISTING_SERVICE_PB_ERROR_DELETING_LISTING_IMAGE', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error deleting listing Image', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
 }

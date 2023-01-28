@@ -41,6 +41,13 @@ export default class ListingDBService {
         orderBy: {
           updatedAt: 'desc',
         },
+        include: {
+          images: {
+            orderBy: {
+              order: 'asc'
+            }
+          },
+        },
         skip: (page - 1) * limit,
         take: limit,
       });
@@ -157,30 +164,147 @@ export default class ListingDBService {
     }
   }
 
-  async addListingImage(listingId: string, imageId: string) {
-    console.log({ prisma: this.prisma });
-    return new ServiceResponse('Listing image added successfully', null, true, 200, null, null, null);
-    // try {
-    //   const listing = await this.prisma.listing.update({
-    //     where: {
-    //       listingId
-    //     },
-    //     data: {
-    //       listingImages: {
-    //         connect: {
-    //           imageId
-    //         }
-    //       }
-    //     }
-    //   });
-    //   if (listing) {
-    //     return new ServiceResponse('Listing image added successfully', listing, true, 200, null, null, null);
-    //   }
-    //   return new ServiceResponse('Listing image not added', listing, false, 404, 'Listing image not added', 'LISTING_SERVICE_ERROR_ADDING_LISTING_IMAGE', 'Confirm that Listing image was added');
-    // } catch (error: any) {
-    //   console.log({ error });
-    //   const sr = new ServiceResponse('Error adding Listing image', null, false, 500, error.message, error, 'Check logs and database');
-    //   return sr;
-    // }
+  async addListingImage(imageData: any) {
+    try {
+      const image = await this.prisma.listingImage.create({
+        data: {
+          ...imageData
+        }
+      });
+      if (image) {
+        return new ServiceResponse('Listing Image added successfully', image, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Listing Image not added', image, false, 404, 'Listing Image not added', 'LISTING_SERVICE_ERROR_ADDING_LISTING_IMAGE', 'Confirm that Listing Image was added');
+    } catch (error: any) {
+      console.log({ error });
+      const sr = new ServiceResponse('Error adding Listing Image', null, false, 500, error.message, error, 'Check logs and database');
+      return sr;
+    }
+  }
+
+  async deleteListingImage(imageId: string) {
+    try {
+      const deletedListingImage = await this.prisma.listingImage.delete({
+        where: {
+          id: imageId
+        }
+      });
+      if (deletedListingImage) {
+        return new ServiceResponse('listing Image deleted successfully', deletedListingImage, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error deleting listing image', deletedListingImage, false, 400, 'Error deleting image', 'LISTING_SERVICE_ERROR_DELETING_LISTING_IMAGE', 'Check database and logs');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error deleting listing Image', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async setImageOrder(order: number, imageId: string) {
+    try {
+      const reorderedImage = await this.prisma.listingImage.update({
+        where: {
+          id: imageId
+        },
+        data: {
+          order
+        }
+      });
+      if (reorderedImage) {
+        return new ServiceResponse('Listing image reordered', reorderedImage, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error reordering listing image', reorderedImage, false, 401, 'Error updating listing image order', 'LISTING_SERVICE_ERROR_CHANGING_LISTING_IMAGE_ORDER', 'Check database and logs');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error setting image order', null, false, 500, error.message, error, 'Check database and logs');
+    }
+  }
+
+  async reorderImagesForward(order: number, listingId: string, imageId: string) {
+    try {
+      const reorderedImages = await this.prisma.listingImage.updateMany({
+        where: {
+          AND: [
+            {
+              listing: listingId
+            },
+            {
+              order: {
+                gte: order
+              }
+            },
+            {
+              id: {
+                not: imageId
+              }
+            }
+          ]
+        },
+        data: {
+          order: {
+            increment: 1,
+          }
+        }
+      });
+      if (reorderedImages) {
+        return new ServiceResponse('Images reordered', reorderedImages, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error reordering images', reorderedImages, false, 400, 'Error reordering images', 'LISTING_SERVICE_ERROR_REORDERING_IMAGES_FORWARD', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error reordering Images', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async reorderImagesBackward(order: number, listingId: string, imageId: string) {
+    try {
+      const reorderedImages = await this.prisma.listingImage.updateMany({
+        where: {
+          AND: [
+            {
+              listing: listingId
+            },
+            {
+              order: {
+                lte: order
+              }
+            },
+            {
+              id: {
+                not: imageId
+              }
+            }
+          ]
+        },
+        data: {
+          order: {
+            increment: -1,
+          }
+        }
+      });
+      if (reorderedImages) {
+        return new ServiceResponse('Images reordered', reorderedImages, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error reordering images', reorderedImages, false, 400, 'Error reordering images', 'LISTING_SERVICE_ERROR_REORDERING_IMAGES_FORWARD', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error reordering Images', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async getListingImage(imageId: string) {
+    try {
+      const listingImage = await this.prisma.listingImage.findUnique({
+        where: {
+          id: imageId
+        }
+      });
+      if (listingImage) {
+        return new ServiceResponse('Found listing image', listingImage, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Image not found', listingImage, false, 404, 'Image not found', 'LISTING_SERVICE_LISTING_IMAGE_NOT_FOUND', 'Check image id');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting listing Image', null, false, 500, error.message, error, 'Check logs and database');
+    }
   }
 }
