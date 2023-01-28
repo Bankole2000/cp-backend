@@ -55,8 +55,8 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       const userData = sanitizeData(userCreateFields, user);
       const createdUser = await userService.createUser(userData);
       if (createdUser.success) {
-        req.user = { 
-          ...user, deviceId, sessionId, pbUser, pbToken 
+        req.user = {
+          ...user, deviceId, sessionId, pbUser, pbToken
         };
         return next();
       }
@@ -77,7 +77,7 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       return next();
     }
 
-    req.user = { 
+    req.user = {
       ...user, deviceId, sessionId, pbUser, pbToken
     };
     return next();
@@ -112,10 +112,10 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       if (createdUser.success) {
         await pb.saveAuth(oldToken, oldUser);
         const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
-        req.user = { 
+        req.user = {
           ...user, deviceId, sessionId, pbUser, pbToken
         };
-        const newAccessToken = (await signJWT({ 
+        const newAccessToken = (await signJWT({
           ...user, deviceId, sessionId, pbUser, pbToken
         }, self.jwtSecret as string, { expiresIn: self.accessTokenTTL })).token;
         res.locals.newAccessToken = newAccessToken;
@@ -139,11 +139,11 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     }
     await pb.saveAuth(oldToken, oldUser);
     const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
-    req.user = { 
-      ...user, deviceId, sessionId, pbUser, pbToken 
+    req.user = {
+      ...user, deviceId, sessionId, pbUser, pbToken
     };
-    const newAccessToken = (await signJWT({ 
-      ...user, deviceId, sessionId, pbUser, pbToken 
+    const newAccessToken = (await signJWT({
+      ...user, deviceId, sessionId, pbUser, pbToken
     }, self.jwtSecret as string, { expiresIn: self.accessTokenTTL })).token;
     res.locals.newAccessToken = newAccessToken;
     res.setHeader('x-access-token', newAccessToken as string);

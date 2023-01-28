@@ -57,30 +57,30 @@ export default class PBService {
     return this.pb.authStore.isValid;
   }
 
-  async updateProfileImage (userId: string, imageData: any) {
+  async updateProfileImage(userId: string, imageData: any) {
     try {
       const res = await this.pb.collection('users').update(userId, imageData);
-      console.log({ res })
+      console.log({ res });
       if (!res.code) {
         return new ServiceResponse('User profile image updated', res, true, 200, null, null, null);
       }
       return new ServiceResponse('Error updating profile image', res, false, 400, 'Error updating profile image', 'PROFILE_SERVICE_PROFILE_IMAGE_UPDATE_ERROR', 'Check logs and database');
     } catch (error: any) {
-      console.log({ error })
+      console.log({ error });
       return new ServiceResponse('Error updating profile image', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
 
-  async updateProfileWallpaper (userId: string, imageData: any) {
+  async updateProfileWallpaper(userId: string, imageData: any) {
     try {
       const res = await this.pb.collection('users').update(userId, imageData);
-      console.log({ res })
+      console.log({ res });
       if (!res.code) {
         return new ServiceResponse('User profile wallpaper updated', res, true, 200, null, null, null);
       }
       return new ServiceResponse('Error updating profile wallpaper', res, false, 400, 'Error updating profile image', 'PROFILE_SERVICE_PROFILE_WALLPAPER_UPDATE_ERROR', 'Check logs and database');
     } catch (error: any) {
-      console.log({ error })
+      console.log({ error });
       return new ServiceResponse('Error updating profile wallpaper', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
