@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/Bankole2000/cp-backend/compare/v1.3.0...v1.4.0) (2023-01-28)
+
+
+* **profiles:** changing image location to pb ([4e71ee1](https://github.com/Bankole2000/cp-backend/commits/4e71ee1e4cc86057b736a9a54573453953ac9d83))
+* **profiles:** image uploads removed from cloudinary ([dff87cd](https://github.com/Bankole2000/cp-backend/commits/dff87cdaa602a163383a6f97b679591eb093394a))
+
 ## [1.3.0](https://github.com/Bankole2000/cp-backend/compare/v1.2.1...v1.3.0) (2023-01-28)
 
 

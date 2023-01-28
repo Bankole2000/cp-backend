@@ -3,11 +3,14 @@ import {
 } from '@cribplug/common';
 import { Request, Response, NextFunction } from 'express';
 import UserDBService from '../services/user.service';
+import PBService from '../services/pb.service';
 import { config } from '../utils/config';
 import { logResponse } from './logRequests';
 
 const userService = new UserDBService();
-const { self, redisConfig } = config;
+const { self, redisConfig, pocketbase } = config;
+
+const pb = new PBService(pocketbase.url as string);
 
 export const requireLoggedInUser = async (req: Request, res: Response, next: NextFunction) => {
   if (!req.user) {
@@ -34,6 +37,7 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     valid, decoded, error, expired
   } = await verifyToken(accessToken, config.self.jwtSecret || '');
   if (decoded && valid) {
+    const { pbUser, pbToken } = decoded;
     const userExists = await userService.findUserById(decoded.userId);
     if (!userExists.success) {
       const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', decoded.sessionId);
@@ -51,7 +55,9 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       const userData = sanitizeData(userCreateFields, user);
       const createdUser = await userService.createUser(userData);
       if (createdUser.success) {
-        req.user = { ...user, deviceId, sessionId };
+        req.user = {
+          ...user, deviceId, sessionId, pbUser, pbToken
+        };
         return next();
       }
       req.user = null;
@@ -71,7 +77,9 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       return next();
     }
 
-    req.user = { ...user, deviceId, sessionId };
+    req.user = {
+      ...user, deviceId, sessionId, pbUser, pbToken
+    };
     return next();
   }
   if (!refreshToken) {
@@ -84,6 +92,7 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
+    const { pbUser: oldUser, pbToken: oldToken } = refreshDecoded;
     const userExists = await userService.findUserById(refreshDecoded.userId);
     if (!userExists.success) {
       const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', decoded.sessionId);
@@ -101,8 +110,14 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       const userData = sanitizeData(userCreateFields, user);
       const createdUser = await userService.createUser(userData);
       if (createdUser.success) {
-        req.user = { ...user, deviceId, sessionId };
-        const newAccessToken = (await signJWT({ ...user, deviceId, sessionId }, self.jwtSecret as string, { expiresIn: self.accessTokenTTL })).token;
+        await pb.saveAuth(oldToken, oldUser);
+        const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
+        req.user = {
+          ...user, deviceId, sessionId, pbUser, pbToken
+        };
+        const newAccessToken = (await signJWT({
+          ...user, deviceId, sessionId, pbUser, pbToken
+        }, self.jwtSecret as string, { expiresIn: self.accessTokenTTL })).token;
         res.locals.newAccessToken = newAccessToken;
         res.setHeader('x-access-token', newAccessToken as string);
         return next();
@@ -122,8 +137,14 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
-    req.user = { ...user, deviceId, sessionId };
-    const newAccessToken = (await signJWT({ ...user, deviceId, sessionId }, self.jwtSecret as string, { expiresIn: self.accessTokenTTL })).token;
+    await pb.saveAuth(oldToken, oldUser);
+    const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
+    req.user = {
+      ...user, deviceId, sessionId, pbUser, pbToken
+    };
+    const newAccessToken = (await signJWT({
+      ...user, deviceId, sessionId, pbUser, pbToken
+    }, self.jwtSecret as string, { expiresIn: self.accessTokenTTL })).token;
     res.locals.newAccessToken = newAccessToken;
     res.setHeader('x-access-token', newAccessToken as string);
     return next();

@@ -13,7 +13,6 @@ const { self, redisConfig, pocketbase } = config;
 const pb = new PBService(pocketbase.url as string);
 
 export const requireLoggedInUser = async (req: Request, res: Response, next: NextFunction) => {
-  console.log({ user: req.user });
   if (!req.user) {
     const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'LISTING_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
     await logResponse(req, sr);
@@ -37,7 +36,6 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
   const {
     valid, decoded, error, expired
   } = await verifyToken(accessToken, config.self.jwtSecret || '');
-
   if (decoded && valid) {
     const { pbUser, pbToken } = decoded;
     const userExists = await userService.findUserById(decoded.userId);
@@ -55,7 +53,6 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
         return next();
       }
       const userData = sanitizeData(userCreateFields, user);
-
       const createdUser = await userService.createUser(userData);
       if (createdUser.success) {
         req.user = {
@@ -86,13 +83,10 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     return next();
   }
   if (!refreshToken) {
-    console.log('line 80');
     req.user = null;
     return next();
   }
-  console.log('line 84');
   if (expired && refreshToken) {
-    console.log('line 86');
     const { decoded: refreshDecoded } = await verifyToken(refreshToken, config.self.jwtSecret || '');
     if (!refreshDecoded) {
       req.user = null;

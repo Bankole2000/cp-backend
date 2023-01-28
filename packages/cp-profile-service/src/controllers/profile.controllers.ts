@@ -1,15 +1,19 @@
 import { ServiceResponse } from '@cribplug/common';
 import { Request, Response } from 'express';
-import fs from 'fs';
+import fs, { PathLike } from 'fs';
 import http from 'http';
-import axios from 'axios';
 import path from 'path';
 import { logResponse } from '../middleware/logRequests';
 import UserDBService from '../services/user.service';
-import cloudinary from '../utils/cloudinary';
 import { config } from '../utils/config';
+import PBService from '../services/pb.service';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const FormData = require('form-data');
 
 const userService = new UserDBService();
+
+const { pocketbase } = config;
+const pb = new PBService(pocketbase.url || '');
 
 export const getCurrentUserProfile = async (req: Request, res: Response) => {
   let userId: string | null = null;
@@ -49,26 +53,24 @@ export const updateProfile = async (req: Request, res: Response) => {
 };
 
 export const updateProfileImage = async (req: Request, res: Response) => {
+  console.log({ reqBody: req.body, file: req.file });
   if (!req.user) {
     const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthorized', 'PROFILE_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
-  const { redisConfig: { scope }, self: { env } } = config;
-  const { username } = req.user;
-  const resourceName = `${scope}/${env}/profile/${username}`;
-  const cloudUrl = cloudinary.url(resourceName);
-  const existsResult = await axios.head(cloudUrl).catch((err) => err);
-  if (existsResult.status >= 200 && existsResult.status < 300) {
-    await cloudinary.uploader.destroy(resourceName, { invalidate: true });
+  await pb.saveAuth(req.user.pbToken, req.user.pbUser);
+  const form = new FormData();
+  form.append('profileImage', fs.createReadStream(req.file?.path as PathLike));
+  const pbimg = await pb.updateProfileImage(req.user.userId, form);
+  if (!pbimg.success) {
+    await logResponse(req, pbimg);
+    return res.status(pbimg.statusCode).send(pbimg);
   }
-  try {
-    const result = await cloudinary.uploader.upload(req.file ? req.file.path : '', {
-      public_id: `${resourceName}`,
-      overwrite: true,
-      transformation: { width: 1000, height: 1000, crop: 'limit' },
-      invalidate: true,
-    });
+  const imageUrl = await pb.generateImageUrl(pbimg.data, pbimg.data.profileImage);
+  const updateUser = await userService.updateUser(req.user.userId, { imageUrl });
+  if (updateUser.success) {
+    const { username } = updateUser.data;
     const folder = path.join(`${__dirname}`, `/../../uploads/${username}/`);
     fs.access(folder, (error) => {
       if (error) {
@@ -86,42 +88,15 @@ export const updateProfileImage = async (req: Request, res: Response) => {
         }
       });
     });
-    const updatedProfile = await userService.updateUserProfileImage(req.user.userId, result.url, result.secure_url, result);
-    if (!updatedProfile.success) {
-      await logResponse(req, updatedProfile);
-      return res.status(updatedProfile.statusCode).send(updatedProfile);
-    }
-    const serviceResponse = new ServiceResponse(
-      `@${req.user.username}'s Profile Image updated`,
-      updatedProfile.data,
-      // 'message',
-      true,
-      201,
-      null,
-      null,
-      res.locals.newAccessToken
-    );
-    await logResponse(req, serviceResponse);
-    return res.status(serviceResponse.statusCode).send(serviceResponse);
-  } catch (error: any) {
-    const serviceResponse = new ServiceResponse(
-      'Error uploading profile image',
-      null,
-      false,
-      500,
-      error.message,
-      error,
-      res.locals.newAccessToken
-    );
-    await logResponse(req, serviceResponse);
-    return res.status(serviceResponse.statusCode).send(serviceResponse);
   }
+  await logResponse(req, updateUser);
+  return res.status(updateUser.statusCode).send(updateUser);
 };
 
 export const getProfileImagehandler = async (req: Request, res: Response) => {
   const { username } = req.params;
   const { w } = req.query;
-  const width = w || 200;
+  const width = w || 100;
   const folder = path.join(`${__dirname}`, `/../../uploads/${username}/`);
   fs.access(folder, (error) => {
     if (error) {
@@ -131,60 +106,51 @@ export const getProfileImagehandler = async (req: Request, res: Response) => {
       console.log('Directory exists.');
     }
   });
-  const filePath = path.join(`${__dirname}`, `/../../uploads/${username}/`, `${username}-${width}`);
+  const defaultImageFilePath = path.join(`${__dirname}`, '/../utils/data/defaultuserprofileimage.webp');
+  const filePath = path.join(`${__dirname}`, `/../../uploads/${username}/`, `${username}-${width}x${width}`);
   if (fs.existsSync(filePath)) {
     const stream = fs.createReadStream(filePath);
     return stream.pipe(res);
   }
-  const { redisConfig: { scope }, self: { env } } = config;
-  const resourceName = `${scope}/${env}/profile/${username}`;
-  return cloudinary.api
-    .resource(resourceName)
-    .then((r) => {
-      console.log({ r });
-      // cloudinary.uploader.explicit(r.url, { type: 'fetch', invalidate: true }, (result) => {
-      //   console.log({ newResult: result });
-      // });
-      const url = cloudinary.url(resourceName, {
-        transformation: {
-          width, crop: 'fill', height: width, quality: 'auto'
-        },
-      });
+  const user = await userService.findUserByUsername(username);
+  if (user.success) {
+    if (user.data.imageUrl) {
       const file = fs.createWriteStream(filePath);
-      return http.get(url, (resp) => {
+      return http.get(`${user.data.imageUrl}?thumb=${width}x${width}`, (resp) => {
         resp.pipe(file);
         file.on('finish', () => {
           const stream = fs.createReadStream(filePath);
           return stream.pipe(res);
         });
       });
-    }).catch((e) => {
-      const defaultImageFilePath = path.join(`${__dirname}`, '/../utils/data/defaultuserprofileimage.webp');
-      const stream = fs.createReadStream(defaultImageFilePath);
-      return stream.pipe(res);
-    });
+    }
+    const stream = fs.createReadStream(defaultImageFilePath);
+    return stream.pipe(res);
+  }
+  const stream = fs.createReadStream(defaultImageFilePath);
+  return stream.pipe(res);
 };
 
 export const updateProfileWallpaper = async (req: Request, res: Response) => {
+  console.log({ reqBody: req.body, file: req.file });
   if (!req.user) {
     const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthorized', 'PROFILE_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
-  const { redisConfig: { scope }, self: { env } } = config;
-  const { username } = req.user;
-  const resourceName = `${scope}/${env}/profile/wallpaper-${username}`;
-  const cloudUrl = cloudinary.url(resourceName);
-  const existsResult = await axios.head(cloudUrl).catch((err) => err);
-  if (existsResult.status >= 200 && existsResult.status < 300) {
-    await cloudinary.uploader.destroy(resourceName, { invalidate: true });
+  await pb.saveAuth(req.user.pbToken, req.user.pbUser);
+  const form = new FormData();
+  form.append('profileWallpaper', fs.createReadStream(req.file?.path as PathLike));
+  const pbimg = await pb.updateProfileImage(req.user.userId, form);
+  if (!pbimg.success) {
+    await logResponse(req, pbimg);
+    return res.status(pbimg.statusCode).send(pbimg);
   }
-  try {
-    const result = await cloudinary.uploader.upload(req.file ? req.file.path : '', {
-      public_id: `${resourceName}`,
-      overwrite: true,
-      invalidate: true,
-    });
+  const wallpaperUrl = await pb.generateImageUrl(pbimg.data, pbimg.data.profileWallpaper);
+  const updateUser = await userService.updateUser(req.user.userId, { wallpaperUrl });
+
+  if (updateUser.success) {
+    const { username } = updateUser.data;
     const folder = path.join(`${__dirname}`, `/../../uploads/${username}/`);
     fs.access(folder, (error) => {
       if (error) {
@@ -197,62 +163,43 @@ export const updateProfileWallpaper = async (req: Request, res: Response) => {
     fs.readdir(folder, (err, files) => {
       if (err) throw err;
       files.forEach((file) => {
-        if (file === `wallpaper-${username}`) {
+        if (file.startsWith(`wallpaper-${username}-`)) {
           fs.unlinkSync(`${folder}${file}`);
         }
       });
     });
-    const updatedProfile = await userService.updateUserWallpaperImage(req.user.userId, result.url, result.secure_url, result);
-    if (!updatedProfile.success) {
-      await logResponse(req, updatedProfile);
-      return res.status(updatedProfile.statusCode).send(updatedProfile);
-    }
-    const serviceResponse = new ServiceResponse(
-      `@${req.user.username}'s Profile Wallpaper updated`,
-      updatedProfile.data,
-      // 'message',
-      true,
-      201,
-      null,
-      null,
-      res.locals.newAccessToken
-    );
-    await logResponse(req, serviceResponse);
-    return res.status(serviceResponse.statusCode).send(serviceResponse);
-  } catch (error: any) {
-    const serviceResponse = new ServiceResponse(
-      'Error uploading profile wallpaper',
-      null,
-      false,
-      500,
-      error.message,
-      error,
-      res.locals.newAccessToken
-    );
-    await logResponse(req, serviceResponse);
-    return res.status(serviceResponse.statusCode).send(serviceResponse);
   }
+
+  await logResponse(req, updateUser);
+  return res.status(updateUser.statusCode).send(updateUser);
 };
 
 export const getProfileWallpaperhandler = async (req: Request, res: Response) => {
-  // const { username } = req.params;
   const { username } = req.params;
-  const filePath = path.join(`${__dirname}`, `/../../uploads/${username}/`, `wallpaper-${username}`);
+  const { w } = req.query;
+  const width = w || 500;
+
+  const folder = path.join(`${__dirname}`, `/../../uploads/${username}/`);
+  fs.access(folder, (error) => {
+    if (error) {
+      console.log('Directory does not exist.');
+      fs.mkdirSync(folder, { recursive: true });
+    } else {
+      console.log('Directory exists.');
+    }
+  });
+  const defaultImageFilePath = path.join(`${__dirname}`, '/../utils/data/housebackground.webp');
+  const filePath = path.join(`${__dirname}`, `/../../uploads/${username}/`, `wallpaper-${username}-${+width * 1.8}x${width}`);
   if (fs.existsSync(filePath)) {
     const stream = fs.createReadStream(filePath);
     return stream.pipe(res);
   }
-  const { redisConfig: { scope }, self: { env } } = config;
-  const resourceName = `${scope}/${env}/profile/wallpaper-${username}`;
-  return cloudinary.api
-    .resource(resourceName)
-    .then((r) => {
-      console.log({ r });
-      // cloudinary.uploader.explicit(r.url, { type: 'fetch', invalidate: true }, (result) => {
-      //   console.log({ newResult: result });
-      // });
-      const url = cloudinary.url(resourceName);
+  const user = await userService.findUserByUsername(username);
+  if (user.success) {
+    if (user.data.wallpaperUrl) {
       const file = fs.createWriteStream(filePath);
+      const url = `${user.data.wallpaperUrl}?thumb=${+width * 1.8}x${width}`;
+      console.log({ url });
       return http.get(url, (resp) => {
         resp.pipe(file);
         file.on('finish', () => {
@@ -260,9 +207,10 @@ export const getProfileWallpaperhandler = async (req: Request, res: Response) =>
           return stream.pipe(res);
         });
       });
-    }).catch((e) => {
-      const defaultImageFilePath = path.join(`${__dirname}`, '/../utils/data/housebackground.webp');
-      const stream = fs.createReadStream(defaultImageFilePath);
-      return stream.pipe(res);
-    });
+    }
+    const stream = fs.createReadStream(defaultImageFilePath);
+    return stream.pipe(res);
+  }
+  const stream = fs.createReadStream(defaultImageFilePath);
+  return stream.pipe(res);
 };
