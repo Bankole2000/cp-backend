@@ -33,6 +33,26 @@ export default class ListingTypeDBService {
     }
   }
 
+  async getListingIdsWhereType(listingType: string) {
+    try {
+      const listings = await this.prisma.listing.findMany({
+        where: {
+          listingType
+        },
+        select: {
+          listingId: true
+        }
+      });
+      if (listings.length) {
+        return new ServiceResponse('Listing Ids by type', listings, true, 200, null, null, null);
+      }
+      return new ServiceResponse('No Listing Ids by type found', null, false, 404, 'No Listing Ids found', 'No Listing Ids found', 'Check filter paramaters');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting Listing Ids by type', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async getListingTypeByKey(listingType: string) {
     try {
       const listingTypeData = await this.prisma.listingType.findUnique({

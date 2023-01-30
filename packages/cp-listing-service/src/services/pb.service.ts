@@ -145,6 +145,13 @@ export default class PBService {
     return this.pb.authStore.isValid;
   }
 
+  async updateRecordsInParallel(collection: string, recordIds: string[], updateData: any) {
+    const promises = recordIds.map((x) => this.pb.collection(collection).update(x, updateData, {
+      $autoCancel: false,
+    }));
+    return Promise.all(promises);
+  }
+
   async createListing(listingData: any) {
     try {
       const res = await this.pb.collection('listings').create(listingData);

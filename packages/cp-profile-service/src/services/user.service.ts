@@ -47,7 +47,7 @@ export default class UserDBService {
     }
   }
 
-  async updateUserProfileImage(userId: string, imageUrl: string, imageSecureUrl: string, imageData: any) {
+  async updateUserProfileImage(userId: string, imageUrl: string) {
     try {
       const updatedUser = await this.prisma.profile.update({
         where: {
@@ -55,8 +55,6 @@ export default class UserDBService {
         },
         data: {
           imageUrl,
-          imageSecureUrl,
-          imageData,
         },
       });
       if (updatedUser) {
@@ -69,7 +67,7 @@ export default class UserDBService {
     }
   }
 
-  async updateUserWallpaperImage(userId: string, wallpaperUrl: string, wallpaperSecureUrl: string, wallpaperData: any) {
+  async updateUserWallpaperImage(userId: string, wallpaperUrl: string) {
     try {
       const updatedUser = await this.prisma.profile.update({
         where: {
@@ -77,8 +75,6 @@ export default class UserDBService {
         },
         data: {
           wallpaperUrl,
-          wallpaperSecureUrl,
-          wallpaperData,
         },
       });
       if (updatedUser) {

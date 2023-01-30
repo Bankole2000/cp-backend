@@ -1,14 +1,15 @@
 import { Request, Response } from 'express';
+import { ServiceResponse } from '@cribplug/common';
 import { sanitizeData, stripHTML } from '../../schema/listing.schema';
 import { listingTypeCreateFields, listingTypeUpdateFields } from '../../schema/listingType.schema';
 import ListingTypeDBService from '../../services/listingType.service';
 import { db } from '../../lib/lokijs';
 import { config } from '../../utils/config';
 import { deleteCache, setCache } from '../../services/cache.service';
-import { ServiceResponse } from '@cribplug/common';
+import PBService from '../../services/pb.service';
 
-const { basePath } = config.self;
-
+const { self: { basePath }, pocketbase } = config;
+const pb = new PBService(pocketbase.url as string);
 const listingTypeService = new ListingTypeDBService();
 
 export const getListingTypesHandler = async (req: Request, res: Response) => {
@@ -44,7 +45,17 @@ export const updateListingTypeHandler = async (req: Request, res: Response) => {
   }
   const ltsr = await listingTypeService.updateListingType(typeId, listingTypeData);
   if (ltsr.success) {
-    const lts = db.getCollection('listingTypes')
+    const { _count: count } = ltsr.data;
+    if (newkey && count.listings) {
+      const affectedListings = (await listingTypeService
+        .getListingIdsWhereType(newkey as string)).data;
+      if (affectedListings) {
+        await pb.saveAuth(req.user.pbToken, req.user.pbUser);
+        const result = await pb.updateRecordsInParallel('listings', affectedListings.map((x: { listingId: any; }) => x.listingId), { listingType: newkey });
+        console.log({ result });
+      }
+    }
+    const lts = db.getCollection('listingTypes');
     let oldlt = lts.findOne({ listingType: typeId });
     oldlt = { ...oldlt, ...ltsr.data };
     lts.update(oldlt);
