@@ -63,6 +63,13 @@ export default class ListingTypeDBService {
       const newListingType = await this.prisma.listingType.create({
         data: {
           ...listingTypeData
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
         }
       });
       if (newListingType) {
@@ -84,6 +91,13 @@ export default class ListingTypeDBService {
         },
         data: {
           ...listingTypeData
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
         }
       });
       if (updatedListingType) {

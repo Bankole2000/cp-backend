@@ -159,6 +159,19 @@ export default class PBService {
     }
   }
 
+  async updateListing(listingId: string, listingData: any) {
+    try {
+      const res = await this.pb.collection('listings').update(listingId, listingData);
+      if (!res.code) {
+        return new ServiceResponse('Listing updated', res, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error udpating listing', res, false, 400, 'Error updating listing', 'LISTING_SERVICE_UPDATE_PB_LISTING_ERROR', 'Check inputs and logs');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error updating listing', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async getListingImages(listingId: string) {
     console.log({ listingId });
     try {
