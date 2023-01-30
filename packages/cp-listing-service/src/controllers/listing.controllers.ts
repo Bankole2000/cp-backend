@@ -9,7 +9,7 @@ import {
 import fs, { PathLike } from 'fs';
 import { Request, Response } from 'express';
 import { logResponse } from '../middleware/logRequests';
-import { createListingFields, sanitizeData } from '../schema/listing.schema';
+import { createListingFields, listingTypeFieldsList, sanitizeData } from '../schema/listing.schema';
 import { config } from '../utils/config';
 import ListingDBService from '../services/listing.service';
 import PBService from '../services/pb.service';
@@ -57,11 +57,6 @@ export const addListingImageHandler = async (req: Request, res: Response) => {
   }
   form.append('title', req.body.title);
   const { data, success } = await pb.getListingImages(req.params.listingId);
-  // if (!data || !success) {
-  //   form.append('order', 0);
-  // } else {
-  //   form.append('order', data.length);
-  // }
   const pbListingImage = await pb.addListingImage(form);
   if (!pbListingImage.success) {
     await logResponse(req, pbListingImage);
@@ -84,6 +79,20 @@ export const addListingImageHandler = async (req: Request, res: Response) => {
   }
   await logResponse(req, listing);
   return res.status(listing.statusCode).send(listing);
+};
+
+export const setListingTypeHandler = async (req: Request, res: Response) => {
+  const { listingId } = req.params;
+  const listingData = sanitizeData(listingTypeFieldsList, req.body);
+  await pb.saveAuth(req.user.pbToken, req.user.pbUser);
+  const pbListing = await pb.updateListing(listingId, listingData);
+  if (!pbListing.success) {
+    await logResponse(req, pbListing);
+    return res.status(pbListing.statusCode).send(pbListing);
+  }
+  const updatedListing = await listingService.updateListing(listingId, listingData);
+  await logResponse(req, updatedListing);
+  return res.status(updatedListing.statusCode).send(updatedListing);
 };
 
 export const deleteListingImageHandler = async (req: Request, res: Response) => {

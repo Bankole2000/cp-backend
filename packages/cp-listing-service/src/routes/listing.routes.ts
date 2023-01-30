@@ -5,20 +5,22 @@ import {
   deleteListingImageHandler,
   getListingDetailsHandler,
   getListingsHandler,
-  reorderListingImagesHandler
+  reorderListingImagesHandler,
+  setListingTypeHandler
 } from '../controllers/listing.controllers';
 import { testEndpointHandler } from '../controllers/test.controllers';
 import upload from '../middleware/multerUpload';
 import { requireLoggedInUser } from '../middleware/requireUser';
 import { checkListingHasImage, checkUserOwnsListing } from '../middleware/userOwnsResource';
 import { validate } from '../middleware/validateRequests';
-import { createListingSchema } from '../schema/listing.schema';
+import { createListingSchema, setListingTypeSchema } from '../schema/listing.schema';
 
 const router = Router();
 
 router.get('/', getListingsHandler);
 router.post('/', requireLoggedInUser, validate(createListingSchema, 'Create Listing'), createListingHandler);
 router.get('/:listingId', getListingDetailsHandler);
+router.patch('/:listingId/type', requireLoggedInUser, checkUserOwnsListing, validate(setListingTypeSchema, 'Listing Type'), setListingTypeHandler);
 router.post('/:listingId/images', requireLoggedInUser, checkUserOwnsListing, upload.single('image'), addListingImageHandler);
 router.delete('/:listingId/images/:imageId', requireLoggedInUser, checkUserOwnsListing, checkListingHasImage, deleteListingImageHandler);
 router.patch('/:listingId/images/:imageId', requireLoggedInUser, checkUserOwnsListing, checkListingHasImage, reorderListingImagesHandler);

@@ -266,7 +266,7 @@ export default class ListingDBService {
             },
             {
               order: {
-                lte: order, 
+                lte: order,
                 gt: stop,
               }
             },

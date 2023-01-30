@@ -54,10 +54,10 @@ model Listing {
   listingPurposeSubgroup      String?
   noOfBedrooms                Int?
   noOfBathrooms               Int?
-  images                      ListingImage[]
   isPublished                 Boolean               @default(false) @db.Boolean
-  createdByData               User                  @relation(fields: [createdBy], references: [userId])
   createdBy                   String
+  createdByData               User                  @relation(fields: [createdBy], references: [userId])
+  images                      ListingImage[]
   houseRules                  ListingHasHouseRule[]
   amenities                   ListingHasAmenities[]
   listingTypeData             ListingType?          @relation("ListingType", fields: [listingType], references: [listingType])
