@@ -34,6 +34,46 @@ export default class ListingPurposeDBService {
     }
   }
 
+  async getListingIdsWherePurpose(listingPurpose: string) {
+    try {
+      const listings = await this.prisma.listing.findMany({
+        where: {
+          listingPurpose
+        },
+        select: {
+          listingId: true,
+        }
+      });
+      if (listings.length) {
+        return new ServiceResponse('Listing Ids by purpose', listings, true, 200, null, null, null);
+      }
+      return new ServiceResponse('No Listing Ids by purpose found', null, false, 404, 'No Listing Ids found', 'No Listing Ids found', 'Check filter paramaters');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting Listing Ids by purpose', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async getListingIdsWhereSubgroup(purposeSubgroup: string) {
+    try {
+      const listings = await this.prisma.listing.findMany({
+        where: {
+          listingPurposeSubgroup: purposeSubgroup
+        },
+        select: {
+          listingId: true,
+        }
+      });
+      if (listings.length) {
+        return new ServiceResponse('Listing Ids by subgroup', listings, true, 200, null, null, null);
+      }
+      return new ServiceResponse('No Listing Ids by subgroup found', null, false, 404, 'No Listing Ids found', 'No Listing Ids found', 'Check filter paramaters');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting Listing Ids by subgroup', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async getListingPurposeByKey(listingPurpose: string) {
     try {
       const listingPurposeData = await this.prisma.listingPurpose.findUnique({
@@ -165,6 +205,14 @@ export default class ListingPurposeDBService {
       const newListingPurpose = await this.prisma.listingPurpose.create({
         data: {
           ...listingPurposeData
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+              purposeSubgroups: true,
+            }
+          }
         }
       });
       if (newListingPurpose) {
@@ -186,6 +234,14 @@ export default class ListingPurposeDBService {
         },
         data: {
           ...listingPurposeData
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+              purposeSubgroups: true,
+            }
+          }
         }
       });
       if (updatedListingPurpose) {
@@ -204,6 +260,14 @@ export default class ListingPurposeDBService {
       const deletedListingPurpose = await this.prisma.listingPurpose.delete({
         where: {
           listingPurpose
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+              purposeSubgroups: true,
+            }
+          }
         }
       });
       if (deletedListingPurpose) {
@@ -223,6 +287,13 @@ export default class ListingPurposeDBService {
         data: {
           listingPurpose,
           ...purposeSubgroupData
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
         }
       });
       if (newPurposeSubgroup) {
@@ -244,6 +315,13 @@ export default class ListingPurposeDBService {
         },
         data: {
           ...purposeSubgroupData
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
         }
       });
       if (updatedPurposeSubgroup) {
@@ -262,6 +340,13 @@ export default class ListingPurposeDBService {
       const deletedPurposeSubgroup = await this.prisma.purposeSubgroup.delete({
         where: {
           purposeSubgroup
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          }
         }
       });
       if (deletedPurposeSubgroup) {

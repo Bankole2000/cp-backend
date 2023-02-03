@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.3](https://github.com/Bankole2000/cp-backend/compare/v1.4.2...v1.4.3) (2023-02-03)
+
+
+### Features
+
+* **listings:** users can add listing amenities ([ba14c70](https://github.com/Bankole2000/cp-backend/commits/ba14c7058fcda24b9feeee799855f09c8de7f453))
+
 ### [1.4.2](https://github.com/Bankole2000/cp-backend/compare/v1.4.1...v1.4.2) (2023-01-30)
 
 

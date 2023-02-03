@@ -125,7 +125,10 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
-    const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', refreshDecoded.sessionId);
+    const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', refreshDecoded.sessionId).catch((err) => {
+      console.log({ err });
+      return null;
+    });
     if (!session || !JSON.parse(session)) {
       req.user = null;
       return next();

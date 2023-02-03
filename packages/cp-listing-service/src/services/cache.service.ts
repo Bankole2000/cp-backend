@@ -7,7 +7,11 @@ const { scope } = config.redisConfig;
 const getCacheKey = (key: string) => `${scope}:${serviceName}:cache:${key}`;
 
 export const getCache = async (redis: RedisConnection, key: string) => {
-  await redis.client.connect();
+  try {
+    await redis.client.connect();
+  } catch (error: any) {
+    console.log({ error });
+  }
   const cachedValue = await redis.client.get(getCacheKey(key));
   if (cachedValue) {
     await redis.client.disconnect();
@@ -23,9 +27,13 @@ export const setCache = async (
   value: any,
   ttlSeconds = 60
 ) => {
-  await redis.client.connect();
-  await redis.client.setEx(getCacheKey(key), ttlSeconds, JSON.stringify(value));
-  await redis.client.disconnect();
+  try {
+    await redis.client.connect();
+    await redis.client.setEx(getCacheKey(key), ttlSeconds, JSON.stringify(value));
+    await redis.client.disconnect();
+  } catch (error: any) {
+    console.log({ error });
+  }
 };
 
 export const deleteCache = async (redis: RedisConnection, keys: string[]) => {

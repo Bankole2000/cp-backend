@@ -62,6 +62,13 @@ export default class HouseRulesDBService {
       const houseRule = await this.prisma.houseRule.create({
         data: {
           ...houseRuleData
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          },
         }
       });
       if (houseRule) {
@@ -82,6 +89,13 @@ export default class HouseRulesDBService {
         },
         data: {
           ...houseRuleData
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          },
         }
       });
       if (updatedHouseRule) {
@@ -99,6 +113,13 @@ export default class HouseRulesDBService {
       const deletedHouseRule = await this.prisma.houseRule.delete({
         where: {
           houseRule
+        },
+        include: {
+          _count: {
+            select: {
+              listings: true,
+            }
+          },
         }
       });
       if (deletedHouseRule) {
