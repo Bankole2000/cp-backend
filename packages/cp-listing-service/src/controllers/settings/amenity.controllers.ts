@@ -59,10 +59,10 @@ export const updateAmenityHandler = async (req: Request, res: Response) => {
   const amenity = await amenityService.updateAmenity(amenitykey, amenityData);
   if (amenity.success) {
     const amenities = db.getCollection('amenities');
-    let oldamenity = amenities.findOne({ amenity: amenitykey });
-    oldamenity = { ...amenity, ...amenity.data };
-    amenities.update(oldamenity);
-    db.save();
+    const oldamenity = amenities.findOne({ amenity: amenitykey });
+    amenities.remove(oldamenity);
+    amenities.insert(amenity.data);
+    db.saveDatabase();
     await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/amenity-categories`]);
   }
   return res.status(amenity.statusCode).json(amenity);
@@ -104,7 +104,7 @@ export const updateAmenityCategoryHandler = async (req: Request, res: Response) 
         db.getCollection('amenities').update(amenity);
       });
     }
-    db.save();
+    db.saveDatabase();
     await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/amenity-categories`]);
   }
   return res.status(amenityCategory.statusCode).json(amenityCategory);

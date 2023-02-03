@@ -14,6 +14,165 @@ export default class AmenityDBService {
     this.driver = getDriver();
   }
 
+  async getListingAmenities(listingId: string) {
+    try {
+      const listingAmenities = await this.prisma.listingHasAmenities.findMany({
+        where: {
+          listingId,
+        },
+        include: {
+          amenityData: {
+            include: {
+              amenityCategoryData: true,
+              _count: {
+                select: {
+                  listings: true,
+                }
+              }
+            }
+          }
+        }
+      });
+      const sr = new ServiceResponse('Listing amenities', listingAmenities, true, 200, null, null, null);
+      return sr;
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting listing amenities', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async addAmenityToListing(listingId: string, amenityData: any) {
+    try {
+      const listingAmenity = await this.prisma.listingHasAmenities.create({
+        data: {
+          listingId,
+          ...amenityData
+        },
+        include: {
+          amenityData: true,
+        }
+      });
+      if (listingAmenity) {
+        return new ServiceResponse('Listing Amenity Added', listingAmenity, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error adding listing amenity', listingAmenity, false, 400, 'Error adding listing amenity', 'LISTING_SERVICE_ERROR_ADDING_AMENITY_TO_LISTING', 'Check inputs logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error adding listing amenity', null, false, 500, error.message, error, 'Check database and logs');
+    }
+  }
+
+  async listingHasAmenity(listingId: string, amenity: string) {
+    try {
+      const listingAmenity = await this.prisma.listingHasAmenities.findUnique({
+        where: {
+          listingId_amenity: {
+            listingId,
+            amenity,
+          }
+        },
+        include: {
+          amenityData: true,
+        }
+      });
+      console.log({ listingAmenity });
+      if (listingAmenity) {
+        return new ServiceResponse('Listing Amenity Found', listingAmenity, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Listing Amenity not found', listingAmenity, false, 404, 'Listing doest not have amenity', 'LISTING_SERVICE_LISTING_AMENITY_NOT_FOUND', 'Check listing has amenity');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting listing amenity', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async updateListingAmenity(listingId: string, amenity: string, amenityData: any) {
+    try {
+      const updatedListingAmenity = await this.prisma.listingHasAmenities.update({
+        where: {
+          listingId_amenity: {
+            listingId,
+            amenity,
+          },
+        },
+        data: {
+          ...amenityData,
+        },
+        include: {
+          amenityData: true,
+        }
+      });
+      if (updatedListingAmenity) {
+        return new ServiceResponse('Listing amenity updated', updatedListingAmenity, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error updating listing amenity', updatedListingAmenity, false, 400, 'Error updating listing amenity', 'LISTING_SERVICE_ERROR_UPDATING_LISTING_AMENITY', 'Check inputs, database and logs');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error updating listing amenity', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async addMultipleListingAmenities(listingId: string, amenityData: any[]) {
+    const listingHasAmenityData = amenityData
+      .map((x: { amenity: string, description: string | null }) => ({
+        amenity: x.amenity,
+        description: x.description,
+        listingId,
+      }));
+    try {
+      const listingAmenities = await this.prisma.listingHasAmenities.createMany({
+        data: listingHasAmenityData,
+        skipDuplicates: true,
+      });
+      console.log({ listingAmenities });
+      const sr = new ServiceResponse('Listing amenities set', listingAmenities, true, 200, null, null, null);
+      return sr;
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error saving listing amenities', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async removeListingAmenity(listingId: string, amenity: string) {
+    try {
+      const removedListingAmenity = await this.prisma.listingHasAmenities.delete({
+        where: {
+          listingId_amenity: {
+            amenity,
+            listingId,
+          }
+        },
+        include: {
+          amenityData: true,
+        }
+      });
+      if (removedListingAmenity) {
+        return new ServiceResponse('Listing Amenity Removed', removedListingAmenity, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error removing amenity from listing', removedListingAmenity, false, 400, 'Error removing amenity from listing', 'LISTING_SERVICE_ERROR_REMOVING_LISTING_AMENITY', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error removing amenity from listing', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async removeAllListingAmenities(listingId: string) {
+    try {
+      const removedAmenities = await this.prisma.listingHasAmenities.deleteMany({
+        where: {
+          listingId
+        }
+      });
+      if (removedAmenities) {
+        return new ServiceResponse('All listing amenities removed', removedAmenities, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error removing all listing amenities', removedAmenities, false, 400, 'Error removing all listing amenities', 'LISTING_SERVICE_ERROR_REMOVING_ALL_LISTING_AMENITIES', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error removing all listing amenities', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async getAmenityCategories() {
     try {
       const amenityCategories = await this.prisma.amenityCategory.findMany({
@@ -90,6 +249,13 @@ export default class AmenityDBService {
         },
         data: {
           ...categoryData,
+        },
+        include: {
+          _count: {
+            select: {
+              amenities: true
+            }
+          }
         }
       });
       if (updatedCategory) {
@@ -108,6 +274,13 @@ export default class AmenityDBService {
       const deletedCategory = await this.prisma.amenityCategory.delete({
         where: {
           amenityCategory: categoryKey,
+        },
+        include: {
+          _count: {
+            select: {
+              amenities: true
+            }
+          }
         }
       });
       if (deletedCategory) {
@@ -127,6 +300,13 @@ export default class AmenityDBService {
         data: {
           ...categoryData,
         },
+        include: {
+          _count: {
+            select: {
+              amenities: true
+            }
+          }
+        }
       });
       if (amenityCategory) {
         return new ServiceResponse('Amenity category created', amenityCategory, true, 200, null, null, null);

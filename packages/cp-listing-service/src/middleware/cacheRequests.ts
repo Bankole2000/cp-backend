@@ -8,15 +8,20 @@ const { scope } = config.redisConfig;
 const getCacheKey = (key: string) => `${scope}:${serviceName}:cache:${key}`;
 
 export const getFromCache = async (req: Request, res: Response, next: NextFunction) => {
-  await req.redis.client.connect();
-  const cachedValue = await req.redis.client.get(getCacheKey(req.originalUrl));
-  if (cachedValue) {
+  try {
+    await req.redis.client.connect();
+    const cachedValue = await req.redis.client.get(getCacheKey(req.originalUrl));
+    if (cachedValue) {
+      await req.redis.client.disconnect();
+      const sr = JSON.parse(cachedValue);
+      return res.status(sr.statusCode).send(sr);
+    }
     await req.redis.client.disconnect();
-    const sr = JSON.parse(cachedValue);
-    return res.status(sr.statusCode).send(sr);
+    return next();
+  } catch (error: any) {
+    console.log({ error });
+    return next();
   }
-  await req.redis.client.disconnect();
-  return next();
 };
 
 export const clearFromCache = async (req: Request, res: Response, next: NextFunction) => {
