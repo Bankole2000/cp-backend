@@ -1,9 +1,10 @@
-import { ServiceResponse } from '@cribplug/common';
 import { Request, Response } from 'express';
-import { listingAmenityFieldsList, sanitizeData, updateListingAmenityFields } from '../../schema/listing.schema';
+import { listingAmenityFieldsList, sanitizeData } from '../../schema/listing.schema';
 import AmenityDBService from '../../services/amenity.service';
+import ListingDBService from '../../services/listing.service';
 
 const amenityService = new AmenityDBService();
+const listingService = new ListingDBService();
 
 export const addListingAmenityHandler = async (req: Request, res: Response) => {
   const { listingId } = req.params;
@@ -20,6 +21,7 @@ export const addListingAmenityHandler = async (req: Request, res: Response) => {
 
 export const addMultipleListingAmenityHandler = async (req: Request, res: Response) => {
   const { listingId } = req.params;
+  await amenityService.removeAllListingAmenities(listingId);
   const sr = await amenityService.addMultipleListingAmenities(listingId, req.body.amenities);
   console.log({ data: req.body });
   return res.status(sr.statusCode).send(sr);
@@ -58,6 +60,11 @@ export const removeAllListingAmenitiesHandler = async (req: Request, res: Respon
 
 export const getListingAmenitiesHandler = async (req: Request, res: Response) => {
   const { listingId } = req.params;
+  console.log({ listingId });
+  const lExists = await listingService.getListingById(listingId);
+  if (!lExists.success) {
+    return res.status(lExists.statusCode).send(lExists);
+  }
   const amenities = await amenityService.getListingAmenities(listingId);
   return res.status(amenities.statusCode).send(amenities);
 };

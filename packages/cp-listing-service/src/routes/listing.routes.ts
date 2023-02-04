@@ -16,6 +16,14 @@ import {
   addMultipleListingAmenityHandler,
   removeAllListingAmenitiesHandler
 } from '../controllers/listings/amenity.controllers';
+import {
+  addListingHouseRuleHandler,
+  addMultipleListingHouseRulesHandler,
+  getListingHouseRulesHandler,
+  removeAllListingHouseRulesHandler,
+  removeListingHouseRuleHandler,
+  updateListingHouseRuleHandler
+} from '../controllers/listings/houseRules.controllers';
 import { testEndpointHandler } from '../controllers/test.controllers';
 import upload from '../middleware/multerUpload';
 import { requireLoggedInUser } from '../middleware/requireUser';
@@ -26,7 +34,11 @@ import {
   createListingSchema,
   setListingTypeSchema,
   mutateListingAmenitySchema,
-  addMultipleListingAmenitiesSchema
+  addMultipleListingAmenitiesSchema,
+  addHouseRuleToListingSchema,
+  setMultipleListingHouseRulesSchema,
+  mutateListingHouseRuleSchema,
+  listingIdSchema
 } from '../schema/listing.schema';
 
 const router = Router();
@@ -38,12 +50,18 @@ router.patch('/:listingId/type', requireLoggedInUser, checkUserOwnsListing, vali
 router.post('/:listingId/images', requireLoggedInUser, checkUserOwnsListing, upload.single('image'), addListingImageHandler);
 router.delete('/:listingId/images/:imageId', requireLoggedInUser, checkUserOwnsListing, checkListingHasImage, deleteListingImageHandler);
 router.patch('/:listingId/images/:imageId', requireLoggedInUser, checkUserOwnsListing, checkListingHasImage, reorderListingImagesHandler);
-router.get('/:listing/amenities', getListingAmenitiesHandler);
+router.get('/:listingId/amenities', validate(listingIdSchema, 'Listing Id'), getListingAmenitiesHandler);
 router.post('/:listingId/amenity', requireLoggedInUser, checkUserOwnsListing, validate(addAmenityToListingSchema, 'Add Listing Amenity'), addListingAmenityHandler);
 router.post('/:listingId/amenities', requireLoggedInUser, checkUserOwnsListing, validate(addMultipleListingAmenitiesSchema, 'Add Multiple Listing Amenities'), addMultipleListingAmenityHandler);
 router.patch('/:listingId/amenities/:amenity', requireLoggedInUser, checkUserOwnsListing, validate(mutateListingAmenitySchema, 'Update Listing Amenity'), updateListingAmenityHandler);
 router.delete('/:listingId/amenities/:amenity', requireLoggedInUser, checkUserOwnsListing, validate(mutateListingAmenitySchema, 'Remove Listing Amenity'), removeListingAmenityHandler);
 router.delete('/:listingId/amenities', requireLoggedInUser, checkUserOwnsListing, removeAllListingAmenitiesHandler);
+router.get('/:listingId/house-rules', validate(listingIdSchema, 'Listing Id'), getListingHouseRulesHandler);
+router.post('/:listingId/house-rule', requireLoggedInUser, checkUserOwnsListing, validate(addHouseRuleToListingSchema, 'Add House Rule'), addListingHouseRuleHandler);
+router.post('/:listingId/house-rules', requireLoggedInUser, checkUserOwnsListing, validate(setMultipleListingHouseRulesSchema, 'Set House Rules'), addMultipleListingHouseRulesHandler);
+router.patch('/:listingId/house-rules/:houseRule', requireLoggedInUser, checkUserOwnsListing, validate(mutateListingHouseRuleSchema, 'Update Listing House Rule'), updateListingHouseRuleHandler);
+router.delete('/:listingId/house-rules/:houseRule', requireLoggedInUser, checkUserOwnsListing, validate(mutateListingHouseRuleSchema, 'Remove Listing House Rule'), removeListingHouseRuleHandler);
+router.delete('/:listingId/house-rules', requireLoggedInUser, checkUserOwnsListing, removeAllListingHouseRulesHandler);
 router.get('/types', testEndpointHandler);
 router.get('/types/:typeId', testEndpointHandler);
 router.post('/types', testEndpointHandler);

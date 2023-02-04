@@ -1,6 +1,7 @@
 import { isValidDate } from '@cribplug/common';
 import {
   array,
+  boolean,
   object, string
 } from 'zod';
 import { db } from '../lib/lokijs';
@@ -67,6 +68,20 @@ export const listingAmenityFieldsRequired = {
     .optional()
 };
 
+export const listingHouseRuleFieldsRequired = {
+  houseRule: string({
+    required_error: 'House rule Key is required',
+  }).min(1, '')
+    .refine((val) => /^[A-Z_]+$/.test(val), 'House Rule Key must be in all caps and underscore separated, e.g. HOUSE_RULE_KEY')
+    .refine((data) => resourceExists('houseRules', 'houseRule', data), 'Invalid House Rule Key'),
+  description: string({})
+    .max(160, 'Description cannot be more than 160 characters long')
+    .optional(),
+  isAllowed: boolean({
+    invalid_type_error: 'Allowed status must be a boolean',
+  }).optional(),
+};
+
 const listingParam = {
   params: object({
     listingId: string({
@@ -84,6 +99,17 @@ const listingAmenityParams = {
   }).min(1, '')
     .refine((val) => /^[A-Z_]+$/.test(val), 'Amenity Key must be in all caps and underscore separated, e.g. AMENITY_KEY')
     .refine((data) => resourceExists('amenities', 'amenity', data), 'Invalid Amenity key'),
+};
+
+const listingHouseRuleParams = {
+  listingId: string({
+    required_error: 'Listing Id is required'
+  }).min(1, 'Listing Id must be at least 1 character long'),
+  houseRule: string({
+    required_error: 'House rule Key is required',
+  }).min(1, '')
+    .refine((val) => /^[A-Z_]+$/.test(val), 'House Rule Key must be in all caps and underscore separated, e.g. HOUSE_RULE_KEY')
+    .refine((data) => resourceExists('houseRules', 'houseRule', data), 'Invalid House Rule Key'),
 };
 
 export const createListingSchema = object({
@@ -105,10 +131,26 @@ export const addAmenityToListingSchema = object({
   })
 });
 
+export const addHouseRuleToListingSchema = object({
+  body: object({
+    ...listingHouseRuleFieldsRequired
+  })
+});
+
 export const mutateListingAmenitySchema = object({
   params: object({
     ...listingAmenityParams,
   }),
+});
+
+export const mutateListingHouseRuleSchema = object({
+  params: object({
+    ...listingHouseRuleParams,
+  })
+});
+
+export const listingIdSchema = object({
+  ...listingParam
 });
 
 export const setListingTypeSchema = object({
@@ -136,10 +178,31 @@ export const addMultipleListingAmenitiesSchema = object({
   })
 });
 
+export const setMultipleListingHouseRulesSchema = object({
+  ...listingParam,
+  body: object({
+    houseRules: array(object({
+      houseRule: string({
+        required_error: 'House rule Key is required',
+      }).min(1, '')
+        .refine((val) => /^[A-Z_]+$/.test(val), 'House Rule Key must be in all caps and underscore separated, e.g. HOUSE_RULE_KEY')
+        .refine((data) => resourceExists('houseRules', 'houseRule', data), 'Invalid House Rule Key'),
+      description: string({})
+        .max(160, 'Description cannot be more than 160 characters long')
+        .optional(),
+      isAllowed: boolean({
+        invalid_type_error: 'Allowed status must be a boolean',
+      }).optional(),
+    })).refine((data) => !hasDuplicates(data, 'houseRule'), 'Cannot set a house rule multiple times')
+  })
+});
+
 export const createListingFields = ['title', 'caption', 'longDescription', 'listingType', 'listingPurpose', 'listingPurposeSubgroup'];
 export const listingTypeFieldsList = ['listingType', 'listingPurpose', 'listingPurposeSubgroup'];
 export const listingAmenityFieldsList = ['amenity', 'description'];
 export const updateListingAmenityFields = ['description'];
+export const listingHouseRuleFieldsList = ['houseRule', 'description', 'isAllowed'];
+export const updatelistingHouseRuleFields = ['description', 'isAllowed'];
 
 const htmlRegex = /<\/?[^>]+(>|$)/gi;
 export const stripHTML = (html: string) => html.replace(htmlRegex, '');
