@@ -147,14 +147,13 @@ export const reorderListingImagesHandler = async (req: Request, res: Response) =
 };
 
 export const getListingDetailsHandler = async (req: Request, res: Response) => {
-  const listing = await listingService.getListingDetailsById(req.params.id);
+  const listing = await listingService.getListingDetailsById(req.params.listingId);
   await logResponse(req, listing);
   return res.status(listing.statusCode).json(listing);
 };
 
 export const deleteListingHandler = async (req: Request, res: Response) => {
   const { imageId } = req.params;
-
   const listing = await listingService.deleteListing(req.params.id);
   await logResponse(req, listing);
   return res.status(listing.statusCode).send(listing);

@@ -141,9 +141,35 @@ export default class ListingDBService {
         where: {
           listingId
         },
+        include: {
+          listingTypeData: true,
+          listingPurposeData: true,
+          listingPurposeSubgroupData: true,
+          createdByData: true,
+          _count: {
+            select: {
+              amenities: true,
+              houseRules: true,
+              images: true,
+            }
+          },
+          images: {
+            orderBy: {
+              order: 'asc'
+            }
+          },
+          houseRules: {
+            include: {
+              houseRuleData: true,
+            }
+          },
+          amenities: {
+            include: {
+              amenityData: true
+            }
+          }
+        }
         // include: {
-        //   listingType: true,
-        //   listingImages: true,
         //   listingFeatures: true,
         //   listingAmenities: true,
         //   listingPolicies: true,
@@ -154,7 +180,7 @@ export default class ListingDBService {
         // }
       });
       if (listing) {
-        return new ServiceResponse('Listing retrieved successfully', listing, true, 200, null, null, null);
+        return new ServiceResponse('Listing details retrieved successfully', listing, true, 200, null, null, null);
       }
       return new ServiceResponse('Listing not found', listing, false, 404, 'Listing not found', 'LISTING_SERVICE_LISTING_NOT_FOUND', 'Confirm that Listing exists');
     } catch (error: any) {
