@@ -1037,12 +1037,26 @@
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
     "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
     "name": "Publish Post",
-    "url": "",
+    "url": "{{host}}{{post-path}}/posts/{postId}/publish?schedule",
     "method": "GET",
     "sortNum": 310000,
     "created": "2023-02-18T22:29:51.003Z",
-    "modified": "2023-02-18T22:29:51.003Z",
-    "headers": []
+    "modified": "2023-02-19T02:47:17.073Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "schedule",
+        "value": "",
+        "isPath": false
+      }
+    ],
+    "tests": [],
+    "docs": "Query parameter `schedule` , sets when post should be published\n\nShould create post publishing job to be executed at set time."
   },
   {
     "_id": "6d118602-e7ad-4261-b5e3-35234b0078d7",
@@ -1072,13 +1086,13 @@
   {
     "_id": "44123923-bc96-4a75-84b4-15d8f5f09634",
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
-    "containerId": "f4725599-a855-4222-8745-e7b5b60ed920",
+    "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
     "name": "Delete Post",
     "url": "{{host}}{{post-path}}/posts/{postId}",
     "method": "DELETE",
-    "sortNum": 290000,
+    "sortNum": 190000,
     "created": "2023-02-18T23:40:29.049Z",
-    "modified": "2023-02-18T23:40:41.721Z",
+    "modified": "2023-02-19T02:31:56.916Z",
     "headers": [],
     "params": [
       {
@@ -1087,7 +1101,14 @@
         "isPath": true
       }
     ],
-    "tests": []
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{postId}}"
+      }
+    ]
   },
   {
     "_id": "4fc28932-0a7b-4aed-9b2d-d87b8a64a1f5",
@@ -1128,5 +1149,110 @@
       }
     ],
     "tests": []
+  },
+  {
+    "_id": "2197e308-9d15-47e6-97ba-3893468740f5",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "e01d5cab-8df9-49b6-8433-ab2077c04972",
+    "name": "Get Post Comments",
+    "url": "{{host}}{{post-path}}/posts/{postId}/comments",
+    "method": "GET",
+    "sortNum": 330000,
+    "created": "2023-02-19T02:05:09.012Z",
+    "modified": "2023-02-19T02:05:38.370Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "90e5d929-f494-49e7-9f00-c8b49b296ae8",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "e01d5cab-8df9-49b6-8433-ab2077c04972",
+    "name": "Comment on Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/comments",
+    "method": "POST",
+    "sortNum": 340000,
+    "created": "2023-02-19T02:05:47.818Z",
+    "modified": "2023-02-19T02:10:29.012Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.id",
+        "action": "setto",
+        "value": "{{postCommentId}}"
+      }
+    ]
+  },
+  {
+    "_id": "96e04ef2-afef-4e3c-a319-54fa02a35477",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "e01d5cab-8df9-49b6-8433-ab2077c04972",
+    "name": "Pin / Unpin Comment on Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/comments/{commentId}/pin",
+    "method": "PATCH",
+    "sortNum": 350000,
+    "created": "2023-02-19T02:06:42.978Z",
+    "modified": "2023-02-19T02:11:13.382Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "commentId",
+        "value": "{{postCommentId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "2dd6be8d-c0c0-4c4f-8c03-3299ac0a24b3",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "e01d5cab-8df9-49b6-8433-ab2077c04972",
+    "name": "Delete Comment",
+    "url": "{{host}}{{post-path}}/posts/{postId}/comments/{commentId}",
+    "method": "DELETE",
+    "sortNum": 360000,
+    "created": "2023-02-19T02:23:07.487Z",
+    "modified": "2023-02-19T02:30:14.717Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "commentId",
+        "value": "{{postCommentId}}",
+        "isPath": true
+      }
+    ],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{postCommentId}}"
+      }
+    ],
+    "docs": "Comment on post can be deleted by\n- User who created comment\n- User who created Post\n- Moderator\n- Admin"
   }
 ]

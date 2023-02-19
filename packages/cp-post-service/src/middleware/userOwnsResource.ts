@@ -7,6 +7,7 @@ const ps = new PostDBService();
 export const checkUserAuthoredPost = async (req: Request, res: Response, next: NextFunction) => {
   const { user } = req;
   const { postId } = req.params;
+  console.log({ postId, params: req.params });
   const postExists = await ps.getPostById(postId);
   if (!postExists.success) {
     return res.status(postExists.statusCode).send(postExists);
