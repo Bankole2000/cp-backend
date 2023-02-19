@@ -1,0 +1,92 @@
+[
+  {
+    "_id": "bb0c5592-5bc5-402c-bc70-a30e60fe7b45",
+    "name": "Relodger (Dev)",
+    "default": true,
+    "sortNum": 10000,
+    "created": "2023-02-17T20:13:18.996Z",
+    "modified": "2023-02-17T20:13:18.996Z",
+    "data": [
+      {
+        "name": "host",
+        "value": "http://localhost:"
+      },
+      {
+        "name": "auth-path",
+        "value": "7700/api/v1/auth"
+      },
+      {
+        "name": "chat-path",
+        "value": "7701/api/v1/chat"
+      },
+      {
+        "name": "listing-path",
+        "value": "7704/api/v1/listing"
+      },
+      {
+        "name": "post-path",
+        "value": "7710/api/v1/post"
+      },
+      {
+        "name": "profile-path",
+        "value": "7707/api/v1/profile"
+      },
+      {
+        "name": "notification-path",
+        "value": ""
+      },
+      {
+        "name": "idToken",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1ZWpxcjM5a2JpaDNueWYiLCJkZXZpY2VJZCI6IjQxNjA2ZDk1LTk2YmMtNDQ2Mi1iODg0LWViOGI4ODEyMmUwZSIsInVzZXJuYW1lIjoiYmFua29sZSIsInR5cGUiOiJVU0VSTkFNRSIsImlhdCI6MTY3Njc0MTg2OX0.zxPkiyugWH_oSO1LygBcWFalS19b2tXCX3jDDhvbpsI"
+      },
+      {
+        "name": "accessToken",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJrNGkxdTZ3NDFqdG5pZHgiLCJlbWFpbCI6InRlY2h5YmFua3lAZ21haWwuY29tIiwiZW1haWxWZXJpZmllZCI6dHJ1ZSwicGhvbmUiOm51bGwsInBob25lRGF0YSI6e30sInBob25lVmVyaWZpZWQiOmZhbHNlLCJyZWdpc3RlcmVkVmlhIjoiRU1BSUwiLCJ1c2VybmFtZSI6ImJhbmtvbGUyMDAwIiwicm9sZXMiOlsiVVNFUiIsIlNDT1VUIiwiQUdFTlQiLCJNT0RFUkFUT1IiLCJNT0RFUkFUSU9OIiwiU1VQUE9SVCIsIlNZU1RFTSIsIkFETUlOIiwiU1VQRVJfQURNSU4iLCJKVVJZIiwiSlVER0UiXSwiZmlyc3RuYW1lIjoiQmFua29sZSIsImxhc3RuYW1lIjoiRXNhbiIsImRpc3BsYXluYW1lIjoiQmFua29sZSIsImRvYiI6IjIwMDAtMDEtMDFUMDA6MDA6MDAuMDAwWiIsImdlbmRlciI6Ik1BTEUiLCJ0b3MiOnRydWUsIm9uYm9hcmRpbmdTdGF0dXMiOlsiTkVXTFlfUkVHSVNURVJFRCIsIlVTRVJOQU1FX1NFVCIsIlBBU1NXT1JEX1NFVCJdLCJ2ZXJzaW9uIjoyLCJjcmVhdGVkQXQiOiIyMDIzLTAxLTI5VDAyOjM2OjQzLjMxOVoiLCJ1cGRhdGVkQXQiOiIyMDIzLTAxLTI5VDAyOjM4OjMxLjE0N1oiLCJkZWxldGVkQXQiOm51bGwsInNlc3Npb25JZCI6IjgwZDc2Y2Y5LWE1MTMtNDA5Yy05OTA2LTlkNjAzZDdhZTBmNyIsImRldmljZUlkIjoiMTIzZjQzNDUtYzM3ZS00NmY3LTkzZDMtZTU4ZDdiNGExMWJkIiwicGJUb2tlbiI6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpqYjJ4c1pXTjBhVzl1U1dRaU9pSmZjR0pmZFhObGNuTmZZWFYwYUY4aUxDSmxlSEFpT2pFMk56YzVOekk0TkRNc0ltbGtJam9pYXpScE1YVTJkelF4YW5SdWFXUjRJaXdpZEhsd1pTSTZJbUYxZEdoU1pXTnZjbVFpZlEuYjhmVUlScXZpQ1RxQzktY0NFNV9vS29mY04xMVlpZ2ZZMzN2TUN2WDFxTSIsInBiVXNlciI6eyJhdmF0YXIiOiIiLCJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJjb2xsZWN0aW9uTmFtZSI6InVzZXJzIiwiY3JlYXRlZCI6IjIwMjMtMDEtMjkgMDI6MzY6NDMuMzE5WiIsImRlbGV0ZWRBdCI6IiIsImRpc3BsYXluYW1lIjoiQmFua29sZSIsImRvYiI6IjIwMDAtMDEtMDEgMDA6MDA6MDAuMDAwWiIsImVtYWlsIjoidGVjaHliYW5reUBnbWFpbC5jb20iLCJlbWFpbFZpc2liaWxpdHkiOnRydWUsImZpcnN0bmFtZSI6IkJhbmtvbGUiLCJnZW5kZXIiOiJNQUxFIiwiaWQiOiJrNGkxdTZ3NDFqdG5pZHgiLCJsYXN0bmFtZSI6IkVzYW4iLCJvbmJvYXJkaW5nU3RhdHVzIjpbIk5FV0xZX1JFR0lTVEVSRUQiLCJVU0VSTkFNRV9TRVQiLCJQQVNTV09SRF9TRVQiXSwicGhvbmUiOiIiLCJwcm9maWxlSW1hZ2UiOiIiLCJwcm9maWxlV2FsbHBhcGVyIjoiIiwicm9sZXMiOlsiVVNFUiIsIlNDT1VUIiwiQUdFTlQiLCJNT0RFUkFUT1IiLCJNT0RFUkFUSU9OIiwiU1VQUE9SVCIsIlNZU1RFTSIsIkFETUlOIiwiU1VQRVJfQURNSU4iLCJKVVJZIiwiSlVER0UiXSwidG9zIjp0cnVlLCJ1cGRhdGVkIjoiMjAyMy0wMS0yOSAwMjozODozMC45NThaIiwidXNlcm5hbWUiOiJiYW5rb2xlMjAwMCIsInZlcmlmaWVkIjp0cnVlLCJleHBhbmQiOnt9fSwiaWF0IjoxNjc2NzYzMjQ2LCJleHAiOjE2NzY3NjY4NDZ9.azGeoAJA2G5Vhi6RpMyb_FYLwKEuPJcEp1NkfI4IwaM"
+      },
+      {
+        "name": "refreshToken",
+        "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJrNGkxdTZ3NDFqdG5pZHgiLCJlbWFpbCI6InRlY2h5YmFua3lAZ21haWwuY29tIiwiZW1haWxWZXJpZmllZCI6dHJ1ZSwicGhvbmUiOm51bGwsInBob25lRGF0YSI6e30sInBob25lVmVyaWZpZWQiOmZhbHNlLCJyZWdpc3RlcmVkVmlhIjoiRU1BSUwiLCJ1c2VybmFtZSI6ImJhbmtvbGUyMDAwIiwicm9sZXMiOlsiVVNFUiIsIlNDT1VUIiwiQUdFTlQiLCJNT0RFUkFUT1IiLCJNT0RFUkFUSU9OIiwiU1VQUE9SVCIsIlNZU1RFTSIsIkFETUlOIiwiU1VQRVJfQURNSU4iLCJKVVJZIiwiSlVER0UiXSwiZmlyc3RuYW1lIjoiQmFua29sZSIsImxhc3RuYW1lIjoiRXNhbiIsImRpc3BsYXluYW1lIjoiQmFua29sZSIsImRvYiI6IjIwMDAtMDEtMDFUMDA6MDA6MDAuMDAwWiIsImdlbmRlciI6Ik1BTEUiLCJ0b3MiOnRydWUsIm9uYm9hcmRpbmdTdGF0dXMiOlsiTkVXTFlfUkVHSVNURVJFRCIsIlVTRVJOQU1FX1NFVCIsIlBBU1NXT1JEX1NFVCJdLCJ2ZXJzaW9uIjoyLCJjcmVhdGVkQXQiOiIyMDIzLTAxLTI5VDAyOjM2OjQzLjMxOVoiLCJ1cGRhdGVkQXQiOiIyMDIzLTAxLTI5VDAyOjM4OjMxLjE0N1oiLCJkZWxldGVkQXQiOm51bGwsInNlc3Npb25JZCI6IjgwZDc2Y2Y5LWE1MTMtNDA5Yy05OTA2LTlkNjAzZDdhZTBmNyIsImRldmljZUlkIjoiMTIzZjQzNDUtYzM3ZS00NmY3LTkzZDMtZTU4ZDdiNGExMWJkIiwicGJUb2tlbiI6ImV5SmhiR2NpT2lKSVV6STFOaUlzSW5SNWNDSTZJa3BYVkNKOS5leUpqYjJ4c1pXTjBhVzl1U1dRaU9pSmZjR0pmZFhObGNuTmZZWFYwYUY4aUxDSmxlSEFpT2pFMk56YzVOekk0TkRNc0ltbGtJam9pYXpScE1YVTJkelF4YW5SdWFXUjRJaXdpZEhsd1pTSTZJbUYxZEdoU1pXTnZjbVFpZlEuYjhmVUlScXZpQ1RxQzktY0NFNV9vS29mY04xMVlpZ2ZZMzN2TUN2WDFxTSIsInBiVXNlciI6eyJhdmF0YXIiOiIiLCJjb2xsZWN0aW9uSWQiOiJfcGJfdXNlcnNfYXV0aF8iLCJjb2xsZWN0aW9uTmFtZSI6InVzZXJzIiwiY3JlYXRlZCI6IjIwMjMtMDEtMjkgMDI6MzY6NDMuMzE5WiIsImRlbGV0ZWRBdCI6IiIsImRpc3BsYXluYW1lIjoiQmFua29sZSIsImRvYiI6IjIwMDAtMDEtMDEgMDA6MDA6MDAuMDAwWiIsImVtYWlsIjoidGVjaHliYW5reUBnbWFpbC5jb20iLCJlbWFpbFZpc2liaWxpdHkiOnRydWUsImZpcnN0bmFtZSI6IkJhbmtvbGUiLCJnZW5kZXIiOiJNQUxFIiwiaWQiOiJrNGkxdTZ3NDFqdG5pZHgiLCJsYXN0bmFtZSI6IkVzYW4iLCJvbmJvYXJkaW5nU3RhdHVzIjpbIk5FV0xZX1JFR0lTVEVSRUQiLCJVU0VSTkFNRV9TRVQiLCJQQVNTV09SRF9TRVQiXSwicGhvbmUiOiIiLCJwcm9maWxlSW1hZ2UiOiIiLCJwcm9maWxlV2FsbHBhcGVyIjoiIiwicm9sZXMiOlsiVVNFUiIsIlNDT1VUIiwiQUdFTlQiLCJNT0RFUkFUT1IiLCJNT0RFUkFUSU9OIiwiU1VQUE9SVCIsIlNZU1RFTSIsIkFETUlOIiwiU1VQRVJfQURNSU4iLCJKVVJZIiwiSlVER0UiXSwidG9zIjp0cnVlLCJ1cGRhdGVkIjoiMjAyMy0wMS0yOSAwMjozODozMC45NThaIiwidXNlcm5hbWUiOiJiYW5rb2xlMjAwMCIsInZlcmlmaWVkIjp0cnVlLCJleHBhbmQiOnt9fSwiaWF0IjoxNjc2NzYzMjQ2LCJleHAiOjE2NzczNjgwNDZ9.a4BfBydUPNVLR8Ph95L_DvexHJvt2pnazlrANaZcKH8"
+      },
+      {
+        "name": "pbToken",
+        "value": ""
+      },
+      {
+        "name": "password",
+        "value": "newPassword"
+      },
+      {
+        "name": "listingId",
+        "value": ""
+      },
+      {
+        "name": "postId",
+        "value": "aogrs53ffyflrso"
+      },
+      {
+        "name": "commentId",
+        "value": ""
+      },
+      {
+        "name": "serviceId",
+        "value": ""
+      },
+      {
+        "name": "personalAdId",
+        "value": ""
+      },
+      {
+        "name": "chatRoomId",
+        "value": ""
+      },
+      {
+        "name": "messageId",
+        "value": ""
+      },
+      {
+        "name": "postMediaId",
+        "value": "1234"
+      }
+    ]
+  }
+]

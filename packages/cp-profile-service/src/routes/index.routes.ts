@@ -8,11 +8,14 @@ import { notFoundHandler } from '../middleware/errorHandler';
 import { config } from '../utils/config';
 import { currentUserRoutes } from './currentuser.routes';
 import { userProfileRoutes } from './userProfile.routes';
+import { requireLoggedInUser, requireRole } from '../middleware/requireUser';
+import { adminRoutes } from './admin.routes';
 
 const { basePath } = config.self;
 
 export default (app: Express): void => {
   app.use(`${basePath}/test`, testRoutes);
+  app.use(`${basePath}/admin`, requireLoggedInUser, requireRole(['ADMIN', 'SUPER_ADMIN']), adminRoutes);
   app.use(`${basePath}/me`, currentUserRoutes);
   app.use(`${basePath}/u`, userProfileRoutes);
   // app.use(`${basePath}/register`, registerRoutes);

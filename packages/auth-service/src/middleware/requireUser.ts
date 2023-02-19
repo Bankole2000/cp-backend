@@ -37,7 +37,7 @@ export const requireLoggedInUser = async (req: Request, res: Response, next: Nex
 export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers.authorization;
   console.log({ headers: req.headers });
-  console.log('here');
+  console.log('here - 40');
   if (!token) {
     const refreshToken = req.cookies?.refreshToken ? req.cookies.refreshToken : req.headers['x-refresh-token'];
     if (refreshToken) {

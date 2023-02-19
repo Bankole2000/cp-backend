@@ -1,0 +1,1132 @@
+[
+  {
+    "_id": "ae8a128f-d9dd-4dd0-b10e-569856abbfe8",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ca192d88-976b-4a2a-987a-07cafc70a346",
+    "name": "Logout",
+    "url": "{{host}}{{auth-path}}/logout",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-02-17T20:26:58.774Z",
+    "modified": "2023-02-18T07:59:41.306Z",
+    "headers": [],
+    "params": [],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{idToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{listingId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{serviceId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{personalAdId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{postId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{commentId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{chatRoomId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{messageId}}"
+      }
+    ]
+  },
+  {
+    "_id": "90b9173e-bcfd-428b-abf7-e1e18c725eb8",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "21514756-d78f-4bff-a7f2-1cc2230f1633",
+    "name": "Test",
+    "url": "{{host}}{{auth-path}}/test",
+    "method": "GET",
+    "sortNum": 65000,
+    "created": "2023-02-17T20:28:04.856Z",
+    "modified": "2023-02-17T20:28:23.260Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "3c6935db-72d9-4e93-ac1b-31ff893aff3c",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8f4da495-6333-4f05-a615-fe7dae03453c",
+    "name": "Register with Email",
+    "url": "{{host}}{{auth-path}}/register/email",
+    "method": "POST",
+    "sortNum": 30000,
+    "created": "2023-02-17T20:29:05.320Z",
+    "modified": "2023-02-18T08:01:46.561Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"email\": \"\",\n  \"firstname\": \"\",\n  \"lastname\": \"\",\n  \"tos\": false,\n  \"dob\": \"2000-01-01\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "f5130970-1a88-40ed-9530-25abca1469b4",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8f4da495-6333-4f05-a615-fe7dae03453c",
+    "name": "Register with Phone",
+    "url": "{{host}}{{auth-path}}/register/phone",
+    "method": "POST",
+    "sortNum": 40000,
+    "created": "2023-02-17T20:29:35.568Z",
+    "modified": "2023-02-18T08:02:42.768Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"countryCode\": \"\",\n  \"phone\": \"\",\n  \"firstname\": \"\",\n  \"lastname\": \"\",\n  \"tos\": false,\n  \"dob\": \"2000-01-01\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "7c059e93-f172-4868-9f40-e69d78012762",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8f4da495-6333-4f05-a615-fe7dae03453c",
+    "name": "[Onboarding] Set Username",
+    "url": "{{host}}{{auth-path}}/register/onboarding/username",
+    "method": "POST",
+    "sortNum": 40000,
+    "created": "2023-02-17T20:30:34.537Z",
+    "modified": "2023-02-18T08:03:49.194Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"username\": \"\",\n  \"gender\": \"MALE\",\n  \"password\": \"\",\n  \"confirmPassword\": \"\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "a2f0dfce-6d6b-4c98-ba29-982b09d1b025",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8f4da495-6333-4f05-a615-fe7dae03453c",
+    "name": "[Onboarding] Set Password",
+    "url": "{{host}}{{auth-path}}/register/onboarding/password",
+    "method": "POST",
+    "sortNum": 50000,
+    "created": "2023-02-17T20:31:22.991Z",
+    "modified": "2023-02-18T08:04:28.521Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"password\": \"\",\n  \"confirmPassword\": \"\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "d156fa73-d072-4db3-ac68-8b2911fcedf6",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ca192d88-976b-4a2a-987a-07cafc70a346",
+    "name": "Login with Email",
+    "url": "{{host}}{{auth-path}}/login/email",
+    "method": "POST",
+    "sortNum": 50000,
+    "created": "2023-02-17T20:32:11.560Z",
+    "modified": "2023-02-17T21:09:27.804Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"email\": \"techybanky@gmail.com\",\n  \"password\": \"{{password}}\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.accessToken",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.refreshToken",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      }
+    ]
+  },
+  {
+    "_id": "4f091308-cdcb-4b66-a9ff-853d91447d56",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ca192d88-976b-4a2a-987a-07cafc70a346",
+    "name": "Login with Phone",
+    "url": "{{host}}{{auth-path}}/login/phone",
+    "method": "POST",
+    "sortNum": 60000,
+    "created": "2023-02-17T20:32:31.728Z",
+    "modified": "2023-02-17T21:10:04.062Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"countryCode\": \"NG\",\n  \"phone\": \"08069166906\",\n  \"password\": \"{{password}}\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.accessToken",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.refreshToken",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      }
+    ]
+  },
+  {
+    "_id": "2153c0ce-4e18-4814-90fa-880f66ab605b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ca192d88-976b-4a2a-987a-07cafc70a346",
+    "name": "Login with Username",
+    "url": "{{host}}{{auth-path}}/login/username",
+    "method": "POST",
+    "sortNum": 70000,
+    "created": "2023-02-17T20:32:49.599Z",
+    "modified": "2023-02-17T20:43:57.943Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"username\": \"bankole\",\n  \"password\": \"{{password}}\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.accessToken",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.refreshToken",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      }
+    ]
+  },
+  {
+    "_id": "5d83c205-96dd-480c-8186-258f7307bb9e",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ca192d88-976b-4a2a-987a-07cafc70a346",
+    "name": "Verify Device Login",
+    "url": "{{host}}{{auth-path}}/verify/verify-device-login",
+    "method": "POST",
+    "sortNum": 80000,
+    "created": "2023-02-17T20:34:13.376Z",
+    "modified": "2023-02-18T12:03:17.523Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"userId\": \"k4i1u6w41jtnidx\",\n  \"email\": \"techybanky@gmail.com\",\n  \"code\": \"I9DR6O\",\n  \"deviceId\": \"123f4345-c37e-46f7-93d3-e58d7b4a11bd\",\n  \"type\": \"EMAIL\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.accessToken",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.refreshToken",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      }
+    ]
+  },
+  {
+    "_id": "98e93717-26b1-4e6e-aea9-0db0c0289f08",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "1005b8ed-970c-444c-8b27-e45878b9e1c9",
+    "name": "Verify OTP (Email / Phone)",
+    "url": "{{host}}{{auth-path}}/verify/otp/verify",
+    "method": "POST",
+    "sortNum": 70000,
+    "created": "2023-02-17T20:35:06.873Z",
+    "modified": "2023-02-18T08:05:30.912Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"userId\": \"\",\n  \"OTP\": \"\",\n  \"type\": \"\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "a7c7de7a-8d15-47d4-a560-0f1f0ebd7152",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "1005b8ed-970c-444c-8b27-e45878b9e1c9",
+    "name": "Forgot Password Request",
+    "url": "{{host}}{{auth-path}}/verify/forgot-password",
+    "method": "POST",
+    "sortNum": 80000,
+    "created": "2023-02-17T20:36:17.911Z",
+    "modified": "2023-02-18T08:06:04.113Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"field\": \"\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "5555a24b-c2f3-45d8-9dbf-1628b9bcbfaf",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f3594bd2-e6c6-4e33-8854-5d4c15a47386",
+    "name": "Get Current User",
+    "url": "{{host}}{{auth-path}}/currentuser/me",
+    "method": "GET",
+    "sortNum": 90000,
+    "created": "2023-02-17T20:37:27.495Z",
+    "modified": "2023-02-17T20:37:46.087Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "c35e3d4f-1a7f-4de4-b924-3dcdff122c85",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f3594bd2-e6c6-4e33-8854-5d4c15a47386",
+    "name": "Delete Own Account",
+    "url": "{{host}}{{auth-path}}/currentuser/me",
+    "method": "DELETE",
+    "sortNum": 100000,
+    "created": "2023-02-17T20:37:53.342Z",
+    "modified": "2023-02-17T20:38:37.881Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "a92dc53d-9d89-4da0-8475-1b5ddaf87022",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f3594bd2-e6c6-4e33-8854-5d4c15a47386",
+    "name": "Get My Devices",
+    "url": "{{host}}{{auth-path}}/currentuser/me/devices",
+    "method": "GET",
+    "sortNum": 110000,
+    "created": "2023-02-17T20:38:49.687Z",
+    "modified": "2023-02-17T20:39:11.102Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "5cf75a52-fd4c-465d-88f8-0f26d98f840b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f3594bd2-e6c6-4e33-8854-5d4c15a47386",
+    "name": "Delete Device",
+    "url": "{{host}}{{auth-path}}/currentuser/devices/{deviceId}",
+    "method": "DELETE",
+    "sortNum": 100000,
+    "created": "2023-02-17T20:53:52.320Z",
+    "modified": "2023-02-17T20:55:10.900Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "deviceId",
+        "value": "",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "1ae816e2-4011-4bb4-8ff0-30ff41f5d2af",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "968652bd-ebd3-421a-aee5-159f714838ef",
+    "name": "Get Phone Country Codes",
+    "url": "{{host}}{{auth-path}}/system/data/phone-country-codes",
+    "method": "GET",
+    "sortNum": 110000,
+    "created": "2023-02-17T20:56:28.301Z",
+    "modified": "2023-02-17T20:56:57.010Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "3971a8b7-b674-43ce-b711-c9f3df5493d9",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "968652bd-ebd3-421a-aee5-159f714838ef",
+    "name": "Get IP Geo Data",
+    "url": "{{host}}{{auth-path}}/system/data/ip-geo-data/{ip}",
+    "method": "GET",
+    "sortNum": 120000,
+    "created": "2023-02-17T20:57:10.075Z",
+    "modified": "2023-02-17T20:57:59.079Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "ip",
+        "value": "127.0.0.1",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "ddf5bfb3-548d-4366-9085-6a199266cd90",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "968652bd-ebd3-421a-aee5-159f714838ef",
+    "name": "Store IP Geo Data",
+    "url": "{{host}}{{auth-path}}/system/data/ip-geo-data",
+    "method": "POST",
+    "sortNum": 120000,
+    "created": "2023-02-17T20:58:24.075Z",
+    "modified": "2023-02-17T20:58:49.524Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "c1eda2e4-a89a-4d98-ba67-422b7f0e3e44",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "968652bd-ebd3-421a-aee5-159f714838ef",
+    "name": "Update IP Geo Data",
+    "url": "{{host}}{{auth-path}}/system/data/ip-geo-data",
+    "method": "PATCH",
+    "sortNum": 130000,
+    "created": "2023-02-17T20:59:14.603Z",
+    "modified": "2023-02-17T20:59:34.903Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "4abd7057-3b4e-43df-b5a9-65f7966cea5a",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ab367ea1-5567-4172-ad00-2b67b32a8fb6",
+    "name": "Purge User From System",
+    "url": "{{host}}{{auth-path}}/system/manage/user/{userId}",
+    "method": "DELETE",
+    "sortNum": 130000,
+    "created": "2023-02-17T21:00:31.916Z",
+    "modified": "2023-02-17T21:01:06.343Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "userId",
+        "value": "asdf",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "7e8455f6-3e07-4e79-899a-94e36f9c2c36",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ed5dcde8-5780-4e7e-a094-457838c01a9c",
+    "name": "Models",
+    "url": "{{host}}{{auth-path}}/data",
+    "method": "GET",
+    "sortNum": 75000,
+    "created": "2023-02-18T06:59:09.101Z",
+    "modified": "2023-02-18T07:02:20.612Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "051cd6fd-ed5d-4a20-add1-640057979e1d",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ed5dcde8-5780-4e7e-a094-457838c01a9c",
+    "name": "Model Data",
+    "url": "{{host}}{{auth-path}}/data/{model}",
+    "method": "GET",
+    "sortNum": 85000,
+    "created": "2023-02-18T07:01:24.748Z",
+    "modified": "2023-02-18T07:03:17.504Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "model",
+        "value": "approvedDevices",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "b7996af0-69e3-411c-b0cd-07d1e6fa5909",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "09612184-5b58-42f2-9da5-987086bded17",
+    "name": "Test",
+    "url": "{{host}}{{listing-path}}/test",
+    "method": "GET",
+    "sortNum": 160000,
+    "created": "2023-02-18T07:04:01.581Z",
+    "modified": "2023-02-18T07:04:24.067Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "d7034b9d-b221-41c4-991f-260ff2fb46be",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "3c7374c4-f7dd-4712-b03d-c85eb84640db",
+    "name": "Models",
+    "url": "{{host}}{{profile-path}}/data",
+    "method": "GET",
+    "sortNum": 75000,
+    "created": "2023-02-18T07:09:19.129Z",
+    "modified": "2023-02-18T07:40:10.531Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "4bf737bc-8aa7-48a5-aa72-0be539455ac8",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "3c7374c4-f7dd-4712-b03d-c85eb84640db",
+    "name": "Model Data",
+    "url": "{{host}}{{profile-path}}/data/{model}",
+    "method": "GET",
+    "sortNum": 85000,
+    "created": "2023-02-18T07:09:19.131Z",
+    "modified": "2023-02-18T10:06:38.976Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "model",
+        "value": "profile",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "9ff52c73-7703-413b-a3f0-d4096b8bc655",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "641d9c98-937c-413b-9932-f5107eb68499",
+    "name": "Models",
+    "url": "{{host}}{{listing-path}}/data",
+    "method": "GET",
+    "sortNum": 75000,
+    "created": "2023-02-18T07:11:39.835Z",
+    "modified": "2023-02-18T07:11:39.835Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "2ba90016-935b-4fd5-a046-40cff72998e9",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "641d9c98-937c-413b-9932-f5107eb68499",
+    "name": "Model Data",
+    "url": "{{host}}{{listing-path}}/data/{model}",
+    "method": "GET",
+    "sortNum": 85000,
+    "created": "2023-02-18T07:11:39.836Z",
+    "modified": "2023-02-18T07:12:29.393Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "model",
+        "value": "listingImage",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "d0442ffd-8bc1-45a9-a2ab-d743495207e8",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8756a8a4-e299-41a3-845c-e095f8efe052",
+    "name": "Get Listings",
+    "url": "{{host}}{{listing-path}}/listings",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-02-18T07:14:24.289Z",
+    "modified": "2023-02-18T07:17:33.435Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "6d304085-7515-48b7-81a4-b6c28dc51092",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "3ba028d6-f139-467f-8bdf-9c398ad58f49",
+    "name": "Create Listings",
+    "url": "{{host}}{{listing-path}}/listings",
+    "method": "POST",
+    "sortNum": 180000,
+    "created": "2023-02-18T07:15:16.593Z",
+    "modified": "2023-02-18T08:08:20.862Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"title\": \"\",\n  \"caption\": \"\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.listingId",
+        "action": "setto",
+        "value": "{{listingId}}"
+      }
+    ]
+  },
+  {
+    "_id": "7e983cbf-530d-45fb-b614-a801ae4356f5",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8756a8a4-e299-41a3-845c-e095f8efe052",
+    "name": "Get Listing Details",
+    "url": "{{host}}{{listing-path}}/listings/{listingId}",
+    "method": "GET",
+    "sortNum": 180000,
+    "created": "2023-02-18T07:17:43.530Z",
+    "modified": "2023-02-18T08:07:22.852Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "listingId",
+        "value": "skvmw3wefkj5ewd",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "441494bb-422e-488e-8201-74713bfdc687",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "3ba028d6-f139-467f-8bdf-9c398ad58f49",
+    "name": "Set Basic Listing Info",
+    "url": "{{host}}{{listing-path}}/listings/{listingId}",
+    "method": "PATCH",
+    "sortNum": 190000,
+    "created": "2023-02-18T08:09:52.236Z",
+    "modified": "2023-02-18T08:10:24.703Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "listingId",
+        "value": "",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "6905921e-1a54-4bd5-afe5-49217c1c9383",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "5c0ad0be-a237-4fcd-9cb2-e11027a14cfa",
+    "name": "Test",
+    "url": "{{host}}{{profile-path}}/test",
+    "method": "GET",
+    "sortNum": 200000,
+    "created": "2023-02-18T10:08:19.480Z",
+    "modified": "2023-02-18T10:08:31.826Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "378e70b1-d2bf-4410-8f08-aca632db156e",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "bd905278-f4a0-4f6d-a897-dfad060f31b3",
+    "name": "Get All User Profiles",
+    "url": "{{host}}{{profile-path}}/admin/users",
+    "method": "GET",
+    "sortNum": 210000,
+    "created": "2023-02-18T10:09:02.991Z",
+    "modified": "2023-02-18T10:09:16.145Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "ea607c38-891d-4a56-b4df-5e234093fb0b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "acdd67e2-554a-4fc9-9871-1268babdf78e",
+    "name": "Get My Profile",
+    "url": "{{host}}{{profile-path}}/me/profile",
+    "method": "GET",
+    "sortNum": 220000,
+    "created": "2023-02-18T10:09:59.360Z",
+    "modified": "2023-02-18T10:10:13.169Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "1279e28b-c114-4436-9e68-1decf2a1102f",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "acdd67e2-554a-4fc9-9871-1268babdf78e",
+    "name": "Upload Profile Image",
+    "url": "{{host}}{{profile-path}}/me/image",
+    "method": "POST",
+    "sortNum": 230000,
+    "created": "2023-02-18T10:10:24.758Z",
+    "modified": "2023-02-18T10:10:40.087Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "0129d07c-b629-49a8-bddf-9aa1d67bbcff",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "acdd67e2-554a-4fc9-9871-1268babdf78e",
+    "name": "Upload Profile Wallpaper",
+    "url": "{{host}}{{profile-path}}/me/wallpaper",
+    "method": "POST",
+    "sortNum": 240000,
+    "created": "2023-02-18T10:11:34.421Z",
+    "modified": "2023-02-18T10:11:42.495Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "aae9c0bf-3d5e-41a3-aaaa-0a225e7187d4",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Get Profile By User Id",
+    "url": "{{host}}{{profile-path}}/u/id/{userId}/profile",
+    "method": "GET",
+    "sortNum": 230000,
+    "created": "2023-02-18T10:12:52.552Z",
+    "modified": "2023-02-18T10:13:16.337Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "userId",
+        "value": "",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "64f9fdd4-c322-49dc-82cd-d8e2adff3a7a",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Get Profile By Username",
+    "url": "{{host}}{{profile-path}}/u/{username}/profile",
+    "method": "GET",
+    "sortNum": 240000,
+    "created": "2023-02-18T10:13:23.444Z",
+    "modified": "2023-02-18T10:13:43.429Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "48cee55d-ce23-4b00-a1a7-fa4bd5c73feb",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Get Profile Wallpaper",
+    "url": "{{host}}{{profile-path}}/u/wallpaper/{username}",
+    "method": "GET",
+    "sortNum": 250000,
+    "created": "2023-02-18T10:14:32.245Z",
+    "modified": "2023-02-18T10:14:50.344Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "3814c9e9-ccbc-41ad-913e-8c94580930a6",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Get Profile Image",
+    "url": "{{host}}{{profile-path}}/u/image/{username}",
+    "method": "GET",
+    "sortNum": 260000,
+    "created": "2023-02-18T10:15:36.525Z",
+    "modified": "2023-02-18T10:15:44.571Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "3f24a1c4-48b7-49cc-953e-90c2ca3b0a66",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0ce8d702-11eb-4a6d-a8ab-4ef3939407a1",
+    "name": "Models",
+    "url": "{{host}}{{chat-path}}/data",
+    "method": "GET",
+    "sortNum": 75000,
+    "created": "2023-02-18T10:17:53.789Z",
+    "modified": "2023-02-18T10:18:20.751Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "e5084112-9a4a-4bb3-981d-7823dcb6324a",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0ce8d702-11eb-4a6d-a8ab-4ef3939407a1",
+    "name": "Model Data",
+    "url": "{{host}}{{chat-path}}/data/{model}",
+    "method": "GET",
+    "sortNum": 85000,
+    "created": "2023-02-18T10:17:53.790Z",
+    "modified": "2023-02-18T10:18:53.357Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "model",
+        "value": "user",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "9197399f-afa0-4b86-99bd-fb42ec73bdc0",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "72c0e8a0-d46d-46c9-a95b-c72e04e3db4e",
+    "name": "Test",
+    "url": "{{host}}{{chat-path}}/test",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-02-18T10:18:04.564Z",
+    "modified": "2023-02-18T10:18:13.451Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "4b1ae01b-58c7-44ef-8fa7-5ffd57fcf755",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "383f9258-51c5-4a44-a1e8-b439cd2f19b9",
+    "name": "Models",
+    "url": "{{host}}{{post-path}}/data",
+    "method": "GET",
+    "sortNum": 75000,
+    "created": "2023-02-18T10:58:23.613Z",
+    "modified": "2023-02-18T10:59:54.376Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "dea4c4f5-03c1-428b-90c6-599008c5d035",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "383f9258-51c5-4a44-a1e8-b439cd2f19b9",
+    "name": "Model Data",
+    "url": "{{host}}{{post-path}}/data/{model}",
+    "method": "GET",
+    "sortNum": 85000,
+    "created": "2023-02-18T10:58:23.614Z",
+    "modified": "2023-02-18T11:00:01.591Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "model",
+        "value": "user",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "f2c65472-50a6-48d8-8055-a73ce45ddc8b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
+    "name": "Test",
+    "url": "{{host}}{{chat-path}}/test",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-02-18T11:00:13.821Z",
+    "modified": "2023-02-18T11:00:17.524Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "3589d621-0694-4797-9d3c-3a14db09de5c",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
+    "name": "Create Post",
+    "url": "{{host}}{{post-path}}/posts/create",
+    "method": "GET",
+    "sortNum": 240000,
+    "created": "2023-02-18T17:31:48.982Z",
+    "modified": "2023-02-18T17:33:35.892Z",
+    "headers": [],
+    "params": [],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.id",
+        "action": "setto",
+        "value": "{{postId}}"
+      }
+    ]
+  },
+  {
+    "_id": "be22d092-abf2-46f5-ac6b-b5cc0dc1c129",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f4725599-a855-4222-8745-e7b5b60ed920",
+    "name": "Add Post Media",
+    "url": "{{host}}{{post-path}}/posts/{postId}/media",
+    "method": "POST",
+    "sortNum": 260000,
+    "created": "2023-02-18T22:25:40.091Z",
+    "modified": "2023-02-18T23:37:37.590Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.id",
+        "action": "setto",
+        "value": "{{postMediaId}}"
+      }
+    ]
+  },
+  {
+    "_id": "48f30fd2-24f9-4b4b-8b86-9f28ae0e1323",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f4725599-a855-4222-8745-e7b5b60ed920",
+    "name": "Update Post Media",
+    "url": "{{host}}{{post-path}}/posts/{postId}/media",
+    "method": "PATCH",
+    "sortNum": 270000,
+    "created": "2023-02-18T22:25:50.211Z",
+    "modified": "2023-02-18T23:36:39.029Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "4b10180f-3e7d-4b68-b53f-06b980194f37",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "17bbd008-fa64-4b42-a1d5-61d9289aefd6",
+    "name": "Set Post Caption",
+    "url": "",
+    "method": "GET",
+    "sortNum": 290000,
+    "created": "2023-02-18T22:28:47.355Z",
+    "modified": "2023-02-18T22:28:47.355Z",
+    "headers": []
+  },
+  {
+    "_id": "80ad7dd3-cb22-4346-8915-f8b3c0a3bf3e",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "17bbd008-fa64-4b42-a1d5-61d9289aefd6",
+    "name": "Set Post Privacy",
+    "url": "",
+    "method": "GET",
+    "sortNum": 300000,
+    "created": "2023-02-18T22:29:29.082Z",
+    "modified": "2023-02-18T22:29:29.082Z",
+    "headers": []
+  },
+  {
+    "_id": "d371e95c-a8b8-4633-89cc-da880b36c6e9",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
+    "name": "Publish Post",
+    "url": "",
+    "method": "GET",
+    "sortNum": 310000,
+    "created": "2023-02-18T22:29:51.003Z",
+    "modified": "2023-02-18T22:29:51.003Z",
+    "headers": []
+  },
+  {
+    "_id": "6d118602-e7ad-4261-b5e3-35234b0078d7",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f4725599-a855-4222-8745-e7b5b60ed920",
+    "name": "Remove Post Media",
+    "url": "{{host}}{{post-path}}/posts/{postId}/media/{mediaId}",
+    "method": "DELETE",
+    "sortNum": 280000,
+    "created": "2023-02-18T23:39:46.299Z",
+    "modified": "2023-02-18T23:40:26.444Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "mediaId",
+        "value": "{{postMediaId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "44123923-bc96-4a75-84b4-15d8f5f09634",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f4725599-a855-4222-8745-e7b5b60ed920",
+    "name": "Delete Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}",
+    "method": "DELETE",
+    "sortNum": 290000,
+    "created": "2023-02-18T23:40:29.049Z",
+    "modified": "2023-02-18T23:40:41.721Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "4fc28932-0a7b-4aed-9b2d-d87b8a64a1f5",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
+    "name": "Like / Unlike Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/likes",
+    "method": "POST",
+    "sortNum": 320000,
+    "created": "2023-02-18T23:53:42.185Z",
+    "modified": "2023-02-18T23:55:39.547Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "f3ac24b2-21d0-4e5e-93da-a66c4850569d",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
+    "name": "Get Post Likes",
+    "url": "{{host}}{{post-path}}/posts/{postId}/likes",
+    "method": "GET",
+    "sortNum": 330000,
+    "created": "2023-02-19T00:57:41.660Z",
+    "modified": "2023-02-19T00:58:03.272Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  }
+]

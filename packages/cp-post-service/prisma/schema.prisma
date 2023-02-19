@@ -39,33 +39,33 @@ model User {
 
 model Post {
   id             String          @id @default(uuid())
-  title          String
-  content        String
+  caption        String?
   published      Boolean         @default(false)
   allowComments  Boolean         @default(true)
   showLikesCount Boolean         @default(true)
-  authorId       String
-  media          Media[]         @relation("PostHasMedia")
+  createdBy      String
+  postMedia      PostMedia[]     @relation("PostHasMedia")
   tags           Tag[]
-  author         User            @relation(fields: [authorId], references: [userId])
+  createdByData  User            @relation(fields: [createdBy], references: [userId])
   comments       Comment[]       @relation("PostHasComment")
   views          View[]          @relation("PostHasViews")
   likedBy        UserLikesPost[] @relation("PostLikedByUser")
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  created        DateTime        @default(now())
+  updated        DateTime        @updatedAt
   deletedAt      DateTime?
 }
 
-model Media {
-  id        String   @id @default(uuid())
-  type      String
-  url       String
-  order     Int      @default(0)
-  data      Json
-  post      Post     @relation("PostHasMedia", fields: [postId], references: [id])
-  postId    String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model PostMedia {
+  id       String   @id @default(uuid())
+  type     String
+  ImageUrl String
+  image    String
+  order    Int      @default(0)
+  data     Json
+  postData Post     @relation("PostHasMedia", fields: [post], references: [id])
+  post     String
+  created  DateTime @default(now())
+  updated  DateTime @updatedAt
 }
 
 model Tag {

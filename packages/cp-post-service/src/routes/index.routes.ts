@@ -6,11 +6,15 @@ import { dataRoutes } from './data.routes';
 import { testRoutes } from './test.routes';
 import { notFoundHandler } from '../middleware/errorHandler';
 import { config } from '../utils/config';
+import { postRoutes } from './post.routes';
+import { adminRoutes } from './admin.routes';
 
 const { basePath } = config.self;
 
 export default (app: Express): void => {
   app.use(`${basePath}/test`, testRoutes);
+  app.use(`${basePath}/admin`, adminRoutes);
+  app.use(`${basePath}/posts`, postRoutes);
   // app.use(`${basePath}/register`, registerRoutes);
   // app.use(`${basePath}/login`, loginRoutes);
   // app.use(`${basePath}/currentuser`, currentUserRoutes);

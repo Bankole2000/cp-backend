@@ -44,11 +44,11 @@ httpServer.listen(PORT, async () => {
   await serviceUp(redis, config);
   await serviceEvents(channel);
   routes(app);
-  // ['SIGTERM', 'SIGINT', 'SIGKILL', 'uncaughtException', 'unhandledRejection'].forEach((signal) => {
-  //   process.on(signal, async () => {
-  //     await serviceDown(redis, config);
-  //     process.exit(0);
-  //   });
-  // });
+  ['SIGTERM', 'SIGINT', 'SIGKILL', 'uncaughtException', 'unhandledRejection'].forEach((signal) => {
+    process.on(signal, async () => {
+      await serviceDown(redis, config);
+      process.exit(0);
+    });
+  });
   console.log(`${self.emoji} ${config.self.serviceName?.toUpperCase()} Listening on port ${PORT}!!!!!`);
 });

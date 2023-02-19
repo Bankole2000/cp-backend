@@ -60,7 +60,7 @@ export const updateListingTypeHandler = async (req: Request, res: Response) => {
     oldlt = { ...oldlt, ...ltsr.data };
     lts.update(oldlt);
     db.save();
-    await deleteCache(req.redis, [`${basePath}/settings/listing-types`]);
+    await deleteCache(req.redis, [`${basePath}/settings/listing-types`, `${basePath}/settings/`]);
   }
   return res.status(ltsr.statusCode).json(ltsr);
 };
@@ -87,7 +87,7 @@ export const deleteListingTypeHandler = async (req: Request, res: Response) => {
     const deletedlt = db.getCollection('listingTypes').findOne({ listingType: typeId });
     db.getCollection('listingTypes').remove(deletedlt);
     db.save();
-    await deleteCache(req.redis, [`${basePath}/settings/listing-types`]);
+    await deleteCache(req.redis, [`${basePath}/settings/listing-types`, `${basePath}/settings/`]);
   }
   return res.status(ltsr.statusCode).json(ltsr);
 };

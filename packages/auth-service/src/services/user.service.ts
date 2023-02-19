@@ -197,6 +197,20 @@ export default class UserDBService {
     }
   }
 
+  async getUserDevices(userId: string) {
+    try {
+      const userDevices = await this.prisma.approvedDevices.findMany({
+        where: {
+          userId
+        }
+      });
+      return new ServiceResponse('User devices', userDevices, true, 200, null, null, null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting user devices', null, false, 500, error.message, error, 'Check Logs and Database');
+    }
+  }
+
   async updateDeviceById(deviceId: string, deviceData: any) {
     try {
       const updatedDevice = await this.prisma.approvedDevices.update({
@@ -214,6 +228,23 @@ export default class UserDBService {
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error updating device by Id', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async deleteDeviceById(deviceId: string) {
+    try {
+      const deletedDevice = await this.prisma.approvedDevices.delete({
+        where: {
+          deviceId
+        }
+      });
+      if (deletedDevice) {
+        return new ServiceResponse('Device Deleted', deletedDevice, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error deleting device', deletedDevice, false, 400, 'Error deleting device', 'AUTH_SERVICE_ERROR_DELETING_DEVICE', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error deleting device', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
 

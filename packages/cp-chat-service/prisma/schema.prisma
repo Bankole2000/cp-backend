@@ -39,16 +39,16 @@ model User {
 }
 
 model ChatInvites {
-  inviteId   String   @id @default(uuid())
-  chatRoomId String
-  chatRoom   ChatRoom @relation(fields: [chatRoomId], references: [chatRoomId])
+  inviteId   String    @id @default(uuid())
+  chatRoomId String?
+  chatRoom   ChatRoom? @relation(fields: [chatRoomId], references: [chatRoomId])
   sentById   String
-  sentBy     User     @relation("InvitesSentBy", fields: [sentById], references: [userId])
+  sentBy     User      @relation("InvitesSentBy", fields: [sentById], references: [userId])
   sentToId   String
-  sentTo     User     @relation("InvitesSentTo", fields: [sentToId], references: [userId])
-  accepted   Boolean  @default(false)
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  sentTo     User      @relation("InvitesSentTo", fields: [sentToId], references: [userId])
+  accepted   Boolean   @default(false)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model ChatRoom {

@@ -49,7 +49,11 @@ export const resendOTPHandler = async (req: Request, res: Response) => {
     await logResponse(req, sr);
     return res.status(sr.statusCode).send(sr);
   }
-  const OTP = generateOTP(6, { lowerCaseAlphabets: false, upperCaseAlphabets: true, specialChars: false });
+  const OTP = generateOTP(6, {
+    lowerCaseAlphabets: false,
+    upperCaseAlphabets: true,
+    specialChars: false
+  });
   let verifData;
   let se;
   const commsQueue = await getServiceQueues(req.redis, config.redisConfig.scope, ['comms', 'event']);
@@ -293,7 +297,7 @@ export const verifyDeviceLoginHandler = async (req: Request, res: Response) => {
   if (session.user.password) delete session.user.password;
   if (session.device.deviceData) delete session.device.deviceData;
   const { user, sessionId } = session;
-  const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
+  const { token: pbToken, record: pbUser } = (await pb.authenticateUser(userExists.data.username, deviceRequestData.pass.split('').reverse().join(''))).data;
   const accessToken = (await signJWT({
     ...user, sessionId, deviceId, pbUser, pbToken
   }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;

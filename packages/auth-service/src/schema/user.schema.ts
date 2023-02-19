@@ -264,6 +264,17 @@ export const phoneLoginSchema = object({
   })
 });
 
+export const usernameLoginSchema = object({
+  body: object({
+    username: string({
+      required_error: 'Username is required',
+    }).min(1, 'Username must be at least 1 character long'),
+    password: string({
+      required_error: 'Password is required',
+    }).min(1, 'Password must be at least 1 character long')
+  })
+});
+
 export const updatePasswordSchema = object({
   body: object({
     password: string({

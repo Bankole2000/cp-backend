@@ -102,4 +102,36 @@ export default class ChatDBService {
       return new ServiceResponse('Error purging user account', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
+
+  async getUserContacts(userId: string) {
+    try {
+      const contacts = await this.prisma.chatParticipants.findMany({
+        where: {
+          userId
+        },
+        include: {
+          chatRoom: {
+            include: {
+              messages: {
+                take: 1,
+                orderBy: {
+                  createdAt: 'desc'
+                },
+                include: {
+                  user: true,
+                }
+              },
+              groupChatSettings: true,
+            }
+          }
+        }
+      });
+      return new ServiceResponse('User Contacts', contacts, true, 200, null, null, null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting user', null, false, 500, error.message, error);
+    }
+  }
+
+  // async createChatInvite(senderId: string, recieverId: string)
 }
