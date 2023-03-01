@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.7](https://github.com/Bankole2000/cp-backend/compare/v1.4.6...v1.4.7) (2023-03-01)
+
+
+### Features
+
+* **posts:** wip post comment routes ([97fc6d7](https://github.com/Bankole2000/cp-backend/commits/97fc6d7c460ae6152fca04910827ab54934ba950))
+* **posts:** wip user create post ([b81b8e8](https://github.com/Bankole2000/cp-backend/commits/b81b8e809c01860895a9dc61aa87c9622392d0eb))
+* **profiles:** user can follow users ([59c386f](https://github.com/Bankole2000/cp-backend/commits/59c386f25127047699617cac73fa46ed326f25c2))
+
 ### [1.4.6](https://github.com/Bankole2000/cp-backend/compare/v1.4.5...v1.4.6) (2023-02-19)
 
 
