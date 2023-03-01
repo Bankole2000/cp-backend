@@ -277,6 +277,55 @@
         "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
         "created": "2023-02-19T00:55:15.735Z",
         "sortNum": 370000
+      },
+      {
+        "_id": "769b7fe7-fbc5-4b14-9978-5134801bfbf9",
+        "name": "Current User",
+        "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
+        "created": "2023-02-19T12:44:46.818Z",
+        "sortNum": 380000
+      },
+      {
+        "_id": "109cb93c-db19-45a5-87e0-1790c503c2e6",
+        "name": "Get Posts",
+        "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
+        "created": "2023-02-19T13:43:54.092Z",
+        "sortNum": 175000
+      },
+      {
+        "_id": "d6bb13b4-5190-4eed-b6db-06f6eb1ff6ce",
+        "name": "Tags",
+        "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
+        "created": "2023-02-20T18:19:54.531Z",
+        "sortNum": 400000
+      },
+      {
+        "_id": "5aab69fd-eb82-4a5e-bd1f-8d2538c4e29e",
+        "name": "Moderation",
+        "containerId": "5c0ad0be-a237-4fcd-9cb2-e11027a14cfa",
+        "created": "2023-02-21T09:39:44.358Z",
+        "sortNum": 410000
+      },
+      {
+        "_id": "8d24ee09-118a-475e-93ff-e3b0dfb8134f",
+        "name": "Moderation",
+        "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
+        "created": "2023-02-23T09:29:49.089Z",
+        "sortNum": 420000
+      },
+      {
+        "_id": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+        "name": "Followers",
+        "containerId": "acdd67e2-554a-4fc9-9871-1268babdf78e",
+        "created": "2023-02-23T21:30:18.260Z",
+        "sortNum": 430000
+      },
+      {
+        "_id": "f066b08a-a599-4a78-b66a-38a08f1fd6c1",
+        "name": "Current User",
+        "containerId": "72c0e8a0-d46d-46c9-a95b-c72e04e3db4e",
+        "created": "2023-02-28T16:18:39.130Z",
+        "sortNum": 440000
       }
     ],
     "settings": {

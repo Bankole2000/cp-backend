@@ -287,12 +287,12 @@
     "method": "POST",
     "sortNum": 80000,
     "created": "2023-02-17T20:34:13.376Z",
-    "modified": "2023-02-18T12:03:17.523Z",
+    "modified": "2023-02-25T12:07:13.782Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"userId\": \"k4i1u6w41jtnidx\",\n  \"email\": \"techybanky@gmail.com\",\n  \"code\": \"I9DR6O\",\n  \"deviceId\": \"123f4345-c37e-46f7-93d3-e58d7b4a11bd\",\n  \"type\": \"EMAIL\"\n}",
+      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"userId\": \"uejqr39kbih3nyf\",\n  \"username\": \"bankole\",\n  \"code\": \"FHHHAP\",\n  \"deviceId\": \"41606d95-96bc-4462-b884-eb8b88122e0e\",\n  \"type\": \"USERNAME\"\n}",
       "form": []
     },
     "tests": [
@@ -314,7 +314,8 @@
         "action": "setto",
         "value": "{{refreshToken}}"
       }
-    ]
+    ],
+    "docs": "if user uses `phone`, `email` or `username` to login, then send type as PHONE, EMAIL, or USERNAME respectively and field with corresponding data, i.e. `phone: <phone>`, `email: <email>` etc\n\n```json\n{\n  \"idToken\": \"{{idToken}}\",\n  \"userId\": \"uejqr39kbih3nyf\",\n  \"username\": \"bankole\",\n  \"code\": \"FHHHAP\",\n  \"deviceId\": \"41606d95-96bc-4462-b884-eb8b88122e0e\",\n  \"type\": \"USERNAME\"\n}\n```"
   },
   {
     "_id": "98e93717-26b1-4e6e-aea9-0db0c0289f08",
@@ -769,11 +770,11 @@
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
     "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
     "name": "Get Profile By User Id",
-    "url": "{{host}}{{profile-path}}/u/id/{userId}/profile",
+    "url": "{{host}}{{profile-path}}/u/id/profile/{userId}",
     "method": "GET",
     "sortNum": 230000,
     "created": "2023-02-18T10:12:52.552Z",
-    "modified": "2023-02-18T10:13:16.337Z",
+    "modified": "2023-02-27T02:05:53.560Z",
     "headers": [],
     "params": [
       {
@@ -789,16 +790,16 @@
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
     "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
     "name": "Get Profile By Username",
-    "url": "{{host}}{{profile-path}}/u/{username}/profile",
+    "url": "{{host}}{{profile-path}}/u/profile/{username}",
     "method": "GET",
     "sortNum": 240000,
     "created": "2023-02-18T10:13:23.444Z",
-    "modified": "2023-02-18T10:13:43.429Z",
+    "modified": "2023-02-27T02:06:33.657Z",
     "headers": [],
     "params": [
       {
         "name": "username",
-        "value": "bankole",
+        "value": "bankole2000",
         "isPath": true
       }
     ],
@@ -915,12 +916,12 @@
     "method": "GET",
     "sortNum": 85000,
     "created": "2023-02-18T10:58:23.614Z",
-    "modified": "2023-02-18T11:00:01.591Z",
+    "modified": "2023-02-22T23:06:19.986Z",
     "headers": [],
     "params": [
       {
         "name": "model",
-        "value": "user",
+        "value": "moderationQueue",
         "isPath": true
       }
     ],
@@ -970,7 +971,7 @@
     "method": "POST",
     "sortNum": 260000,
     "created": "2023-02-18T22:25:40.091Z",
-    "modified": "2023-02-18T23:37:37.590Z",
+    "modified": "2023-02-19T22:21:46.959Z",
     "headers": [],
     "params": [
       {
@@ -979,6 +980,22 @@
         "isPath": true
       }
     ],
+    "body": {
+      "type": "formdata",
+      "raw": "",
+      "form": [
+        {
+          "name": "type",
+          "value": "IMAGE"
+        }
+      ],
+      "files": [
+        {
+          "name": "media",
+          "value": "..\\..\\..\\..\\Downloads\\Screenshot 2023-02-09 180714.png"
+        }
+      ]
+    },
     "tests": [
       {
         "type": "set-env-var",
@@ -986,7 +1003,8 @@
         "action": "setto",
         "value": "{{postMediaId}}"
       }
-    ]
+    ],
+    "docs": "Adding Post media: \nPost media can be either IMAGE (file uploaded by user), or GIF (selection from GIPHY api).\nBody should have the following properties\n- type : IMAGE / GIF,\n- imageUrl: optional, include if type is GIF,\n- gifData: optional, include if type is GIF\n"
   },
   {
     "_id": "48f30fd2-24f9-4b4b-8b86-9f28ae0e1323",
@@ -1013,12 +1031,25 @@
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
     "containerId": "17bbd008-fa64-4b42-a1d5-61d9289aefd6",
     "name": "Set Post Caption",
-    "url": "",
-    "method": "GET",
+    "url": "{{host}}{{post-path}}/posts/{postId}/caption",
+    "method": "PATCH",
     "sortNum": 290000,
     "created": "2023-02-18T22:28:47.355Z",
-    "modified": "2023-02-18T22:28:47.355Z",
-    "headers": []
+    "modified": "2023-02-26T18:12:57.417Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"caption\": \"new post with #hashtag and tagging user @user with a link to https://google.com\"\n}",
+      "form": []
+    },
+    "tests": []
   },
   {
     "_id": "80ad7dd3-cb22-4346-8915-f8b3c0a3bf3e",
@@ -1037,11 +1068,11 @@
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
     "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
     "name": "Publish Post",
-    "url": "{{host}}{{post-path}}/posts/{postId}/publish?schedule",
+    "url": "{{host}}{{post-path}}/posts/{postId}/publish?contentWarning=false",
     "method": "GET",
     "sortNum": 310000,
     "created": "2023-02-18T22:29:51.003Z",
-    "modified": "2023-02-19T02:47:17.073Z",
+    "modified": "2023-02-23T00:01:17.880Z",
     "headers": [],
     "params": [
       {
@@ -1050,13 +1081,25 @@
         "isPath": true
       },
       {
-        "name": "schedule",
-        "value": "",
+        "name": "publishAt",
+        "value": "2023-02-21 15:32:00",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "autoModerate",
+        "value": "false",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "contentWarning",
+        "value": "false",
         "isPath": false
       }
     ],
     "tests": [],
-    "docs": "Query parameter `schedule` , sets when post should be published\n\nShould create post publishing job to be executed at set time."
+    "docs": "Query parameter `publishAt` , sets when post should be published\n\nShould create post publishing job to be executed at set time."
   },
   {
     "_id": "6d118602-e7ad-4261-b5e3-35234b0078d7",
@@ -1086,13 +1129,13 @@
   {
     "_id": "44123923-bc96-4a75-84b4-15d8f5f09634",
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
-    "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
+    "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
     "name": "Delete Post",
     "url": "{{host}}{{post-path}}/posts/{postId}",
     "method": "DELETE",
-    "sortNum": 190000,
+    "sortNum": 320000,
     "created": "2023-02-18T23:40:29.049Z",
-    "modified": "2023-02-19T02:31:56.916Z",
+    "modified": "2023-02-22T15:25:17.665Z",
     "headers": [],
     "params": [
       {
@@ -1254,5 +1297,444 @@
       }
     ],
     "docs": "Comment on post can be deleted by\n- User who created comment\n- User who created Post\n- Moderator\n- Admin"
+  },
+  {
+    "_id": "0d1e96de-1bf7-491d-800a-83fd969bae20",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "109cb93c-db19-45a5-87e0-1790c503c2e6",
+    "name": "Get Post Details",
+    "url": "{{host}}{{post-path}}/posts/{postId}",
+    "method": "GET",
+    "sortNum": 370000,
+    "created": "2023-02-19T13:44:06.689Z",
+    "modified": "2023-02-19T13:44:28.486Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "135ea2b2-e68f-46d1-b811-eb6af5dae0a2",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f4725599-a855-4222-8745-e7b5b60ed920",
+    "name": "Change Media Order",
+    "url": "{{host}}{{post-path}}/posts/{postId}/media/{mediaId}/order",
+    "method": "PATCH",
+    "sortNum": 275000,
+    "created": "2023-02-19T22:12:48.794Z",
+    "modified": "2023-02-19T22:23:14.218Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "mediaId",
+        "value": "{{postMediaId}}",
+        "isPath": true
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"order\": 0\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "6ab121bd-b9e7-4ed4-b937-17cd4c908fe4",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
+    "name": "Unpublish Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/unpublish",
+    "method": "GET",
+    "sortNum": 315000,
+    "created": "2023-02-22T15:25:57.956Z",
+    "modified": "2023-02-22T15:26:41.270Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "publishAt",
+        "value": "2023-02-21 15:32:00",
+        "isDisabled": true,
+        "isPath": false
+      }
+    ],
+    "tests": [],
+    "docs": "Query parameter `publishAt` , sets when post should be published\n\nShould create post publishing job to be executed at set time."
+  },
+  {
+    "_id": "c921f08e-5f25-4160-9db2-9a5c3ae1f79b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8d24ee09-118a-475e-93ff-e3b0dfb8134f",
+    "name": "Get Queue",
+    "url": "{{host}}{{post-path}}/moderation/posts?page=2&limit=5",
+    "method": "GET",
+    "sortNum": 390000,
+    "created": "2023-02-23T09:30:07.885Z",
+    "modified": "2023-02-23T10:24:39.680Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "2",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "5",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "3bbcbc9e-925e-490f-b539-8d3712ee1658",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8d24ee09-118a-475e-93ff-e3b0dfb8134f",
+    "name": "Add Moderation Review",
+    "url": "",
+    "method": "GET",
+    "sortNum": 400000,
+    "created": "2023-02-23T11:40:12.914Z",
+    "modified": "2023-02-23T11:40:12.914Z",
+    "headers": []
+  },
+  {
+    "_id": "34ec24a0-3907-4a0a-834d-86356fed4aa9",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "User Followers",
+    "url": "{{host}}{{profile-path}}/me/followers?page&limit",
+    "method": "GET",
+    "sortNum": 410000,
+    "created": "2023-02-23T21:30:37.043Z",
+    "modified": "2023-02-23T21:38:32.705Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "47ccbd0f-7911-485c-9148-b588865a0075",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Follow User",
+    "url": "{{host}}{{profile-path}}/me/follow/{username}",
+    "method": "POST",
+    "sortNum": 420000,
+    "created": "2023-02-23T21:38:53.603Z",
+    "modified": "2023-02-25T12:01:32.619Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole2000",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "cc2047f6-5dd5-4ae5-9a3d-e2e66460ca5f",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Search User Followers",
+    "url": "{{host}}{{profile-path}}/me/followers/search?page&limit&q=abc",
+    "method": "GET",
+    "sortNum": 415000,
+    "created": "2023-02-24T20:34:27.999Z",
+    "modified": "2023-02-24T20:35:09.279Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "q",
+        "value": "abc",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "e6c4f470-6681-4f19-aa5d-cd98edc3533f",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "User Following",
+    "url": "{{host}}{{profile-path}}/me/following?page&limit",
+    "method": "GET",
+    "sortNum": 412500,
+    "created": "2023-02-24T21:18:32.208Z",
+    "modified": "2023-02-24T21:18:54.058Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "46d32ba2-5c88-4c88-a267-1f44341d302c",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Search User Following",
+    "url": "{{host}}{{profile-path}}/me/following/search?page&limit&q=abc",
+    "method": "GET",
+    "sortNum": 417500,
+    "created": "2023-02-24T21:19:02.662Z",
+    "modified": "2023-02-24T21:19:27.035Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "q",
+        "value": "abc",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "27230002-e185-4d30-85ad-abb0000dabbe",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Sent Follow Requests",
+    "url": "{{host}}{{profile-path}}/me/follow-requests/sent",
+    "method": "GET",
+    "sortNum": 430000,
+    "created": "2023-02-24T21:28:03.736Z",
+    "modified": "2023-02-24T21:28:42.414Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "81fde048-df7f-4c5d-8349-dfe992694cf1",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Received Follow Requests",
+    "url": "{{host}}{{profile-path}}/me/follow-requests/received?page&limit",
+    "method": "GET",
+    "sortNum": 440000,
+    "created": "2023-02-24T21:29:55.718Z",
+    "modified": "2023-02-24T21:31:24.756Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "1632aa4f-103a-4436-8c26-1398652ed56b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Bulk Accept Follow Requests",
+    "url": "{{host}}{{profile-path}}/me/follow-requests",
+    "method": "POST",
+    "sortNum": 440000,
+    "created": "2023-02-24T21:32:25.205Z",
+    "modified": "2023-02-24T21:32:57.307Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "58fcb7d4-9e58-479d-b90d-5bf901227e56",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Bulk Decline Follow Requests",
+    "url": "{{host}}{{profile-path}}/me/follow-requests",
+    "method": "DELETE",
+    "sortNum": 450000,
+    "created": "2023-02-24T21:33:20.748Z",
+    "modified": "2023-02-24T21:34:09.069Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "c8a525a1-8b3c-43ca-b425-89d7a9d5fc7a",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "UnFollow User",
+    "url": "{{host}}{{profile-path}}/me/unfollow/{username}",
+    "method": "POST",
+    "sortNum": 425000,
+    "created": "2023-02-24T21:36:13.587Z",
+    "modified": "2023-02-24T21:37:20.500Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "5a97b20e-efc7-402c-ad61-8bbecf413fd3",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Blocked Users",
+    "url": "{{host}}{{profile-path}}/me/blocked?page&limit",
+    "method": "GET",
+    "sortNum": 450000,
+    "created": "2023-02-24T21:54:26.856Z",
+    "modified": "2023-02-24T21:56:19.477Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "1865f1b7-0f81-42b2-b450-8a04c1449f1e",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Block User",
+    "url": "{{host}}{{profile-path}}/me/block/{username}",
+    "method": "POST",
+    "sortNum": 460000,
+    "created": "2023-02-24T21:56:42.815Z",
+    "modified": "2023-02-24T22:12:16.900Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "abc",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "04768dfc-22eb-48e5-b423-065360a98812",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Suggested Profiles",
+    "url": "{{host}}{{profile-path}}/u/suggested",
+    "method": "GET",
+    "sortNum": 460000,
+    "created": "2023-02-25T13:09:31.111Z",
+    "modified": "2023-02-26T21:56:05.421Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"suggested\": []\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "62b1bebc-4b6f-4251-8e1a-5aa055c7d550",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Search User Profiles",
+    "url": "{{host}}{{profile-path}}/u/profiles/search?q=ban&page&limit",
+    "method": "GET",
+    "sortNum": 470000,
+    "created": "2023-02-25T13:54:33.636Z",
+    "modified": "2023-02-25T13:55:13.981Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "q",
+        "value": "ban",
+        "isPath": false
+      },
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "01ce104d-de54-4633-958e-33a4e65dcbe4",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f066b08a-a599-4a78-b66a-38a08f1fd6c1",
+    "name": "Get User Contacts",
+    "url": "{{host}}{{chat-path}}/me/contacts",
+    "method": "GET",
+    "sortNum": 480000,
+    "created": "2023-02-28T16:18:55.868Z",
+    "modified": "2023-02-28T16:26:18.437Z",
+    "headers": [],
+    "params": [],
+    "tests": []
   }
 ]

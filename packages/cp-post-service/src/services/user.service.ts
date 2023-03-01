@@ -81,6 +81,22 @@ export default class UserDBService {
     }
   }
 
+  async getUsersByRoles(roles: string[]) {
+    try {
+      const users = await this.prisma.user.findMany({
+        where: {
+          roles: {
+            hasSome: roles
+          }
+        }
+      });
+      return new ServiceResponse('Users with specified roles', users, true, 200, null, null, null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting users by role(s)', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   static async getUserSession(redis: RedisConnection, scope: string, sessionId: string) {
     await redis.client.connect();
     const session = await redis.client.hGet(`${scope}-logged-in`, sessionId);

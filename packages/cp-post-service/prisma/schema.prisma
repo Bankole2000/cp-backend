@@ -26,10 +26,12 @@ model User {
   displayname       String?            @db.VarChar(100)
   dob               DateTime
   posts             Post[]
+  reportedPosts     ReportPost[]
   userLikedPosts    UserLikesPost[]    @relation("UserLikesPost")
   userLikedComments UserLikesComment[] @relation("UserLikesComment")
   comments          Comment[]          @relation("UserAuthorsComment")
   viewed            View[]             @relation("UserViewedPost")
+  moderatedPosts    ModerationReview[]
   tos               Boolean            @db.Boolean
   version           Int                @default(0)
   createdAt         DateTime           @default(now())
@@ -38,31 +40,88 @@ model User {
 }
 
 model Post {
-  id             String          @id @default(uuid())
+  id             String           @id @default(uuid())
   caption        String?
-  published      Boolean         @default(false)
-  allowComments  Boolean         @default(true)
-  showLikesCount Boolean         @default(true)
+  published      Boolean          @default(false)
+  allowComments  Boolean          @default(true)
+  showLikesCount Boolean          @default(true)
   createdBy      String
-  postMedia      PostMedia[]     @relation("PostHasMedia")
+  urls           String[]         @default([])
+  postMedia      PostMedia[]      @relation("PostHasMedia")
   tags           Tag[]
-  createdByData  User            @relation(fields: [createdBy], references: [userId])
-  comments       Comment[]       @relation("PostHasComment")
-  views          View[]          @relation("PostHasViews")
-  likedBy        UserLikesPost[] @relation("PostLikedByUser")
-  created        DateTime        @default(now())
-  updated        DateTime        @updatedAt
+  moderation     ModerationQueue?
+  createdByData  User             @relation(fields: [createdBy], references: [userId], onDelete: Cascade)
+  comments       Comment[]        @relation("PostHasComment")
+  views          View[]           @relation("PostHasViews")
+  likedBy        UserLikesPost[]  @relation("PostLikedByUser")
+  version        Int              @default(0)
+  created        DateTime         @default(now())
+  updated        DateTime         @updatedAt
   deletedAt      DateTime?
+}
+
+model ModerationQueue {
+  postId         String             @unique
+  post           Post               @relation(fields: [postId], references: [id], onDelete: Cascade)
+  moderated      Boolean            @default(false)
+  autoModerate   Boolean            @default(true)
+  contentWarning Boolean            @default(false)
+  status         String             @default("PENDING")
+  created        DateTime           @default(now())
+  updated        DateTime?          @updatedAt
+  publishAt      DateTime?
+  moderation     ModerationReview[]
+  reports        ReportPost[]
+
+  @@id([postId])
+}
+
+model ModerationReview {
+  id                  String          @id @unique @default(uuid())
+  contentId           String
+  content             ModerationQueue @relation(fields: [contentId], references: [postId], onDelete: Cascade)
+  reviewedBy          String?
+  reviewedByData      User?           @relation(fields: [reviewedBy], references: [userId], onDelete: Cascade)
+  actionTaken         String          @default("APPROVED")
+  rejected            Boolean         @default(false)
+  rejectionReasonData ReportReason?   @relation(fields: [rejectionReason], references: [reason], onDelete: Cascade)
+  rejectionReason     String?
+  createdAt           DateTime        @default(now())
+  comments            String?
+}
+
+model ReportPost {
+  postId         String
+  post           ModerationQueue @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  reportedBy     String
+  reportedByData User            @relation(fields: [reportedBy], references: [userId], onDelete: Cascade)
+  reason         String
+  reasonData     ReportReason    @relation(fields: [reason], references: [reason], onDelete: Cascade)
+  details        String
+  createdAt      DateTime        @default(now())
+
+  @@id([postId, reason, reportedBy])
+}
+
+model ReportReason {
+  reason            String             @id @unique
+  title             String
+  descriptionHTML   String
+  descriptionText   String
+  reportedPosts     ReportPost[]
+  moderationReviews ModerationReview[]
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
 }
 
 model PostMedia {
   id       String   @id @default(uuid())
   type     String
-  ImageUrl String
+  imageUrl String
   image    String
   order    Int      @default(0)
-  data     Json
-  postData Post     @relation("PostHasMedia", fields: [post], references: [id])
+  data     Json     @default("{}")
+  postData Post     @relation("PostHasMedia", fields: [post], references: [id], onDelete: Cascade)
   post     String
   created  DateTime @default(now())
   updated  DateTime @updatedAt
@@ -76,9 +135,9 @@ model Tag {
 }
 
 model UserLikesPost {
-  user    User     @relation("UserLikesPost", fields: [userId], references: [userId])
+  user    User     @relation("UserLikesPost", fields: [userId], references: [userId], onDelete: Cascade)
   userId  String
-  post    Post     @relation("PostLikedByUser", fields: [postId], references: [id])
+  post    Post     @relation("PostLikedByUser", fields: [postId], references: [id], onDelete: Cascade)
   postId  String
   likedAt DateTime @default(now())
 
@@ -86,9 +145,9 @@ model UserLikesPost {
 }
 
 model UserLikesComment {
-  user      User     @relation("UserLikesComment", fields: [userId], references: [userId])
+  user      User     @relation("UserLikesComment", fields: [userId], references: [userId], onDelete: Cascade)
   userId    String
-  comment   Comment  @relation("CommentLikedByUser", fields: [commentId], references: [id])
+  comment   Comment  @relation("CommentLikedByUser", fields: [commentId], references: [id], onDelete: Cascade)
   commentId String
   likedAt   DateTime @default(now())
 
@@ -96,28 +155,38 @@ model UserLikesComment {
 }
 
 model Comment {
-  id        String   @id @default(uuid())
-  content   String
-  createdAt DateTime @default(now())
-
-  author   User   @relation("UserAuthorsComment", fields: [authorId], references: [userId])
-  authorId String
-
-  post   Post   @relation("PostHasComment", fields: [postId], references: [id])
-  postId String
-
-  parentComment   Comment? @relation("CommentParentsComment", fields: [parentCommentId], references: [id])
+  id              String        @id @default(uuid())
+  content         String
+  pinned          Boolean       @default(false)
+  createdAt       DateTime      @default(now())
+  author          User          @relation("UserAuthorsComment", fields: [authorId], references: [userId], onDelete: Cascade)
+  authorId        String
+  post            Post          @relation("PostHasComment", fields: [postId], references: [id], onDelete: Cascade)
+  postId          String
+  media           CommentMedia?
+  parentComment   Comment?      @relation("CommentParentsComment", fields: [parentCommentId], references: [id], onDelete: Cascade)
   parentCommentId String?
-
-  childComments Comment[] @relation("CommentParentsComment")
+  childComments   Comment[]     @relation("CommentParentsComment")
 
   likedBy UserLikesComment[] @relation("CommentLikedByUser")
 }
 
+model CommentMedia {
+  id          String   @id @default(uuid())
+  type        String
+  imageUrl    String
+  image       String
+  data        Json     @default("{}")
+  commentData Comment  @relation(fields: [comment], references: [id], onDelete: Cascade)
+  comment     String   @unique
+  created     DateTime @default(now())
+  updated     DateTime @updatedAt
+}
+
 model View {
-  post      Post     @relation("PostHasViews", fields: [postId], references: [id])
+  post      Post     @relation("PostHasViews", fields: [postId], references: [id], onDelete: Cascade)
   postId    String
-  user      User     @relation("UserViewedPost", fields: [userId], references: [userId])
+  user      User     @relation("UserViewedPost", fields: [userId], references: [userId], onDelete: Cascade)
   userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

@@ -34,8 +34,10 @@ model User {
   chatRooms           ChatParticipants[]
   readMessages        MessageSeenBy[]
   deliveredMessages   MessageDeliveredTo[]
+  messageReactions    Reaction[]           @relation("UserReactedToMessage")
   SentChatInvites     ChatInvites[]        @relation("InvitesSentBy")
   RecievedChatInvites ChatInvites[]        @relation("InvitesSentTo")
+  createdGroups       GroupChatSettings[]
 }
 
 model ChatInvites {
@@ -46,7 +48,6 @@ model ChatInvites {
   sentBy     User      @relation("InvitesSentBy", fields: [sentById], references: [userId])
   sentToId   String
   sentTo     User      @relation("InvitesSentTo", fields: [sentToId], references: [userId])
-  accepted   Boolean   @default(false)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }
@@ -66,9 +67,13 @@ model ChatRoom {
 model GroupChatSettings {
   chatRoomId  String
   chatRoom    ChatRoom @relation(fields: [chatRoomId], references: [chatRoomId])
-  name        String
-  description String
-  image       String
+  name        String?
+  description String?
+  image       String?
+  imageUrl    String?
+  createdById String?
+  createdBy   User?    @relation(fields: [createdById], references: [userId], onDelete: SetNull)
+  groupAdmins String[] @default([])
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
@@ -114,13 +119,14 @@ model Media {
 }
 
 model Reaction {
-  reactionId String      @unique @default(uuid())
-  messageId  String
-  userId     String
-  reaction   String
-  message    ChatMessage @relation("MessageHasReaction", fields: [messageId], references: [messageId])
-  user       Json
-  createdAt  DateTime    @default(now())
+  messageId String
+  userId    String
+  reaction  String
+  message   ChatMessage @relation("MessageHasReaction", fields: [messageId], references: [messageId], onDelete: Cascade)
+  user      User        @relation("UserReactedToMessage", fields: [userId], references: [userId], onDelete: Cascade)
+  createdAt DateTime    @default(now())
+
+  @@id([userId, messageId])
 }
 
 model MessageSeenBy {

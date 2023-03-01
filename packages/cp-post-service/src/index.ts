@@ -7,6 +7,7 @@ import { config } from './utils/config';
 import routes from './routes/index.routes';
 import { serviceEvents } from './services/events.service';
 import { getUserIfLoggedIn } from './middleware/requireUser';
+import { setShareAbles } from './utils/common';
 
 const { self, rabbitMQConfig, redisConfig } = config;
 const PORT = self.port;
@@ -41,6 +42,7 @@ httpServer.listen(PORT, async () => {
   }
   await serviceUp(redis, config);
   await serviceEvents(channel);
+  setShareAbles(channel, redis);
   routes(app);
   ['SIGTERM', 'SIGINT', 'SIGKILL', 'uncaughtException', 'unhandledRejection'].forEach((signal) => {
     process.on(signal, async () => {

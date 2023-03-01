@@ -7,10 +7,12 @@ import { logResponse } from '../middleware/logRequests';
 import UserDBService from '../services/user.service';
 import { config } from '../utils/config';
 import PBService from '../services/pb.service';
+import ProfileDBService from '../services/profile.service';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const FormData = require('form-data');
 
 const userService = new UserDBService();
+const profileService = new ProfileDBService();
 
 const { pocketbase } = config;
 const pb = new PBService(pocketbase.url || '');
@@ -33,13 +35,17 @@ export const getCurrentUserProfile = async (req: Request, res: Response) => {
 export const getProfileByUsername = async (req: Request, res: Response) => {
   const { username } = req.params;
   const sr = await userService.findUserByUsername(username);
+  if (sr.success) {
+    const user = await profileService.getProfileByUserId(sr.data.userId, req.user.userId);
+    return res.status(user.statusCode).send(user);
+  }
   await logResponse(req, sr);
   return res.status(sr.statusCode).send(sr);
 };
 
 export const getProfileByUserId = async (req: Request, res: Response) => {
   const { userId } = req.params;
-  const sr = await userService.findUserById(userId);
+  const sr = await profileService.getProfileByUserId(userId, req.user.userId);
   await logResponse(req, sr);
   return res.status(sr.statusCode).send(sr);
 };
@@ -213,4 +219,44 @@ export const getProfileWallpaperhandler = async (req: Request, res: Response) =>
   }
   const stream = fs.createReadStream(defaultImageFilePath);
   return stream.pipe(res);
+};
+
+export const getSuggestedProfilesHandler = async (req: Request, res: Response) => {
+  const sr = await profileService.getRandomProfiles(12, req.user?.userId, req.body.suggested || []);
+  return res.status(sr.statusCode).send(sr);
+};
+
+export const searchProfilesHandler = async (req: Request, res: Response) => {
+  const { q: searchTerm } = req.query;
+  if (!searchTerm) {
+    const serviceResponse = new ServiceResponse(
+      'Search term is required',
+      null,
+      false,
+      400,
+      'Search term is required',
+      'Search term is required',
+      'Add search term to request query params'
+    );
+    return res.status(serviceResponse.statusCode).send(serviceResponse);
+  }
+  let limit: number;
+  let page: number;
+  if (parseInt(req.query.limit as string, 10)) {
+    limit = parseInt(req.query.limit as string, 10);
+  } else {
+    limit = 12;
+  }
+  if (parseInt(req.query.page as string, 10)) {
+    page = parseInt(req.query.page as string, 10);
+  } else {
+    page = 1;
+  }
+  const sr = await profileService.searchProfiles(
+    searchTerm as string,
+    page,
+    limit,
+    req.user?.userId
+  );
+  return res.status(sr.statusCode).send(sr);
 };

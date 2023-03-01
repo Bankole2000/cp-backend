@@ -1,8 +1,8 @@
-## Cribplug (Social Listings)
+## Relodger (Social Listings)
 
 -----------------------------------
 About:
-Cribplug is a social networking webapp for hosting spaces, finding Services, Offering Services, and sharing content.
+Relodger is a social networking webapp for hosting spaces, finding Services, Offering Services, and sharing content.
 
 ## Motivations
 

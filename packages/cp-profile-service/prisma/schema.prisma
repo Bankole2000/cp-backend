@@ -11,48 +11,59 @@ datasource db {
 }
 
 model Profile {
-  userId                 String          @id @default(uuid())
+  userId                 String           @id @default(uuid())
   email                  String?
-  emailVerified          Boolean         @default(false) @db.Boolean
+  emailVerified          Boolean          @default(false) @db.Boolean
   phone                  String?
-  phoneData              Json?           @default("{}") @db.Json
-  phoneVerified          Boolean         @default(false) @db.Boolean
+  phoneData              Json?            @default("{}") @db.Json
+  phoneVerified          Boolean          @default(false) @db.Boolean
   registeredVia          String?
-  username               String          @unique @default(uuid())
+  username               String           @unique @default(uuid())
   gender                 String?
-  roles                  String[]        @default(["USER"])
-  firstname              String?         @db.VarChar(100)
-  lastname               String?         @db.VarChar(100)
-  displayname            String?         @db.VarChar(100)
+  roles                  String[]         @default(["USER"])
+  firstname              String?          @db.VarChar(100)
+  lastname               String?          @db.VarChar(100)
+  displayname            String?          @db.VarChar(100)
   dob                    DateTime
-  tos                    Boolean         @db.Boolean
-  imageUrl               String?         @db.Text
-  wallpaperUrl           String?         @db.Text
-  isPrivate              Boolean         @default(false)
-  instagramHandle        String?         @db.VarChar(100)
-  twitterHandle          String?         @db.VarChar(100)
-  snapchatUrl            String?         @db.VarChar(100)
-  facebookUrl            String?         @db.VarChar(100)
-  websiteUrl             String?         @db.VarChar(100)
-  bio                    String?         @db.VarChar(255)
-  listingsCount          Int?            @default(0)
-  offersCount            Int?            @default(0)
-  postCount              Int?            @default(0)
-  serviceCount           Int?            @default(0)
-  followers              Follows[]       @relation("following")
-  following              Follows[]       @relation("follower")
-  receivedFollowRequests FollowRequest[] @relation("UserToBeFollowed")
-  sentFollowRequests     FollowRequest[] @relation("UserWantsToFollow")
-  version                Int             @default(0)
-  createdAt              DateTime        @default(now())
-  updatedAt              DateTime        @updatedAt
+  tos                    Boolean          @db.Boolean
+  imageUrl               String?          @db.Text
+  wallpaperUrl           String?          @db.Text
+  isPrivate              Boolean          @default(false)
+  instagramHandle        String?          @db.VarChar(100)
+  twitterHandle          String?          @db.VarChar(100)
+  snapchatUrl            String?          @db.VarChar(100)
+  facebookUrl            String?          @db.VarChar(100)
+  websiteUrl             String?          @db.VarChar(100)
+  bio                    String?          @db.VarChar(255)
+  listingsCount          Int?             @default(0)
+  offersCount            Int?             @default(0)
+  postCount              Int?             @default(0)
+  serviceCount           Int?             @default(0)
+  profileSettings        ProfileSettings?
+  followers              Follows[]        @relation("following")
+  following              Follows[]        @relation("follower")
+  receivedFollowRequests FollowRequest[]  @relation("UserToBeFollowed")
+  sentFollowRequests     FollowRequest[]  @relation("UserWantsToFollow")
+  blocked                Blocked[]        @relation("UserBlockedUser")
+  blockedBy              Blocked[]        @relation("UserBlockedByUser")
+  version                Int              @default(0)
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
   deletedAt              DateTime?
 }
 
+model ProfileSettings {
+  userId      String
+  profile     Profile? @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  allowFollow Boolean  @default(true)
+
+  @@id([userId])
+}
+
 model Follows {
-  follower    Profile  @relation("follower", fields: [followerId], references: [userId])
+  follower    Profile  @relation("follower", fields: [followerId], references: [userId], onDelete: Cascade)
   followerId  String
-  following   Profile  @relation("following", fields: [followingId], references: [userId])
+  following   Profile  @relation("following", fields: [followingId], references: [userId], onDelete: Cascade)
   followingId String
   createdAt   DateTime @default(now())
 
@@ -60,12 +71,23 @@ model Follows {
 }
 
 model FollowRequest {
-  requestId     String   @id @default(uuid())
   requestedById String
-  requestedBy   Profile  @relation("UserWantsToFollow", fields: [requestedById], references: [userId])
+  requestedBy   Profile  @relation("UserWantsToFollow", fields: [requestedById], references: [userId], onDelete: Cascade)
   receiverId    String
-  receiver      Profile  @relation("UserToBeFollowed", fields: [receiverId], references: [userId])
+  receiver      Profile  @relation("UserToBeFollowed", fields: [receiverId], references: [userId], onDelete: Cascade)
   createdAt     DateTime @default(now())
+
+  @@id([requestedById, receiverId])
+}
+
+model Blocked {
+  blockedId   String
+  blocked     Profile  @relation("UserBlockedByUser", fields: [blockedId], references: [userId], onDelete: Cascade)
+  blockedById String
+  blockedBy   Profile  @relation("UserBlockedUser", fields: [blockedById], references: [userId], onDelete: Cascade)
+  createdAt   DateTime @default(now())
+
+  @@id([blockedById, blockedId])
 }
 
 model RequestLog {
