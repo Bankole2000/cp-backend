@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.8](https://github.com/Bankole2000/cp-backend/compare/v1.4.7...v1.4.8) (2023-03-06)
+
+
+### Features
+
+* **notifications:** notifications on new follower ([dc806a9](https://github.com/Bankole2000/cp-backend/commits/dc806a941b2c9e4f2380ac3857b4742bd790abea))
+
 ### [1.4.7](https://github.com/Bankole2000/cp-backend/compare/v1.4.6...v1.4.7) (2023-03-01)
 
 

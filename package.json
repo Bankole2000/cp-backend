@@ -41,7 +41,7 @@
       "git add"
     ]
   },
-  "version": "1.4.7",
+  "version": "1.4.8",
   "main": "commitlint.config.js",
   "dependencies": {
     "abbrev": "^1.1.1",
