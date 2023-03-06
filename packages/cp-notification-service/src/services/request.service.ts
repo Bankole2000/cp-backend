@@ -1,13 +1,14 @@
 import { ServiceResponse, createRequestLogFields } from '@cribplug/common';
 import { Request } from 'express';
 import { PrismaClient } from '@prisma/client';
+import prisma from '../lib/prisma';
 // import { createRequestLogFields } from '../schema/request.schema';
 
 export default class RequestService {
   prisma: PrismaClient;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prisma = prisma;
   }
 
   static async extractRequestData(req: any) {

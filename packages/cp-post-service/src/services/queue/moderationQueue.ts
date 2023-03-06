@@ -79,6 +79,7 @@ const moderatePost = async (job: Job,) => {
         job.log('Post queued for publishing');
         await job.moveToCompleted();
         job.log(`Post ${job.data.postId} auto moderated`);
+        await job.remove();
         return;
       }
       job.log('Error adding moderation review');
@@ -94,6 +95,7 @@ const moderatePost = async (job: Job,) => {
       job.log('Post queued for rejection');
       await job.moveToCompleted();
       console.log(`Post ${job.data.postId} rejected by moderator`);
+      await job.remove();
       return;
     }
     if (data.status === moderationActions.APPROVED) {
@@ -106,11 +108,13 @@ const moderatePost = async (job: Job,) => {
       job.log('Post queued for publishing');
       await job.moveToCompleted();
       console.log(`Post ${job.data.postId} approved by moderated`);
+      await job.remove();
       return;
     }
     job.log('Unknown / Unhandled Moderation Status / Action');
   }
-  await job.discard();
+  await job.moveToCompleted();
+  await job.remove();
   console.log('Post moderated');
 };
 
@@ -136,6 +140,8 @@ export const publishPost = async (job: Job) => {
   const result = await sendToServiceQueues(channel, se, serviceQueues);
   job.log('Post Published');
   job.progress(100);
+  await job.moveToCompleted();
+  await job.remove();
   console.log(result);
 };
 

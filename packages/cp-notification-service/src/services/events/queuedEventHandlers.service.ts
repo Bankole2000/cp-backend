@@ -14,6 +14,7 @@ import {
 
 export const queueEventHandlers = async (msg: any, channel: Channel) => {
   const message: ServiceEvent = JSON.parse(msg.content.toString());
+  console.log('Reached here');
   switch (message.origin) {
     case 'auth-service':
       await authQueueJobsHandler(msg, channel);

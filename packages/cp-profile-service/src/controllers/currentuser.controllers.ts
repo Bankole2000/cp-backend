@@ -1,6 +1,7 @@
 import { ServiceResponse } from '@cribplug/common';
 import { Request, Response } from 'express';
 import ProfileDBService from '../services/profile.service';
+import { addToFollowQueue, addToFollowRequestQueue, addToUnFollowQueue } from '../services/queue/followQueue';
 import UserDBService from '../services/user.service';
 
 const ps = new ProfileDBService();
@@ -70,25 +71,19 @@ export const followUserHandler = async (req: Request, res: Response) => {
   }
   if (!profileSettings) {
     const newFollowing = await ps.createNewFollowing(req.user.userId, followingId);
+    await addToFollowQueue(newFollowing.data);
     newFollowing.message = `You are now following @${username}`;
-    // if (newFollowing.success){
-    // TODO: publish new following Event
-    // }
     return res.status(newFollowing.statusCode).send(newFollowing);
   }
   if (profileSettings && !profileSettings.allowFollow) {
     const followRequest = await ps.createFollowRequest(req.user.userId, followingId);
     followRequest.message = `A follow request has been sent to @${username}`;
-    // if (followRequest.success) {
-    // TODO: publish new follow request event
-    // }
+    await addToFollowRequestQueue(followRequest.data);
     return res.status(followRequest.statusCode).send(followRequest);
   }
   const sr = await ps.createNewFollowing(req.user.userId, followingId);
   sr.message = `You are now following @${username}`;
-  // if (newFollowing.success){
-  // TODO: publish new following Event
-  // }
+  await addToFollowQueue(sr.data);
   return res.status(sr.statusCode).send(sr);
 };
 
@@ -271,7 +266,7 @@ export const unfollowUserHandler = async (req: Request, res: Response) => {
   const sr = await ps.deleteFollowing(req.user.userId, userId);
   if (sr.success) {
     sr.message = `You are no longer following @${username}`;
-    // TODO: publish user unfollowed user event
+    await addToUnFollowQueue(sr.data);
   }
   return res.status(sr.statusCode).send(sr);
 };

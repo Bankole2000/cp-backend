@@ -13,12 +13,12 @@ export const serviceEvents = async (channel: Channel) => {
     await channel.consume(q.queue, async (msg: any) => {
       const { type, origin } = JSON.parse(msg.content.toString());
       console.log(`${emoji}📨 ${serviceName?.toUpperCase()} - exchange message: ${type} from ${origin.toUpperCase()}`);
-      exchangeEventHandlers(msg, channel);
+      await exchangeEventHandlers(msg, channel);
     });
     await channel.consume(j.queue, async (msg: any) => {
       const { type, origin } = JSON.parse(msg.content.toString());
       console.log(`${emoji}📩 ${serviceName?.toUpperCase()} - queue job: ${type} from ${origin.toUpperCase()}`);
-      queueEventHandlers(msg, channel);
+      await queueEventHandlers(msg, channel);
     }, { noAck: false });
   } catch (error) {
     console.log(error);

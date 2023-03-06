@@ -11,37 +11,62 @@ datasource db {
 }
 
 model User {
-  userId        String    @id @default(uuid())
+  userId        String     @id @default(uuid())
   email         String?
-  emailVerified Boolean   @default(false) @db.Boolean
+  emailVerified Boolean    @default(false) @db.Boolean
   phone         String?
-  phoneData     Json?     @default("{}") @db.Json
-  phoneVerified Boolean   @default(false) @db.Boolean
+  phoneData     Json?      @default("{}") @db.Json
+  phoneVerified Boolean    @default(false) @db.Boolean
   registeredVia String?
-  username      String    @unique @default(uuid())
+  username      String     @unique @default(uuid())
   gender        String?
-  roles         String[]  @default(["USER"])
-  firstname     String?   @db.VarChar(100)
-  lastname      String?   @db.VarChar(100)
-  displayname   String?   @db.VarChar(100)
+  roles         String[]   @default(["USER"])
+  firstname     String?    @db.VarChar(100)
+  lastname      String?    @db.VarChar(100)
+  displayname   String?    @db.VarChar(100)
   dob           DateTime
-  tos           Boolean   @db.Boolean
-  version       Int       @default(0)
-  followers     String[]
-  following     String[]
-  feed          Feed?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  tos           Boolean    @db.Boolean
+  version       Int        @default(0)
+  followers     String[]   @default([])
+  following     String[]   @default([])
+  blocked       String[]   @default([])
+  blockedBy     String[]   @default([])
+  UserFeed      UserFeed[]
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
   deletedAt     DateTime?
 }
 
-model Feed {
-  id        String   @id @default(uuid())
+model Post {
+  id             String     @id @default(uuid())
+  caption        String?
+  published      Boolean    @default(false)
+  allowComments  Boolean    @default(true)
+  showLikesCount Boolean    @default(true)
+  createdBy      String?
+  urls           String[]   @default([])
+  postMedia      Json?
+  tags           Json?
+  moderation     Json?
+  createdByData  Json?
+  comments       Json?
+  views          Json?
+  likedBy        Json?
+  version        Int        @default(0)
+  created        DateTime   @default(now())
+  updated        DateTime   @updatedAt
+  deletedAt      DateTime?
+  UserFeed       UserFeed[]
+}
+
+model UserFeed {
+  userId    String
   user      User     @relation(fields: [userId], references: [userId])
-  userId    String   @unique
-  posts     String[]
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id])
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+
+  @@id([userId, postId, createdAt])
 }
 
 model RequestLog {

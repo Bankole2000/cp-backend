@@ -5,6 +5,7 @@ import http from 'http';
 import { app } from './app';
 import { config } from './utils/config';
 import routes from './routes/index.routes';
+import { serviceEvents } from './services/events.service';
 
 const { self, rabbitMQConfig, redisConfig } = config;
 const PORT = self.port;
@@ -36,6 +37,7 @@ httpServer.listen(PORT, async () => {
       next();
     });
   }
+  await serviceEvents(channel);
   await serviceUp(redis, config);
   routes(app);
   ['SIGTERM', 'SIGINT', 'SIGKILL', 'uncaughtException', 'unhandledRejection'].forEach((signal) => {
