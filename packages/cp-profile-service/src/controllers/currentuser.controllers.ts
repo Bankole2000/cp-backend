@@ -151,6 +151,43 @@ export const getUserSentFollowRequestsHandler = async (req: Request, res: Respon
   return res.status(sr.statusCode).send(sr);
 };
 
+export const searchUserSentFollowRequestsHandler = async (req: Request, res: Response) => {
+  const { q: searchTerm } = req.query;
+  if (!searchTerm) {
+    const serviceResponse = new ServiceResponse(
+      'Search term is required',
+      null,
+      false,
+      400,
+      'Search term is required',
+      'Search term is required',
+      'Add search term to request query params'
+    );
+    return res.status(serviceResponse.statusCode).send(serviceResponse);
+  }
+  let limit: number;
+  let page: number;
+  if (parseInt(req.query.limit as string, 10)) {
+    limit = parseInt(req.query.limit as string, 10);
+  } else {
+    limit = 12;
+  }
+  if (parseInt(req.query.page as string, 10)) {
+    page = parseInt(req.query.page as string, 10);
+  } else {
+    page = 1;
+  }
+  const sr = await ps
+    .searchUserSentFollowRequests(
+      req.user.userId,
+      searchTerm as string,
+      page,
+      limit,
+      req.user.userId
+    );
+  return res.status(sr.statusCode).send(sr);
+};
+
 export const getUserReceivedFollowRequestsHandler = async (req: Request, res: Response) => {
   let limit: number;
   let page: number;
@@ -165,6 +202,43 @@ export const getUserReceivedFollowRequestsHandler = async (req: Request, res: Re
     page = 1;
   }
   const sr = await ps.getUserSentFollowRequests(req.user.userId, page, limit);
+  return res.status(sr.statusCode).send(sr);
+};
+
+export const searchUserReceivedFollowRequestsHandler = async (req: Request, res: Response) => {
+  const { q: searchTerm } = req.query;
+  if (!searchTerm) {
+    const serviceResponse = new ServiceResponse(
+      'Search term is required',
+      null,
+      false,
+      400,
+      'Search term is required',
+      'Search term is required',
+      'Add search term to request query params'
+    );
+    return res.status(serviceResponse.statusCode).send(serviceResponse);
+  }
+  let limit: number;
+  let page: number;
+  if (parseInt(req.query.limit as string, 10)) {
+    limit = parseInt(req.query.limit as string, 10);
+  } else {
+    limit = 12;
+  }
+  if (parseInt(req.query.page as string, 10)) {
+    page = parseInt(req.query.page as string, 10);
+  } else {
+    page = 1;
+  }
+  const sr = await ps
+    .searchUserReceivedFollowRequests(
+      req.user.userId,
+      searchTerm as string,
+      page,
+      limit,
+      req.user.userId
+    );
   return res.status(sr.statusCode).send(sr);
 };
 
@@ -267,6 +341,29 @@ export const unfollowUserHandler = async (req: Request, res: Response) => {
   if (sr.success) {
     sr.message = `You are no longer following @${username}`;
     await addToUnFollowQueue(sr.data);
+  }
+  return res.status(sr.statusCode).send(sr);
+};
+
+export const getTaggableProfilesHandler = async (req: Request, res: Response) => {
+  const { q: searchTerm } = req.query;
+  let limit: number;
+  let page: number;
+  if (parseInt(req.query.limit as string, 10)) {
+    limit = parseInt(req.query.limit as string, 10);
+  } else {
+    limit = 12;
+  }
+  if (parseInt(req.query.page as string, 10)) {
+    page = parseInt(req.query.page as string, 10);
+  } else {
+    page = 1;
+  }
+  let sr: ServiceResponse;
+  if (searchTerm) {
+    sr = await ps.searchAllProfiles(searchTerm as string, page, limit, req.user.userId);
+  } else {
+    sr = await ps.getTaggableProfiles(req.user.userId, limit);
   }
   return res.status(sr.statusCode).send(sr);
 };

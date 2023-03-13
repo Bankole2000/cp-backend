@@ -25,6 +25,10 @@ model User {
   lastname          String?            @db.VarChar(100)
   displayname       String?            @db.VarChar(100)
   dob               DateTime
+  followers         String[]           @default([])
+  following         String[]           @default([])
+  blocked           String[]           @default([])
+  blockedBy         String[]           @default([])
   posts             Post[]
   reportedPosts     ReportPost[]
   userLikedPosts    UserLikesPost[]    @relation("UserLikesPost")
@@ -37,6 +41,7 @@ model User {
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
   deletedAt         DateTime?
+  savedPosts        SavedPosts[]
 }
 
 model Post {
@@ -45,8 +50,11 @@ model Post {
   published      Boolean          @default(false)
   allowComments  Boolean          @default(true)
   showLikesCount Boolean          @default(true)
+  pinned         Boolean          @default(false)
   createdBy      String
   urls           String[]         @default([])
+  repostId       String?
+  repost         Post?            @relation("PostIsRepost", fields: [repostId], references: [id])
   postMedia      PostMedia[]      @relation("PostHasMedia")
   tags           Tag[]
   moderation     ModerationQueue?
@@ -58,6 +66,8 @@ model Post {
   created        DateTime         @default(now())
   updated        DateTime         @updatedAt
   deletedAt      DateTime?
+  savedPosts     SavedPosts[]
+  reposts        Post[]           @relation("PostIsRepost")
 }
 
 model ModerationQueue {
@@ -88,6 +98,16 @@ model ModerationReview {
   rejectionReason     String?
   createdAt           DateTime        @default(now())
   comments            String?
+}
+
+model SavedPosts {
+  userId    String
+  user      User     @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  postId    String
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@id([userId, postId])
 }
 
 model ReportPost {

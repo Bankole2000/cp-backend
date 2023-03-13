@@ -18,6 +18,16 @@ export default class PostDBService {
       const postToUpdate = await this.prisma.post.create({
         data: {
           ...postData
+        },
+        include: {
+          postMedia: true,
+          repost: {
+            include: {
+              postMedia: true,
+              createdByData: true
+            }
+          },
+          moderation: true
         }
       });
       if (postToUpdate) {

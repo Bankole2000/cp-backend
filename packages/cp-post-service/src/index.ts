@@ -8,6 +8,8 @@ import routes from './routes/index.routes';
 import { serviceEvents } from './services/events.service';
 import { getUserIfLoggedIn } from './middleware/requireUser';
 import { setShareAbles } from './utils/common';
+import { socketEventTypes } from './schema/socket.schema';
+import { socketEvents } from './services/events/socketEventHandlers';
 
 const { self, rabbitMQConfig, redisConfig } = config;
 const PORT = self.port;
@@ -20,6 +22,9 @@ io.on('connection', (socket) => {
   console.log('Socket connected');
   socket.on('disconnect', () => {
     console.log('Socket disconnected');
+  });
+  socket.on(socketEventTypes.SEARCH_TAGS, async (data) => {
+    await socketEvents[socketEventTypes.SEARCH_TAGS](data, socket, io);
   });
 });
 

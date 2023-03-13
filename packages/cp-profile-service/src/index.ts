@@ -26,6 +26,9 @@ io.on('connection', (socket) => {
   socket.on('USER_CONNECTED', async (data) => {
     await socketEvents[socketEventTypes.USER_CONNECTED](data, socket, io);
   });
+  socket.on(socketEventTypes.TAGGABLE_PROFILES, async (data) => {
+    await socketEvents[socketEventTypes.TAGGABLE_PROFILES](data, socket, io);
+  });
 });
 
 // const socketHeartbeat = () => {

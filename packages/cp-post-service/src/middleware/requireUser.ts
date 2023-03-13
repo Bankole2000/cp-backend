@@ -83,11 +83,12 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     return next();
   }
   console.log('Line 85');
+  console.log({ refreshToken });
   if (!refreshToken) {
     req.user = null;
     return next();
   }
-  console.log('Line 89');
+  console.log('Line 90');
   if (expired && refreshToken) {
     const { decoded: refreshDecoded } = await verifyToken(refreshToken, config.self.jwtSecret || '');
     if (!refreshDecoded) {

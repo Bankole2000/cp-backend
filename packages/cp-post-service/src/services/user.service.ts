@@ -46,6 +46,46 @@ export default class UserDBService {
     }
   }
 
+  async getLikedIds(userId: string) {
+    const user = await this.prisma.user.findUnique({
+      where: {
+        userId,
+      },
+      include: {
+        savedPosts: true,
+        userLikedPosts: true,
+        posts: true,
+        reportedPosts: true,
+        viewed: true,
+      }
+    });
+    if (user) {
+      const followingIds = user.following.length ? user.following : [];
+      const followerIds = user.followers.length ? user.followers : [];
+      const savedIds = user.savedPosts.length ? user.savedPosts.map((x) => x.postId) : [];
+      const repostIds = user.posts.length
+        ? user.posts.filter((x) => x.repostId !== null).map((x) => x.repostId) : [];
+      const reportedIds = user.reportedPosts.length ? user.reportedPosts.map((x) => x.postId) : [];
+      const viewedIds = user.viewed.length ? user.viewed.map((x) => x.postId) : [];
+      return {
+        followingIds,
+        followerIds,
+        savedIds,
+        repostIds,
+        reportedIds,
+        viewedIds
+      };
+    }
+    return {
+      followingIds: [],
+      followerIds: [],
+      savedIds: [],
+      repostIds: [],
+      reportedIds: [],
+      viewedIds: []
+    };
+  }
+
   async updateUser(userId: string, userData: any) {
     try {
       const updatedUser = await this.prisma.user.update({
@@ -118,6 +158,153 @@ export default class UserDBService {
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error deleting User', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async getUserPublishedPosts(
+    userId: string,
+    page = 1,
+    limit = 20,
+    loggedInUserId: string | null = null
+  ) {
+    try {
+      const posts = await this.prisma.post.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+        where: {
+          AND: [
+            {
+              createdBy: userId,
+            },
+            {
+              published: true,
+            }
+          ]
+        },
+        include: {
+          createdByData: true,
+          postMedia: {
+            orderBy: {
+              order: 'asc'
+            }
+          },
+          moderation: true,
+          repost: {
+            include: {
+              createdByData: {
+                select: {
+                  displayname: true,
+                  username: true,
+                }
+              },
+              postMedia: {
+                orderBy: {
+                  order: 'asc'
+                }
+              },
+              moderation: true,
+              _count: {
+                select: {
+                  likedBy: true,
+                  comments: true,
+                  postMedia: true,
+                  views: true,
+                  reposts: true,
+                }
+              }
+            }
+          },
+          _count: {
+            select: {
+              likedBy: true,
+              comments: true,
+              postMedia: true,
+              views: true,
+              reposts: true,
+            }
+          },
+          tags: true,
+        },
+        orderBy: [
+          {
+            pinned: 'asc'
+          },
+          {
+            created: 'desc'
+          }
+        ]
+      });
+      const total = await this.prisma.post.count({
+        where: {
+          AND: [
+            {
+              createdBy: userId,
+            },
+            {
+              published: true,
+            }
+          ]
+        }
+      });
+      const pages = Math.ceil(total / limit) || 1;
+      const prev = pages > 1 && page <= pages && page > 0 ? page - 1 : null;
+      const next = pages > 1 && page < pages && page > 0 ? page + 1 : null;
+      let data;
+      if (posts.length && loggedInUserId) {
+        const {
+          followerIds, followingIds, reportedIds, repostIds, savedIds, viewedIds
+        } = await this.getLikedIds(loggedInUserId);
+        data = posts.map((post) => ({
+          ...post,
+          followsYou: followingIds.length ? followingIds.includes(post.createdBy) : false,
+          followedByYou: followerIds.length ? followerIds.includes(post.createdBy) : false,
+          reportedByYou: reportedIds.length ? reportedIds.includes(post.id) : false,
+          savedByYou: savedIds.length ? savedIds.includes(post.id) : false,
+          repostedByYou: repostIds.length ? repostIds.includes(post.id) : false,
+          viewedByYou: viewedIds.length ? viewedIds.includes(post.id) : false,
+          authoredByYou: post.repostId
+            ? post.repost?.createdBy === loggedInUserId
+            : post.createdBy === loggedInUserId
+        }));
+      } else {
+        data = posts;
+      }
+      return new ServiceResponse(
+        'User Posts',
+        {
+          total, data, page, pages, limit, prev, next
+        },
+        true,
+        200,
+        null,
+        null,
+        null,
+      );
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting user posts', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async countUnpublishedPosts(userId: string) {
+    try {
+      const unpublished = await this.prisma.post.count({
+        where: {
+          AND: [
+            {
+              createdBy: userId,
+            },
+            {
+              published: false,
+            }
+          ]
+        }
+      });
+      console.log({ unpublished });
+      return unpublished;
+    } catch (error: any) {
+      console.log({ error });
+      return null;
     }
   }
 }

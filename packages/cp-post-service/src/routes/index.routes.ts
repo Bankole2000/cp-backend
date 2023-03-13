@@ -16,6 +16,9 @@ import { postRoutes } from './post.routes';
 import { adminRoutes } from './admin.routes';
 import { moderationRoutes } from './moderation.routes';
 import { requireLoggedInUser, requireRole } from '../middleware/requireUser';
+import { currentUserRoutes } from './currentuser.routes';
+import { userRoutes } from './user.routes';
+import { tagRoutes } from './tag.routes';
 
 const { basePath } = config.self;
 const bullAdminPath = `${basePath}/bull/${config.self.serviceName}/admin/queues`;
@@ -29,6 +32,9 @@ createBullBoard({
 
 export default (app: Express): void => {
   app.use(bullAdminPath, serverAdapter.getRouter());
+  app.use(`${basePath}/me`, requireLoggedInUser, currentUserRoutes);
+  app.use(`${basePath}/u`, userRoutes);
+  app.use(`${basePath}/tags`, tagRoutes);
   app.use(`${basePath}/test`, testRoutes);
   app.use(`${basePath}/admin`, adminRoutes);
   app.use(`${basePath}/posts`, postRoutes);

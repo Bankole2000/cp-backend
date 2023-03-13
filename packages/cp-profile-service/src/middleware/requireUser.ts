@@ -82,10 +82,13 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     };
     return next();
   }
+  console.log('Line 85');
+  console.log({ refreshToken });
   if (!refreshToken) {
     req.user = null;
     return next();
   }
+  console.log('Line 90');
   if (expired && refreshToken) {
     const { decoded: refreshDecoded } = await verifyToken(refreshToken, config.self.jwtSecret || '');
     if (!refreshDecoded) {
@@ -95,7 +98,7 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     const { pbUser: oldUser, pbToken: oldToken } = refreshDecoded;
     const userExists = await userService.findUserById(refreshDecoded.userId);
     if (!userExists.success) {
-      const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', decoded.sessionId);
+      const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', refreshDecoded.sessionId);
       if (!session || !JSON.parse(session)) {
         req.user = null;
         return next();
@@ -125,7 +128,10 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
-    const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', refreshDecoded.sessionId);
+    const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', refreshDecoded.sessionId).catch((err) => {
+      console.log({ err });
+      return null;
+    });
     if (!session || !JSON.parse(session)) {
       req.user = null;
       return next();

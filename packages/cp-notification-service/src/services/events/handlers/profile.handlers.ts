@@ -21,6 +21,7 @@ export const profileDefaultExchangeHandler = async (message: ServiceEvent) => {
 export const USER_FOLLOWED_USER = async (message: ServiceEvent) => {
   console.log('Handling Event: ', message.type);
   const { data } = message;
+  console.log({ data });
   const ffnExists = await us.findUserById(data.followingId);
   const ffrExists = await us.findUserById(data.followerId);
   if (!ffnExists.success) return ffnExists;

@@ -4,6 +4,9 @@ import { config } from '../../utils/config';
 import { getServiceQueues, sendToServiceQueues } from '../events.service';
 import { getChannel, getRedis } from '../../utils/common';
 import { socketEventTypes } from '../../schema/socket.schema';
+import ProfileDBService from '../profile.service';
+
+const ps = new ProfileDBService();
 
 const { redisConfig: { scope, url: redisUrl }, self: { serviceName } } = config;
 
@@ -16,8 +19,16 @@ export const blockQueue = new BullQueue(`${config.redisConfig.scope}:profile:blo
 });
 
 export const addToFollowQueue = async (followData: any, options: JobOptions = {}) => {
-  getIO().to(followData.followingId).emit(socketEventTypes.FOLLOWED_YOU, followData);
-  getIO().to(followData.followerId).emit(socketEventTypes.YOU_FOLLOWED, followData);
+  const { data: fnStatus } = await ps
+    .getFollowingStatus(followData.followerId, followData.followingId);
+  const { data: fwStatus } = await ps
+    .getFollowingStatus(followData.followingId, followData.followerId);
+  getIO()
+    .to(followData.followingId)
+    .emit(socketEventTypes.FOLLOWED_YOU, { ...followData, ...fnStatus });
+  getIO()
+    .to(followData.followerId)
+    .emit(socketEventTypes.YOU_FOLLOWED, { ...followData, ...fwStatus });
   followQueue.add('User-Follow', followData, options);
 };
 

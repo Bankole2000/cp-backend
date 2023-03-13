@@ -58,6 +58,38 @@ export default class ProfileDBService {
     };
   }
 
+  async getFollowingStatus(userId: string, perspectiveId: string) {
+    try {
+      const {
+        followingIds,
+        followerIds,
+        sentRequestIds,
+        receivedRequestIds,
+        blockedYouIds,
+        blockedByYouIds
+      } = await this.getFollowingIds(perspectiveId);
+      const followsYou = followingIds.length ? followingIds.includes(userId) : false;
+      const followedByYou = followerIds.length ? followerIds.includes(userId) : false;
+      const sentRequest = sentRequestIds.length ? sentRequestIds.includes(userId) : false;
+      const recievedRequest = receivedRequestIds.length
+        ? receivedRequestIds.includes(userId) : false;
+      const blockedYou = blockedYouIds.length ? blockedYouIds.includes(userId) : false;
+      const blockedByYou = blockedByYouIds.length
+        ? blockedByYouIds.includes(userId) : false;
+      return new ServiceResponse('User profile', {
+        followsYou,
+        followedByYou,
+        sentRequest,
+        recievedRequest,
+        blockedYou,
+        blockedByYou
+      }, true, 200, null, null, null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting following Status', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async getProfileByUserId(userId: string, loggedInUserId: string | null = null) {
     try {
       const profile = await this.prisma.profile.findUnique({
@@ -487,6 +519,237 @@ export default class ProfileDBService {
     }
   }
 
+  async searchUserSentFollowRequests(
+    userId: string,
+    searchTerm: string,
+    page = 1,
+    limit = 12,
+    loggedInUserId: string | null = null
+  ) {
+    try {
+      const sentFollowRequests = await this.prisma.followRequest.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+        where: {
+          AND: [
+            {
+              requestedById: userId,
+            },
+            {
+              receiver: {
+                OR: [
+                  {
+                    displayname: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  },
+                  {
+                    username: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  },
+                  {
+                    bio: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        include: {
+          receiver: true,
+        }
+      });
+      const total = await this.prisma.followRequest.count({
+        where: {
+          AND: [
+            {
+              requestedById: userId,
+            },
+            {
+              receiver: {
+                OR: [
+                  {
+                    displayname: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  },
+                  {
+                    username: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  },
+                  {
+                    bio: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      });
+      const pages = Math.ceil(total / limit) || 1;
+      const prev = pages > 1 && page <= pages && page > 0 ? page - 1 : null;
+      const next = pages > 1 && page < pages && page > 0 ? page + 1 : null;
+      let data;
+      if (sentFollowRequests.length && loggedInUserId) {
+        const {
+          followingIds, followerIds, sentRequestIds, receivedRequestIds
+        } = await this.getFollowingIds(loggedInUserId);
+        data = sentFollowRequests.map((ffer) => ({
+          ...ffer,
+          followsYou: followingIds.length ? followingIds.includes(ffer.receiverId) : false,
+          followedByYou: followerIds.length ? followerIds.includes(ffer.receiverId) : false,
+          sentRequest: sentRequestIds.length ? sentRequestIds.includes(ffer.receiverId) : false,
+          recievedRequest: receivedRequestIds.length
+            ? receivedRequestIds.includes(ffer.receiverId) : false,
+        }));
+      } else {
+        data = sentFollowRequests;
+      }
+      return new ServiceResponse(
+        'Sent follow requests',
+        {
+          total, pages, page, prev, next, data, limit
+        },
+        true,
+        200,
+        null,
+        null,
+        null
+      );
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting user sent follow requests', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async searchUserReceivedFollowRequests(
+    userId: string,
+    searchTerm: string,
+    page = 1,
+    limit = 12,
+    loggedInUserId: string | null = null
+  ) {
+    try {
+      const receivedFollowRequests = await this.prisma.followRequest.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+        where: {
+          AND: [
+            {
+              receiverId: userId,
+            },
+            {
+              requestedBy: {
+                OR: [
+                  {
+                    displayname: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  },
+                  {
+                    username: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  },
+                  {
+                    bio: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        include: {
+          requestedBy: true
+        }
+      });
+      const total = await this.prisma.followRequest.count({
+        where: {
+          AND: [
+            {
+              receiverId: userId,
+            },
+            {
+              requestedBy: {
+                OR: [
+                  {
+                    displayname: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  },
+                  {
+                    username: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  },
+                  {
+                    bio: {
+                      contains: searchTerm,
+                      mode: 'insensitive',
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      });
+      const pages = Math.ceil(total / limit) || 1;
+      const prev = pages > 1 && page <= pages && page > 0 ? page - 1 : null;
+      const next = pages > 1 && page < pages && page > 0 ? page + 1 : null;
+      let data;
+      console.log({ length: receivedFollowRequests.length, loggedInUserId });
+      if (receivedFollowRequests.length && loggedInUserId) {
+        const {
+          followingIds, followerIds, sentRequestIds, receivedRequestIds
+        } = await this.getFollowingIds(loggedInUserId);
+        data = receivedFollowRequests.map((ffer) => ({
+          ...ffer,
+          followsYou: followingIds.length ? followingIds.includes(ffer.requestedById) : false,
+          followedByYou: followerIds.length ? followerIds.includes(ffer.requestedById) : false,
+          sentRequest: sentRequestIds.length ? sentRequestIds.includes(ffer.requestedById) : false,
+          recievedRequest: receivedRequestIds.length
+            ? receivedRequestIds.includes(ffer.requestedById) : false,
+        }));
+      } else {
+        data = receivedFollowRequests;
+      }
+      return new ServiceResponse(
+        'Sent follow requests',
+        {
+          total, pages, page, prev, next, data, limit
+        },
+        true,
+        200,
+        null,
+        null,
+        null
+      );
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting recieved follow requests', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async checkPendingFollowRequest(requestedById: string, receiverId: string) {
     try {
       const followRequest = await this.prisma.followRequest.findUnique({
@@ -885,7 +1148,7 @@ export default class ProfileDBService {
     }
   }
 
-  async searchProfiles(
+  async searchAllProfiles(
     searchTerm: string,
     page = 1,
     limit = 12,
@@ -896,21 +1159,110 @@ export default class ProfileDBService {
         skip: (page - 1) * limit,
         take: limit,
         where: {
+          OR: [
+            {
+              username: {
+                startsWith: searchTerm,
+                mode: 'insensitive'
+              },
+            },
+            {
+              displayname: {
+                startsWith: searchTerm,
+                mode: 'insensitive'
+              },
+            }
+          ]
+        },
+        include: {
+          profileSettings: true,
+        }
+      });
+      const total = await this.prisma.profile.count({
+        where: {
+          OR: [
+            {
+              username: {
+                startsWith: searchTerm,
+                mode: 'insensitive'
+              },
+            },
+            {
+              displayname: {
+                startsWith: searchTerm,
+                mode: 'insensitive'
+              },
+            }
+          ]
+        }
+      });
+      const pages = Math.ceil(total / limit) || 1;
+      const prev = pages > 1 && page <= pages && page > 0 ? page - 1 : null;
+      const next = pages > 1 && page < pages && page > 0 ? page + 1 : null;
+      let data;
+      console.log({ length: profiles.length, searchTerm, loggedInUserId });
+      if (profiles.length && loggedInUserId) {
+        const {
+          followingIds, followerIds, sentRequestIds, receivedRequestIds
+        } = await this.getFollowingIds(loggedInUserId);
+        data = profiles.map((ffer) => ({
+          ...ffer,
+          followsYou: followingIds.length ? followingIds.includes(ffer.userId) : false,
+          followedByYou: followerIds.length ? followerIds.includes(ffer.userId) : false,
+          sentRequest: sentRequestIds.length ? sentRequestIds.includes(ffer.userId) : false,
+          recievedRequest: receivedRequestIds.length
+            ? receivedRequestIds.includes(ffer.userId) : false,
+          isYou: ffer.userId === loggedInUserId
+        }));
+      } else {
+        data = profiles;
+      }
+      return new ServiceResponse(
+        'Search user following',
+        {
+          total, data, page, pages, limit, prev, next, searchTerm
+        },
+        true,
+        200,
+        null,
+        null,
+        null
+      );
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error fetching user profiles', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async searchProfiles(
+    searchTerm: string,
+    page = 1,
+    limit = 12,
+    loggedInUserId: string | null = null
+  ) {
+    try {
+      const exceptions = loggedInUserId ? [loggedInUserId] : [];
+      const profiles = await this.prisma.profile.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+        where: {
           AND: [
             {
               userId: {
-                not: loggedInUserId || '',
+                notIn: exceptions,
               }
             },
             {
               OR: [
                 {
                   username: {
-                    contains: searchTerm,
+                    startsWith: searchTerm,
                     mode: 'insensitive'
-                  },
+                  }
+                },
+                {
                   displayname: {
-                    contains: searchTerm,
+                    startsWith: searchTerm,
                     mode: 'insensitive'
                   },
                 }
@@ -937,6 +1289,8 @@ export default class ProfileDBService {
                     contains: searchTerm,
                     mode: 'insensitive'
                   },
+                },
+                {
                   displayname: {
                     contains: searchTerm,
                     mode: 'insensitive'
@@ -963,6 +1317,7 @@ export default class ProfileDBService {
           sentRequest: sentRequestIds.length ? sentRequestIds.includes(ffer.userId) : false,
           recievedRequest: receivedRequestIds.length
             ? receivedRequestIds.includes(ffer.userId) : false,
+          isYou: ffer.userId === loggedInUserId
         }));
       } else {
         data = profiles;
@@ -981,6 +1336,125 @@ export default class ProfileDBService {
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error fetching user profiles', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async getTaggableProfiles(userId: string, limit = 6) {
+    try {
+      const {
+        followerIds,
+        followingIds,
+        sentRequestIds,
+        receivedRequestIds
+      } = await this.getFollowingIds(userId);
+      const allIds = Array
+        .from(new Set(
+          [...followerIds, ...followingIds, ...sentRequestIds, ...receivedRequestIds, userId]
+        ));
+      const profiles = await this.prisma.profile.findMany({
+        take: limit,
+        where: {
+          AND: [
+            {
+              userId: {
+                in: allIds
+              }
+            },
+            {
+              blocked: {
+                none: {
+                  blockedById: userId
+                }
+              }
+            }
+          ]
+        },
+        include: {
+          profileSettings: true,
+        }
+      });
+      const data = profiles.map((p) => ({
+        ...p,
+        followsYou: followingIds.length ? followingIds.includes(p.userId) : false,
+        followedByYou: followerIds.length ? followerIds.includes(p.userId) : false,
+        sentRequest: sentRequestIds.length ? sentRequestIds.includes(p.userId) : false,
+        recievedRequest: receivedRequestIds.length
+          ? receivedRequestIds.includes(p.userId) : false,
+        isYou: p.userId === userId
+      }));
+      return new ServiceResponse('Taggable profiles', { data }, true, 200, null, null, null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting taggable profiles', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async searchTaggableProfiles(
+    userId: string,
+    searchTerm: string,
+    limit = 6,
+  ) {
+    try {
+      const {
+        followerIds,
+        followingIds,
+        sentRequestIds,
+        receivedRequestIds
+      } = await this.getFollowingIds(userId);
+      const allIds = Array
+        .from(new Set(
+          [...followerIds, ...followingIds, ...sentRequestIds, ...receivedRequestIds, userId]
+        ));
+      const profiles = await this.prisma.profile.findMany({
+        take: limit,
+        where: {
+          AND: [
+            {
+              userId: {
+                in: allIds
+              }
+            },
+            {
+              blocked: {
+                none: {
+                  blockedById: userId
+                }
+              }
+            },
+            {
+              OR: [
+                {
+                  username: {
+                    startsWith: searchTerm,
+                    mode: 'insensitive'
+                  }
+                },
+                {
+                  displayname: {
+                    startsWith: searchTerm,
+                    mode: 'insensitive'
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        include: {
+          profileSettings: true,
+        }
+      });
+      const data = profiles.map((p) => ({
+        ...p,
+        followsYou: followingIds.length ? followingIds.includes(p.userId) : false,
+        followedByYou: followerIds.length ? followerIds.includes(p.userId) : false,
+        sentRequest: sentRequestIds.length ? sentRequestIds.includes(p.userId) : false,
+        recievedRequest: receivedRequestIds.length
+          ? receivedRequestIds.includes(p.userId) : false,
+      }));
+      return new ServiceResponse('Taggable profiles', data, true, 200, null, null, null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting taggable profiles', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
 }

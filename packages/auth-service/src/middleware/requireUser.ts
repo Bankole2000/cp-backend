@@ -53,7 +53,8 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
         return next();
       }
       console.log('User found');
-      const { success, data: { sessionId, isValid, deviceId } } = await userService.getSessionById(refreshDecoded.sessionId);
+      const { success, data: { sessionId, isValid, deviceId } } = await userService
+        .getSessionById(refreshDecoded.sessionId);
       console.log({ sessionFound: success, isValid, deviceId });
       if (!success || !isValid) {
         req.user = null;

@@ -101,6 +101,12 @@ export const updateProfileImage = async (req: Request, res: Response) => {
 
 export const getProfileImagehandler = async (req: Request, res: Response) => {
   const { username } = req.params;
+  const user = await userService.findUserByUsername(username);
+  if (!user.success) {
+    const defaultImageFilePath = path.join(`${__dirname}`, '/../utils/data/defaultuserprofileimage.webp');
+    const stream = fs.createReadStream(defaultImageFilePath);
+    return stream.pipe(res);
+  }
   const { w } = req.query;
   const width = w || 100;
   const folder = path.join(`${__dirname}`, `/../../uploads/${username}/`);
@@ -118,20 +124,15 @@ export const getProfileImagehandler = async (req: Request, res: Response) => {
     const stream = fs.createReadStream(filePath);
     return stream.pipe(res);
   }
-  const user = await userService.findUserByUsername(username);
-  if (user.success) {
-    if (user.data.imageUrl) {
-      const file = fs.createWriteStream(filePath);
-      return http.get(`${user.data.imageUrl}?thumb=${width}x${width}`, (resp) => {
-        resp.pipe(file);
-        file.on('finish', () => {
-          const stream = fs.createReadStream(filePath);
-          return stream.pipe(res);
-        });
+  if (user.data.imageUrl) {
+    const file = fs.createWriteStream(filePath);
+    return http.get(`${user.data.imageUrl}?thumb=${width}x${width}`, (resp) => {
+      resp.pipe(file);
+      file.on('finish', () => {
+        const stream = fs.createReadStream(filePath);
+        return stream.pipe(res);
       });
-    }
-    const stream = fs.createReadStream(defaultImageFilePath);
-    return stream.pipe(res);
+    });
   }
   const stream = fs.createReadStream(defaultImageFilePath);
   return stream.pipe(res);
@@ -182,6 +183,12 @@ export const updateProfileWallpaper = async (req: Request, res: Response) => {
 
 export const getProfileWallpaperhandler = async (req: Request, res: Response) => {
   const { username } = req.params;
+  const user = await userService.findUserByUsername(username);
+  if (!user.success) {
+    const defaultImageFilePath = path.join(`${__dirname}`, '/../utils/data/housebackground.webp');
+    const stream = fs.createReadStream(defaultImageFilePath);
+    return stream.pipe(res);
+  }
   const { w } = req.query;
   const width = w || 500;
 
@@ -200,22 +207,17 @@ export const getProfileWallpaperhandler = async (req: Request, res: Response) =>
     const stream = fs.createReadStream(filePath);
     return stream.pipe(res);
   }
-  const user = await userService.findUserByUsername(username);
-  if (user.success) {
-    if (user.data.wallpaperUrl) {
-      const file = fs.createWriteStream(filePath);
-      const url = `${user.data.wallpaperUrl}?thumb=${+width * 1.8}x${width}`;
-      console.log({ url });
-      return http.get(url, (resp) => {
-        resp.pipe(file);
-        file.on('finish', () => {
-          const stream = fs.createReadStream(filePath);
-          return stream.pipe(res);
-        });
+  if (user.data.wallpaperUrl) {
+    const file = fs.createWriteStream(filePath);
+    const url = `${user.data.wallpaperUrl}?thumb=${+width * 1.8}x${width}`;
+    console.log({ url });
+    return http.get(url, (resp) => {
+      resp.pipe(file);
+      file.on('finish', () => {
+        const stream = fs.createReadStream(filePath);
+        return stream.pipe(res);
       });
-    }
-    const stream = fs.createReadStream(defaultImageFilePath);
-    return stream.pipe(res);
+    });
   }
   const stream = fs.createReadStream(defaultImageFilePath);
   return stream.pipe(res);
@@ -252,7 +254,7 @@ export const searchProfilesHandler = async (req: Request, res: Response) => {
   } else {
     page = 1;
   }
-  const sr = await profileService.searchProfiles(
+  const sr = await profileService.searchAllProfiles(
     searchTerm as string,
     page,
     limit,

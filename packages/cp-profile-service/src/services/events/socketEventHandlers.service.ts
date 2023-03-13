@@ -1,7 +1,9 @@
 import { socketEventTypes } from '../../schema/socket.schema';
+import ProfileDBService from '../profile.service';
 import UserDBService from '../user.service';
 
 const userService = new UserDBService();
+const profileService = new ProfileDBService();
 
 const USER_CONNECTED_HANDLER = async (data: any, socket: any, io: any) => {
   const rooms = io.sockets.adapter.sids.get(socket.id);
@@ -19,6 +21,23 @@ const USER_CONNECTED_HANDLER = async (data: any, socket: any, io: any) => {
   }
 };
 
+const TAGGABLE_PROFILES_HANDLER = async (data: any, socket: any, io: any) => {
+  const {
+    userId,
+    q,
+    page,
+    limit
+  } = data;
+  let result;
+  if (q) {
+    result = await profileService.searchAllProfiles(q, page, limit, userId);
+  } else {
+    result = await profileService.getTaggableProfiles(userId, limit);
+  }
+  io.to(socket.id).emit(socketEventTypes.TAGGABLE_PROFILES, result);
+};
+
 export const socketEvents = {
   [socketEventTypes.USER_CONNECTED]: USER_CONNECTED_HANDLER,
+  [socketEventTypes.TAGGABLE_PROFILES]: TAGGABLE_PROFILES_HANDLER
 };

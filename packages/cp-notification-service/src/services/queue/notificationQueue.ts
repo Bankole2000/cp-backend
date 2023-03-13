@@ -42,6 +42,10 @@ export const newFollowerNotification = async (job: Job) => {
     resourceId
   );
   if (nExists.success && !isOverHoursOld(nExists.data.notification.createdAt, 1)) {
+    console.log({
+      nExists,
+      isOverHoursOld: !isOverHoursOld(nExists.data.notification.createdAt, 1)
+    });
     job.progress(100);
     job.log('Notification already exists');
     await job.moveToCompleted();

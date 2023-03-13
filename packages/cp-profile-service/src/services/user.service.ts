@@ -150,10 +150,15 @@ export default class UserDBService {
   }
 
   static async getUserSession(redis: RedisConnection, scope: string, sessionId: string) {
-    await redis.client.connect();
-    const session = await redis.client.hGet(`${scope}-logged-in`, sessionId);
-    await redis.client.disconnect();
-    return session;
+    try {
+      await redis.client.connect();
+      const session = await redis.client.hGet(`${scope}-logged-in`, sessionId);
+      await redis.client.disconnect();
+      return session;
+    } catch (error: any) {
+      console.log({ error });
+      return null;
+    }
   }
 
   async checkUserBlocked(blockedById: string, blockedId: string) {

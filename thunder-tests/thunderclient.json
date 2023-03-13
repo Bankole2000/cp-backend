@@ -8,7 +8,7 @@
     "method": "GET",
     "sortNum": 10000,
     "created": "2023-02-17T20:26:58.774Z",
-    "modified": "2023-02-18T07:59:41.306Z",
+    "modified": "2023-03-10T21:15:19.833Z",
     "headers": [],
     "params": [],
     "tests": [
@@ -72,7 +72,8 @@
         "action": "setto",
         "value": "{{messageId}}"
       }
-    ]
+    ],
+    "docs": "```json\n{\n  \"message\": \"User session invalidated successfully\",\n  \"success\": true,\n  \"data\": {\n    \"sessionId\": \"7d73ebdf-4f9f-4156-a028-d4f6b958e40e\",\n    \"ip\": \"::ffff:127.0.0.1\",\n    \"userAgent\": \"Thunder Client (https://www.thunderclient.com)\",\n    \"loginType\": \"EMAIL\",\n    \"userId\": \"0c5725m57h2cknz\",\n    \"deviceId\": \"2666d8a6-ffc7-4764-8274-18e74abccc2c\",\n    \"isValid\": false,\n    \"createdAt\": \"2023-03-10T21:06:37.809Z\",\n    \"loggedOutAt\": \"2023-03-10T21:14:47.694Z\"\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
   },
   {
     "_id": "90b9173e-bcfd-428b-abf7-e1e18c725eb8",
@@ -97,15 +98,23 @@
     "method": "POST",
     "sortNum": 30000,
     "created": "2023-02-17T20:29:05.320Z",
-    "modified": "2023-02-18T08:01:46.561Z",
+    "modified": "2023-03-10T21:10:56.186Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"email\": \"\",\n  \"firstname\": \"\",\n  \"lastname\": \"\",\n  \"tos\": false,\n  \"dob\": \"2000-01-01\"\n}",
+      "raw": "{\n  \"email\": \"kolesan2k@yahoo.com\",\n  \"firstname\": \"Techy\",\n  \"lastname\": \"Banky\",\n  \"tos\": true,\n  \"dob\": \"2000-01-01\"\n}",
       "form": []
     },
-    "tests": []
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      }
+    ],
+    "docs": "Success Respons\n\n```json\n{\n  \"message\": \"Registration Successful\",\n  \"success\": true,\n  \"data\": {\n    \"user\": {\n      \"userId\": \"0c5725m57h2cknz\",\n      \"email\": \"kolesan2k@yahoo.com\",\n      \"emailVerified\": false,\n      \"phone\": null,\n      \"phoneData\": {},\n      \"phoneVerified\": false,\n      \"registeredVia\": \"EMAIL\",\n      \"username\": \"48fdc01a-e305-40aa-9d0b-567749708aad\",\n      \"roles\": [\n        \"USER\"\n      ],\n      \"firstname\": \"Techy\",\n      \"lastname\": \"Banky\",\n      \"displayname\": \"Techy\",\n      \"dob\": \"2000-01-01T00:00:00.000Z\",\n      \"gender\": \"OTHER\",\n      \"tos\": true,\n      \"onboardingStatus\": [\n        \"NEWLY_REGISTERED\"\n      ],\n      \"version\": 0,\n      \"createdAt\": \"2023-03-10T20:56:13.686Z\",\n      \"updatedAt\": \"2023-03-10T20:56:13.686Z\",\n      \"deletedAt\": null\n    },\n    \"idToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYzU3MjVtNTdoMmNrbnoiLCJlbWFpbCI6ImtvbGVzYW4ya0B5YWhvby5jb20iLCJlbWFpbFZlcmlmaWVkIjpmYWxzZSwicGhvbmUiOm51bGwsInBob25lRGF0YSI6e30sInBob25lVmVyaWZpZWQiOmZhbHNlLCJyZWdpc3RlcmVkVmlhIjoiRU1BSUwiLCJ1c2VybmFtZSI6IjQ4ZmRjMDFhLWUzMDUtNDBhYS05ZDBiLTU2Nzc0OTcwOGFhZCIsInJvbGVzIjpbIlVTRVIiXSwiZmlyc3RuYW1lIjoiVGVjaHkiLCJsYXN0bmFtZSI6IkJhbmt5IiwiZGlzcGxheW5hbWUiOiJUZWNoeSIsImRvYiI6IjIwMDAtMDEtMDFUMDA6MDA6MDAuMDAwWiIsImdlbmRlciI6Ik9USEVSIiwidG9zIjp0cnVlLCJvbmJvYXJkaW5nU3RhdHVzIjpbIk5FV0xZX1JFR0lTVEVSRUQiXSwidmVyc2lvbiI6MCwiY3JlYXRlZEF0IjoiMjAyMy0wMy0xMFQyMDo1NjoxMy42ODZaIiwidXBkYXRlZEF0IjoiMjAyMy0wMy0xMFQyMDo1NjoxMy42ODZaIiwiZGVsZXRlZEF0IjpudWxsLCJpYXQiOjE2Nzg0ODE3NzN9.9JY5YACiQB4Kth-F2ChFBvV29eXA6cLCoEBy7ICo9I8\"\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 201\n}\n```\n"
   },
   {
     "_id": "f5130970-1a88-40ed-9530-25abca1469b4",
@@ -116,7 +125,7 @@
     "method": "POST",
     "sortNum": 40000,
     "created": "2023-02-17T20:29:35.568Z",
-    "modified": "2023-02-18T08:02:42.768Z",
+    "modified": "2023-03-10T21:11:24.162Z",
     "headers": [],
     "params": [],
     "body": {
@@ -124,7 +133,14 @@
       "raw": "{\n  \"countryCode\": \"\",\n  \"phone\": \"\",\n  \"firstname\": \"\",\n  \"lastname\": \"\",\n  \"tos\": false,\n  \"dob\": \"2000-01-01\"\n}",
       "form": []
     },
-    "tests": []
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      }
+    ]
   },
   {
     "_id": "7c059e93-f172-4868-9f40-e69d78012762",
@@ -135,15 +151,35 @@
     "method": "POST",
     "sortNum": 40000,
     "created": "2023-02-17T20:30:34.537Z",
-    "modified": "2023-02-18T08:03:49.194Z",
+    "modified": "2023-03-10T21:12:26.211Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"username\": \"\",\n  \"gender\": \"MALE\",\n  \"password\": \"\",\n  \"confirmPassword\": \"\"\n}",
+      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"username\": \"neoncoder\",\n  \"gender\": \"MALE\",\n  \"password\": \"newPassword\",\n  \"confirmPassword\": \"newPassword\"\n}",
       "form": []
     },
-    "tests": []
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.accessToken",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.refreshToken",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{idToken}}"
+      }
+    ],
+    "docs": "```json\n{\n  \"message\": \"Onboarding Successful\",\n  \"success\": true,\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYzU3MjVtNTdoMmNrbnoiLCJlbWFpbCI6ImtvbGVzYW4ya0B5YWhvby5jb20iLCJlbWFpbFZlcmlmaWVkIjp0cnVlLCJwaG9uZSI6bnVsbCwicGhvbmVEYXRhIjp7fSwicGhvbmVWZXJpZmllZCI6ZmFsc2UsInJlZ2lzdGVyZWRWaWEiOiJFTUFJTCIsInVzZXJuYW1lIjoibmVvbmNvZGVyIiwicm9sZXMiOlsiVVNFUiJdLCJmaXJzdG5hbWUiOiJUZWNoeSIsImxhc3RuYW1lIjoiQmFua3kiLCJkaXNwbGF5bmFtZSI6IlRlY2h5IiwiZG9iIjoiMjAwMC0wMS0wMVQwMDowMDowMC4wMDBaIiwiZ2VuZGVyIjoiTUFMRSIsInRvcyI6dHJ1ZSwib25ib2FyZGluZ1N0YXR1cyI6WyJORVdMWV9SRUdJU1RFUkVEIiwiVVNFUk5BTUVfU0VUIiwiUEFTU1dPUkRfU0VUIl0sInZlcnNpb24iOjIsImNyZWF0ZWRBdCI6IjIwMjMtMDMtMTBUMjA6NTY6MTMuNjg2WiIsInVwZGF0ZWRBdCI6IjIwMjMtMDMtMTBUMjE6MDY6MzYuMzUwWiIsImRlbGV0ZWRBdCI6bnVsbCwic2Vzc2lvbklkIjoiN2Q3M2ViZGYtNGY5Zi00MTU2LWEwMjgtZDRmNmI5NThlNDBlIiwiZGV2aWNlSWQiOiIyNjY2ZDhhNi1mZmM3LTQ3NjQtODI3NC0xOGU3NGFiY2NjMmMiLCJwYlRva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiMnhzWldOMGFXOXVTV1FpT2lKZmNHSmZkWE5sY25OZllYVjBhRjhpTENKbGVIQWlPakUyTnprMk9URTVPVGdzSW1sa0lqb2lNR00xTnpJMWJUVTNhREpqYTI1Nklpd2lkSGx3WlNJNkltRjFkR2hTWldOdmNtUWlmUS5hbFJWM2Zic0hsbzVqckhWRExfTnF1anIzMkRoTzhWQl9aTU5xX3d0VldrIiwicGJVc2VyIjp7ImF2YXRhciI6IiIsImNvbGxlY3Rpb25JZCI6Il9wYl91c2Vyc19hdXRoXyIsImNvbGxlY3Rpb25OYW1lIjoidXNlcnMiLCJjcmVhdGVkIjoiMjAyMy0wMy0xMCAyMDo1NjoxMy42ODZaIiwiZGVsZXRlZEF0IjoiIiwiZGlzcGxheW5hbWUiOiJUZWNoeSIsImRvYiI6IjIwMDAtMDEtMDEgMDA6MDA6MDAuMDAwWiIsImVtYWlsIjoia29sZXNhbjJrQHlhaG9vLmNvbSIsImVtYWlsVmlzaWJpbGl0eSI6dHJ1ZSwiZmlyc3RuYW1lIjoiVGVjaHkiLCJnZW5kZXIiOiJNQUxFIiwiaWQiOiIwYzU3MjVtNTdoMmNrbnoiLCJsYXN0bmFtZSI6IkJhbmt5Iiwib25ib2FyZGluZ1N0YXR1cyI6WyJORVdMWV9SRUdJU1RFUkVEIiwiVVNFUk5BTUVfU0VUIiwiUEFTU1dPUkRfU0VUIl0sInBob25lIjoiIiwicHJvZmlsZUltYWdlIjoiIiwicHJvZmlsZVdhbGxwYXBlciI6IiIsInJvbGVzIjpbIlVTRVIiXSwidG9zIjp0cnVlLCJ1cGRhdGVkIjoiMjAyMy0wMy0xMCAyMTowNjozNy43NTRaIiwidXNlcm5hbWUiOiJuZW9uY29kZXIiLCJ2ZXJpZmllZCI6dHJ1ZSwiZXhwYW5kIjp7fX0sImlhdCI6MTY3ODQ4MjM5OCwiZXhwIjoxNjc4NDg1OTk4fQ.0fqaiyo4Wsz6IP2ioud0EKVJYVe3okh3mk8KRvLfXBA\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYzU3MjVtNTdoMmNrbnoiLCJlbWFpbCI6ImtvbGVzYW4ya0B5YWhvby5jb20iLCJlbWFpbFZlcmlmaWVkIjp0cnVlLCJwaG9uZSI6bnVsbCwicGhvbmVEYXRhIjp7fSwicGhvbmVWZXJpZmllZCI6ZmFsc2UsInJlZ2lzdGVyZWRWaWEiOiJFTUFJTCIsInVzZXJuYW1lIjoibmVvbmNvZGVyIiwicm9sZXMiOlsiVVNFUiJdLCJmaXJzdG5hbWUiOiJUZWNoeSIsImxhc3RuYW1lIjoiQmFua3kiLCJkaXNwbGF5bmFtZSI6IlRlY2h5IiwiZG9iIjoiMjAwMC0wMS0wMVQwMDowMDowMC4wMDBaIiwiZ2VuZGVyIjoiTUFMRSIsInRvcyI6dHJ1ZSwib25ib2FyZGluZ1N0YXR1cyI6WyJORVdMWV9SRUdJU1RFUkVEIiwiVVNFUk5BTUVfU0VUIiwiUEFTU1dPUkRfU0VUIl0sInZlcnNpb24iOjIsImNyZWF0ZWRBdCI6IjIwMjMtMDMtMTBUMjA6NTY6MTMuNjg2WiIsInVwZGF0ZWRBdCI6IjIwMjMtMDMtMTBUMjE6MDY6MzYuMzUwWiIsImRlbGV0ZWRBdCI6bnVsbCwic2Vzc2lvbklkIjoiN2Q3M2ViZGYtNGY5Zi00MTU2LWEwMjgtZDRmNmI5NThlNDBlIiwiZGV2aWNlSWQiOiIyNjY2ZDhhNi1mZmM3LTQ3NjQtODI3NC0xOGU3NGFiY2NjMmMiLCJwYlRva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiMnhzWldOMGFXOXVTV1FpT2lKZmNHSmZkWE5sY25OZllYVjBhRjhpTENKbGVIQWlPakUyTnprMk9URTVPVGdzSW1sa0lqb2lNR00xTnpJMWJUVTNhREpqYTI1Nklpd2lkSGx3WlNJNkltRjFkR2hTWldOdmNtUWlmUS5hbFJWM2Zic0hsbzVqckhWRExfTnF1anIzMkRoTzhWQl9aTU5xX3d0VldrIiwicGJVc2VyIjp7ImF2YXRhciI6IiIsImNvbGxlY3Rpb25JZCI6Il9wYl91c2Vyc19hdXRoXyIsImNvbGxlY3Rpb25OYW1lIjoidXNlcnMiLCJjcmVhdGVkIjoiMjAyMy0wMy0xMCAyMDo1NjoxMy42ODZaIiwiZGVsZXRlZEF0IjoiIiwiZGlzcGxheW5hbWUiOiJUZWNoeSIsImRvYiI6IjIwMDAtMDEtMDEgMDA6MDA6MDAuMDAwWiIsImVtYWlsIjoia29sZXNhbjJrQHlhaG9vLmNvbSIsImVtYWlsVmlzaWJpbGl0eSI6dHJ1ZSwiZmlyc3RuYW1lIjoiVGVjaHkiLCJnZW5kZXIiOiJNQUxFIiwiaWQiOiIwYzU3MjVtNTdoMmNrbnoiLCJsYXN0bmFtZSI6IkJhbmt5Iiwib25ib2FyZGluZ1N0YXR1cyI6WyJORVdMWV9SRUdJU1RFUkVEIiwiVVNFUk5BTUVfU0VUIiwiUEFTU1dPUkRfU0VUIl0sInBob25lIjoiIiwicHJvZmlsZUltYWdlIjoiIiwicHJvZmlsZVdhbGxwYXBlciI6IiIsInJvbGVzIjpbIlVTRVIiXSwidG9zIjp0cnVlLCJ1cGRhdGVkIjoiMjAyMy0wMy0xMCAyMTowNjozNy43NTRaIiwidXNlcm5hbWUiOiJuZW9uY29kZXIiLCJ2ZXJpZmllZCI6dHJ1ZSwiZXhwYW5kIjp7fX0sImlhdCI6MTY3ODQ4MjM5OCwiZXhwIjoxNjc5MDg3MTk4fQ.FS3alUHbcuTjX1tHkW9iudlk4qbLj91hxp0GFCgetKU\",\n    \"session\": {\n      \"sessionId\": \"7d73ebdf-4f9f-4156-a028-d4f6b958e40e\",\n      \"ip\": \"::ffff:127.0.0.1\",\n      \"userAgent\": \"Thunder Client (https://www.thunderclient.com)\",\n      \"loginType\": \"EMAIL\",\n      \"userId\": \"0c5725m57h2cknz\",\n      \"deviceId\": \"2666d8a6-ffc7-4764-8274-18e74abccc2c\",\n      \"isValid\": true,\n      \"createdAt\": \"2023-03-10T21:06:37.809Z\",\n      \"loggedOutAt\": \"2023-03-10T21:06:37.809Z\",\n      \"user\": {\n        \"userId\": \"0c5725m57h2cknz\",\n        \"email\": \"kolesan2k@yahoo.com\",\n        \"emailVerified\": true,\n        \"phone\": null,\n        \"phoneData\": {},\n        \"phoneVerified\": false,\n        \"registeredVia\": \"EMAIL\",\n        \"username\": \"neoncoder\",\n        \"roles\": [\n          \"USER\"\n        ],\n        \"firstname\": \"Techy\",\n        \"lastname\": \"Banky\",\n        \"displayname\": \"Techy\",\n        \"dob\": \"2000-01-01T00:00:00.000Z\",\n        \"gender\": \"MALE\",\n        \"tos\": true,\n        \"onboardingStatus\": [\n          \"NEWLY_REGISTERED\",\n          \"USERNAME_SET\",\n          \"PASSWORD_SET\"\n        ],\n        \"version\": 2,\n        \"createdAt\": \"2023-03-10T20:56:13.686Z\",\n        \"updatedAt\": \"2023-03-10T21:06:36.350Z\",\n        \"deletedAt\": null\n      },\n      \"device\": {\n        \"deviceId\": \"2666d8a6-ffc7-4764-8274-18e74abccc2c\",\n        \"ip\": \"::ffff:127.0.0.1\",\n        \"active\": true,\n        \"banned\": false,\n        \"bannedByUserId\": null,\n        \"userId\": \"0c5725m57h2cknz\",\n        \"createdAt\": \"2023-03-10T21:06:37.786Z\",\n        \"updatedAt\": \"2023-03-10T21:06:37.786Z\"\n      }\n    },\n    \"user\": {\n      \"userId\": \"0c5725m57h2cknz\",\n      \"email\": \"kolesan2k@yahoo.com\",\n      \"emailVerified\": true,\n      \"phone\": null,\n      \"phoneData\": {},\n      \"phoneVerified\": false,\n      \"registeredVia\": \"EMAIL\",\n      \"username\": \"neoncoder\",\n      \"roles\": [\n        \"USER\"\n      ],\n      \"firstname\": \"Techy\",\n      \"lastname\": \"Banky\",\n      \"displayname\": \"Techy\",\n      \"dob\": \"2000-01-01T00:00:00.000Z\",\n      \"gender\": \"MALE\",\n      \"tos\": true,\n      \"onboardingStatus\": [\n        \"NEWLY_REGISTERED\",\n        \"USERNAME_SET\",\n        \"PASSWORD_SET\"\n      ],\n      \"version\": 2,\n      \"createdAt\": \"2023-03-10T20:56:13.686Z\",\n      \"updatedAt\": \"2023-03-10T21:06:36.350Z\",\n      \"deletedAt\": null\n    }\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
   },
   {
     "_id": "a2f0dfce-6d6b-4c98-ba29-982b09d1b025",
@@ -173,12 +209,12 @@
     "method": "POST",
     "sortNum": 50000,
     "created": "2023-02-17T20:32:11.560Z",
-    "modified": "2023-02-17T21:09:27.804Z",
+    "modified": "2023-03-10T21:29:09.712Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"email\": \"techybanky@gmail.com\",\n  \"password\": \"{{password}}\"\n}",
+      "raw": "{\n  \"email\": \"kolesan2k@yahoo.com\",\n  \"password\": \"{{password}}\"\n}",
       "form": []
     },
     "tests": [
@@ -249,12 +285,12 @@
     "method": "POST",
     "sortNum": 70000,
     "created": "2023-02-17T20:32:49.599Z",
-    "modified": "2023-02-17T20:43:57.943Z",
+    "modified": "2023-03-11T05:00:14.020Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"username\": \"bankole\",\n  \"password\": \"{{password}}\"\n}",
+      "raw": "{\n  \"username\": \"bankole2000\",\n  \"password\": \"{{password}}\"\n}",
       "form": []
     },
     "tests": [
@@ -326,15 +362,16 @@
     "method": "POST",
     "sortNum": 70000,
     "created": "2023-02-17T20:35:06.873Z",
-    "modified": "2023-02-18T08:05:30.912Z",
+    "modified": "2023-03-10T21:05:38.955Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"userId\": \"\",\n  \"OTP\": \"\",\n  \"type\": \"\"\n}",
+      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"userId\": \"0c5725m57h2cknz\",\n  \"OTP\": \"E8I5F9\",\n  \"type\": \"EMAIL\",\n  \"email\": \"kolesan2k@yahoo.com\"\n}",
       "form": []
     },
-    "tests": []
+    "tests": [],
+    "docs": "Email Verified Example\n```json\n{\n  \"message\": \"Email Verified\",\n  \"success\": true,\n  \"data\": {\n    \"userId\": \"0c5725m57h2cknz\",\n    \"email\": \"kolesan2k@yahoo.com\",\n    \"emailVerified\": true,\n    \"phone\": null,\n    \"phoneData\": {},\n    \"phoneVerified\": false,\n    \"registeredVia\": \"EMAIL\",\n    \"username\": \"48fdc01a-e305-40aa-9d0b-567749708aad\",\n    \"roles\": [\n      \"USER\"\n    ],\n    \"password\": \"7dd7d601-d165-408c-83ce-144aa6bbde0e\",\n    \"firstname\": \"Techy\",\n    \"lastname\": \"Banky\",\n    \"displayname\": \"Techy\",\n    \"dob\": \"2000-01-01T00:00:00.000Z\",\n    \"gender\": \"OTHER\",\n    \"tos\": true,\n    \"onboardingStatus\": [\n      \"NEWLY_REGISTERED\"\n    ],\n    \"version\": 1,\n    \"createdAt\": \"2023-03-10T20:56:13.686Z\",\n    \"updatedAt\": \"2023-03-10T21:04:52.981Z\",\n    \"deletedAt\": null\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
   },
   {
     "_id": "a7c7de7a-8d15-47d4-a560-0f1f0ebd7152",
@@ -950,7 +987,7 @@
     "method": "GET",
     "sortNum": 240000,
     "created": "2023-02-18T17:31:48.982Z",
-    "modified": "2023-02-18T17:33:35.892Z",
+    "modified": "2023-03-10T21:33:29.525Z",
     "headers": [],
     "params": [],
     "tests": [
@@ -960,7 +997,8 @@
         "action": "setto",
         "value": "{{postId}}"
       }
-    ]
+    ],
+    "docs": "```json\n{\n  \"message\": \"New Post created\",\n  \"success\": true,\n  \"data\": {\n    \"id\": \"9g7h4ie3md0tw21\",\n    \"caption\": \"\",\n    \"published\": false,\n    \"allowComments\": true,\n    \"showLikesCount\": true,\n    \"pinned\": false,\n    \"createdBy\": \"0c5725m57h2cknz\",\n    \"urls\": [],\n    \"repostId\": null,\n    \"version\": 0,\n    \"created\": \"2023-03-10T21:33:12.585Z\",\n    \"updated\": \"2023-03-10T21:33:12.585Z\",\n    \"deletedAt\": null,\n    \"postMedia\": [],\n    \"repost\": null,\n    \"moderation\": null\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
   },
   {
     "_id": "be22d092-abf2-46f5-ac6b-b5cc0dc1c129",
@@ -1035,7 +1073,7 @@
     "method": "PATCH",
     "sortNum": 290000,
     "created": "2023-02-18T22:28:47.355Z",
-    "modified": "2023-02-26T18:12:57.417Z",
+    "modified": "2023-03-11T00:16:52.410Z",
     "headers": [],
     "params": [
       {
@@ -1049,7 +1087,8 @@
       "raw": "{\n  \"caption\": \"new post with #hashtag and tagging user @user with a link to https://google.com\"\n}",
       "form": []
     },
-    "tests": []
+    "tests": [],
+    "docs": "```json\n{\n  \"message\": \"Post caption set\",\n  \"success\": true,\n  \"data\": {\n    \"id\": \"9g7h4ie3md0tw21\",\n    \"caption\": \"new post with #hashtag and tagging user @user with a link to https://google.com\",\n    \"published\": false,\n    \"allowComments\": true,\n    \"showLikesCount\": true,\n    \"pinned\": false,\n    \"createdBy\": \"0c5725m57h2cknz\",\n    \"urls\": [],\n    \"repostId\": null,\n    \"version\": 0,\n    \"created\": \"2023-03-10T21:33:12.585Z\",\n    \"updated\": \"2023-03-10T21:50:50.158Z\",\n    \"deletedAt\": null,\n    \"postMedia\": [],\n    \"tags\": []\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
   },
   {
     "_id": "80ad7dd3-cb22-4346-8915-f8b3c0a3bf3e",
@@ -1698,16 +1737,16 @@
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
     "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
     "name": "Search User Profiles",
-    "url": "{{host}}{{profile-path}}/u/profiles/search?q=ban&page&limit",
+    "url": "{{host}}{{profile-path}}/u/profiles/search?q=r&page&limit",
     "method": "GET",
     "sortNum": 470000,
     "created": "2023-02-25T13:54:33.636Z",
-    "modified": "2023-02-25T13:55:13.981Z",
+    "modified": "2023-03-11T07:19:30.181Z",
     "headers": [],
     "params": [
       {
         "name": "q",
-        "value": "ban",
+        "value": "r",
         "isPath": false
       },
       {
@@ -1733,6 +1772,76 @@
     "sortNum": 480000,
     "created": "2023-02-28T16:18:55.868Z",
     "modified": "2023-02-28T16:26:18.437Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "408d1c51-b205-4c0d-af75-16e62465a081",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "109cb93c-db19-45a5-87e0-1790c503c2e6",
+    "name": "Get User Posts",
+    "url": "{{host}}{{post-path}}/u/{username}/posts",
+    "method": "GET",
+    "sortNum": 490000,
+    "created": "2023-03-09T00:24:01.218Z",
+    "modified": "2023-03-09T02:08:01.177Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole2000",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "4d40e4eb-f986-425c-97bd-226bb8d71c10",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "5bd2996c-9191-408e-b66b-2050e9250184",
+    "name": "Get Tags",
+    "url": "{{host}}{{post-path}}/tags",
+    "method": "GET",
+    "sortNum": 500000,
+    "created": "2023-03-11T02:16:07.299Z",
+    "modified": "2023-03-11T02:22:02.148Z",
+    "headers": [],
+    "params": [],
+    "tests": [],
+    "docs": "```json\n{\n  \"message\": \"Tags\",\n  \"success\": true,\n  \"data\": {\n    \"total\": 6,\n    \"page\": 1,\n    \"pages\": 1,\n    \"limit\": 12,\n    \"prev\": null,\n    \"next\": null,\n    \"data\": [\n      {\n        \"id\": \"d48bfc22-aca5-4c35-ba7f-8969b63ced8b\",\n        \"name\": \"automoderated\",\n        \"createdAt\": \"2023-02-22T21:39:00.995Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      },\n      {\n        \"id\": \"eab42765-7bad-4162-bfa4-6994a19474dc\",\n        \"name\": \"newtag\",\n        \"createdAt\": \"2023-02-20T11:07:00.595Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      },\n      {\n        \"id\": \"72c88ed1-a47c-4568-b223-b6676d58c66a\",\n        \"name\": \"hashtag\",\n        \"createdAt\": \"2023-02-26T18:13:27.005Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      },\n      {\n        \"id\": \"8b746af4-78bd-44ab-9430-c9d173e74311\",\n        \"name\": \"first\",\n        \"createdAt\": \"2023-02-21T19:28:21.897Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      },\n      {\n        \"id\": \"41d042f2-a629-4c57-8afd-b2756bf834e2\",\n        \"name\": \"published\",\n        \"createdAt\": \"2023-02-22T21:39:00.995Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      },\n      {\n        \"id\": \"18e1869d-be05-4c9d-8a31-94a15d59e954\",\n        \"name\": \"post\",\n        \"createdAt\": \"2023-02-20T11:05:52.968Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      }\n    ]\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "b062218a-841f-4452-a212-aeeb0c20e2b4",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "5bd2996c-9191-408e-b66b-2050e9250184",
+    "name": "Get Tag Posts",
+    "url": "{{host}}{{post-path}}/tags/{tag}/posts",
+    "method": "GET",
+    "sortNum": 510000,
+    "created": "2023-03-11T02:26:11.956Z",
+    "modified": "2023-03-11T02:42:42.448Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "tag",
+        "value": "automoderated",
+        "isPath": true
+      }
+    ],
+    "tests": [],
+    "docs": "```json\n{\n  \"message\": \"User Posts\",\n  \"success\": true,\n  \"data\": {\n    \"total\": 1,\n    \"data\": [\n      {\n        \"id\": \"zrnhnvi1owrou52\",\n        \"caption\": \"This post will be #automoderated and published #published - https://twitter.com/postid\",\n        \"published\": true,\n        \"allowComments\": true,\n        \"showLikesCount\": true,\n        \"pinned\": false,\n        \"createdBy\": \"k4i1u6w41jtnidx\",\n        \"urls\": [\n          \"https://twitter.com/postid\"\n        ],\n        \"repostId\": null,\n        \"version\": 2,\n        \"created\": \"2023-02-22T21:37:38.927Z\",\n        \"updated\": \"2023-02-22T22:24:31.464Z\",\n        \"deletedAt\": null,\n        \"createdByData\": {\n          \"userId\": \"k4i1u6w41jtnidx\",\n          \"email\": \"techybanky@gmail.com\",\n          \"emailVerified\": true,\n          \"phone\": null,\n          \"phoneData\": {},\n          \"phoneVerified\": false,\n          \"registeredVia\": \"EMAIL\",\n          \"username\": \"bankole2000\",\n          \"gender\": \"MALE\",\n          \"roles\": [\n            \"USER\",\n            \"SCOUT\",\n            \"AGENT\",\n            \"MODERATOR\",\n            \"MODERATION\",\n            \"SUPPORT\",\n            \"SYSTEM\",\n            \"ADMIN\",\n            \"SUPER_ADMIN\",\n            \"JURY\",\n            \"JUDGE\"\n          ],\n          \"firstname\": \"Bankole\",\n          \"lastname\": \"Esan\",\n          \"displayname\": \"Bankole\",\n          \"dob\": \"2000-01-01T00:00:00.000Z\",\n          \"followers\": [],\n          \"following\": [],\n          \"blocked\": [],\n          \"blockedBy\": [],\n          \"tos\": true,\n          \"version\": 2,\n          \"createdAt\": \"2023-02-11T19:23:23.884Z\",\n          \"updatedAt\": \"2023-02-11T19:33:41.139Z\",\n          \"deletedAt\": null\n        },\n        \"postMedia\": [],\n        \"moderation\": {\n          \"postId\": \"zrnhnvi1owrou52\",\n          \"moderated\": true,\n          \"autoModerate\": true,\n          \"contentWarning\": false,\n          \"status\": \"AUTO_APPROVED\",\n          \"created\": \"2023-02-22T21:38:50.866Z\",\n          \"updated\": \"2023-02-22T21:39:00.937Z\",\n          \"publishAt\": null\n        },\n        \"repost\": null,\n        \"tags\": [\n          {\n            \"id\": \"d48bfc22-aca5-4c35-ba7f-8969b63ced8b\",\n            \"name\": \"automoderated\",\n            \"createdAt\": \"2023-02-22T21:39:00.995Z\"\n          },\n          {\n            \"id\": \"41d042f2-a629-4c57-8afd-b2756bf834e2\",\n            \"name\": \"published\",\n            \"createdAt\": \"2023-02-22T21:39:00.995Z\"\n          }\n        ],\n        \"_count\": {\n          \"likedBy\": 0,\n          \"comments\": 0,\n          \"postMedia\": 0,\n          \"views\": 0,\n          \"reposts\": 0\n        },\n        \"followsYou\": false,\n        \"followedByYou\": false,\n        \"reportedByYou\": false,\n        \"savedByYou\": false,\n        \"repostedByYou\": false,\n        \"viewedByYou\": false,\n        \"authoredByYou\": false\n      }\n    ],\n    \"page\": 1,\n    \"pages\": 1,\n    \"limit\": 12,\n    \"prev\": null,\n    \"next\": null\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "81eacf27-505d-4cad-a451-78fcbb3ed36c",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "acdd67e2-554a-4fc9-9871-1268babdf78e",
+    "name": "Get Taggable Profiles",
+    "url": "{{host}}{{profile-path}}/me/taggable",
+    "method": "GET",
+    "sortNum": 520000,
+    "created": "2023-03-11T04:59:24.543Z",
+    "modified": "2023-03-11T04:59:40.968Z",
     "headers": [],
     "params": [],
     "tests": []
