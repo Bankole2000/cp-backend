@@ -12,7 +12,7 @@ const fileFilter = (req: Request, file: any, cb: any) => {
   cb(null, true);
 };
 
-const fileSize = 4 * 1024 * 1024;
+const fileSize = 5242880;
 
 const storage = multer.diskStorage({
   destination: (req: Request, file: Express.Multer.File, cb: any) => {

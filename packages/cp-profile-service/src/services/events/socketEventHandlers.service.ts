@@ -37,7 +37,18 @@ const TAGGABLE_PROFILES_HANDLER = async (data: any, socket: any, io: any) => {
   io.to(socket.id).emit(socketEventTypes.TAGGABLE_PROFILES, result);
 };
 
+const GET_PROFILE_PREVIEW_HANDLER = async (data: any, socket: any, io: any) => {
+  const {
+    userId,
+    username
+  } = data;
+  const result = await profileService.getProfileByUsername(username, userId);
+  // io.to(socket.id).emit(socketEventTypes.GET_PROFILE_PREVIEW, result.data);
+  return result.data;
+};
+
 export const socketEvents = {
   [socketEventTypes.USER_CONNECTED]: USER_CONNECTED_HANDLER,
-  [socketEventTypes.TAGGABLE_PROFILES]: TAGGABLE_PROFILES_HANDLER
+  [socketEventTypes.TAGGABLE_PROFILES]: TAGGABLE_PROFILES_HANDLER,
+  [socketEventTypes.GET_PROFILE_PREVIEW]: GET_PROFILE_PREVIEW_HANDLER
 };

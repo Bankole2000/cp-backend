@@ -41,6 +41,6 @@ export const getTagPostsHandler = async (req: Request, res: Response) => {
   } else {
     page = 1;
   }
-  const sr = await ts.getTagPosts(tag, page, limit, req.user.userId);
+  const sr = await ts.getTagPosts(tag, page, limit, req.user?.userId || null);
   return res.status(sr.statusCode).send(sr);
 };

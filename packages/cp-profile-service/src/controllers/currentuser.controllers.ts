@@ -50,7 +50,13 @@ export const searchUserFollowersHandler = async (req: Request, res: Response) =>
   } else {
     page = 1;
   }
-  const sr = await ps.searchUserFollowers(req.user.userId, searchTerm as string, page, limit, req.user.userId);
+  const sr = await ps.searchUserFollowers(
+    req.user.userId,
+    searchTerm as string,
+    page,
+    limit,
+    req.user.userId
+  );
   return res.status(sr.statusCode).send(sr);
 };
 

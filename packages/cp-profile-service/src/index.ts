@@ -29,6 +29,10 @@ io.on('connection', (socket) => {
   socket.on(socketEventTypes.TAGGABLE_PROFILES, async (data) => {
     await socketEvents[socketEventTypes.TAGGABLE_PROFILES](data, socket, io);
   });
+  socket.on(socketEventTypes.GET_PROFILE_PREVIEW, async (data, callback) => {
+    const result = await socketEvents[socketEventTypes.GET_PROFILE_PREVIEW](data, socket, io);
+    callback(result);
+  });
 });
 
 // const socketHeartbeat = () => {

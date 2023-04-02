@@ -285,7 +285,7 @@
     "method": "POST",
     "sortNum": 70000,
     "created": "2023-02-17T20:32:49.599Z",
-    "modified": "2023-03-11T05:00:14.020Z",
+    "modified": "2023-03-14T00:06:11.073Z",
     "headers": [],
     "params": [],
     "body": {
@@ -312,7 +312,8 @@
         "action": "setto",
         "value": "{{refreshToken}}"
       }
-    ]
+    ],
+    "docs": "```json\n{\n  \"message\": \"Login Successful\",\n  \"success\": true,\n  \"data\": {\n    \"accessToken\": \"<accessToken>\",\n    \"refreshToken\": \"<refreshToken>\",\n    \"session\": {\n      \"sessionId\": \"b695a0ae-7251-4aa8-a984-2739a81ff5c5\",\n      \"ip\": \"::ffff:127.0.0.1\",\n      \"userAgent\": \"Thunder Client (https://www.thunderclient.com)\",\n      \"loginType\": \"EMAIL\",\n      \"userId\": \"k4i1u6w41jtnidx\",\n      \"deviceId\": \"123f4345-c37e-46f7-93d3-e58d7b4a11bd\",\n      \"isValid\": true,\n      \"createdAt\": \"2023-03-14T00:05:04.339Z\",\n      \"loggedOutAt\": \"2023-03-14T00:05:04.339Z\",\n      \"user\": {\n        \"userId\": \"k4i1u6w41jtnidx\",\n        \"email\": \"techybanky@gmail.com\",\n        \"emailVerified\": true,\n        \"phone\": null,\n        \"phoneData\": {},\n        \"phoneVerified\": false,\n        \"registeredVia\": \"EMAIL\",\n        \"username\": \"bankole2000\",\n        \"roles\": [\n          \"USER\",\n          \"SCOUT\",\n          \"AGENT\",\n          \"MODERATOR\",\n          \"MODERATION\",\n          \"SUPPORT\",\n          \"SYSTEM\",\n          \"ADMIN\",\n          \"SUPER_ADMIN\",\n          \"JURY\",\n          \"JUDGE\"\n        ],\n        \"firstname\": \"Bankole\",\n        \"lastname\": \"Esan\",\n        \"displayname\": \"Bankole\",\n        \"dob\": \"2000-01-01T00:00:00.000Z\",\n        \"gender\": \"MALE\",\n        \"tos\": true,\n        \"onboardingStatus\": [\n          \"NEWLY_REGISTERED\",\n          \"USERNAME_SET\",\n          \"PASSWORD_SET\"\n        ],\n        \"version\": 2,\n        \"createdAt\": \"2023-01-29T02:36:43.319Z\",\n        \"updatedAt\": \"2023-01-29T02:38:31.147Z\",\n        \"deletedAt\": null\n      },\n      \"device\": {\n        \"deviceId\": \"123f4345-c37e-46f7-93d3-e58d7b4a11bd\",\n        \"ip\": \"::ffff:127.0.0.1\",\n        \"active\": true,\n        \"banned\": false,\n        \"bannedByUserId\": null,\n        \"userId\": \"k4i1u6w41jtnidx\",\n        \"createdAt\": \"2023-02-15T06:38:31.692Z\",\n        \"updatedAt\": \"2023-02-18T12:03:16.884Z\"\n      }\n    },\n    \"user\": {\n      \"userId\": \"k4i1u6w41jtnidx\",\n      \"email\": \"techybanky@gmail.com\",\n      \"emailVerified\": true,\n      \"phone\": null,\n      \"phoneData\": {},\n      \"phoneVerified\": false,\n      \"registeredVia\": \"EMAIL\",\n      \"username\": \"bankole2000\",\n      \"roles\": [\n        \"USER\",\n        \"SCOUT\",\n        \"AGENT\",\n        \"MODERATOR\",\n        \"MODERATION\",\n        \"SUPPORT\",\n        \"SYSTEM\",\n        \"ADMIN\",\n        \"SUPER_ADMIN\",\n        \"JURY\",\n        \"JUDGE\"\n      ],\n      \"firstname\": \"Bankole\",\n      \"lastname\": \"Esan\",\n      \"displayname\": \"Bankole\",\n      \"dob\": \"2000-01-01T00:00:00.000Z\",\n      \"gender\": \"MALE\",\n      \"tos\": true,\n      \"onboardingStatus\": [\n        \"NEWLY_REGISTERED\",\n        \"USERNAME_SET\",\n        \"PASSWORD_SET\"\n      ],\n      \"version\": 2,\n      \"createdAt\": \"2023-01-29T02:36:43.319Z\",\n      \"updatedAt\": \"2023-01-29T02:38:31.147Z\",\n      \"deletedAt\": null\n    }\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
   },
   {
     "_id": "5d83c205-96dd-480c-8186-258f7307bb9e",
@@ -425,11 +426,11 @@
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
     "containerId": "f3594bd2-e6c6-4e33-8854-5d4c15a47386",
     "name": "Get My Devices",
-    "url": "{{host}}{{auth-path}}/currentuser/me/devices",
+    "url": "{{host}}{{auth-path}}/currentuser/devices",
     "method": "GET",
     "sortNum": 110000,
     "created": "2023-02-17T20:38:49.687Z",
-    "modified": "2023-02-17T20:39:11.102Z",
+    "modified": "2023-03-14T00:29:16.267Z",
     "headers": [],
     "params": [],
     "tests": []
@@ -1009,7 +1010,7 @@
     "method": "POST",
     "sortNum": 260000,
     "created": "2023-02-18T22:25:40.091Z",
-    "modified": "2023-02-19T22:21:46.959Z",
+    "modified": "2023-03-14T13:54:46.402Z",
     "headers": [],
     "params": [
       {
@@ -1030,7 +1031,7 @@
       "files": [
         {
           "name": "media",
-          "value": "..\\..\\..\\..\\Downloads\\Screenshot 2023-02-09 180714.png"
+          "value": "..\\..\\..\\..\\Downloads\\Screenshot 2023-01-19 033920.png"
         }
       ]
     },
@@ -1042,7 +1043,7 @@
         "value": "{{postMediaId}}"
       }
     ],
-    "docs": "Adding Post media: \nPost media can be either IMAGE (file uploaded by user), or GIF (selection from GIPHY api).\nBody should have the following properties\n- type : IMAGE / GIF,\n- imageUrl: optional, include if type is GIF,\n- gifData: optional, include if type is GIF\n"
+    "docs": "Adding Post media: \nPost media can be either IMAGE (file uploaded by user), or GIF (selection from GIPHY api).\nBody should have the following properties\n- type : IMAGE / GIF,\n- imageUrl: optional, include if type is GIF,\n- gifData: optional, include if type is GIF\n\nAdd IMAGE request\n - FormData:\n```json\ntype: IMAGE\nmedia: File\n```\nAdd IMAGE response \n```json\n{\n  \"message\": \"Post media added\",\n  \"success\": true,\n  \"data\": {\n    \"id\": \"s33iwrivehftks8\",\n    \"type\": \"IMAGE\",\n    \"imageUrl\": \"http://localhost:8080/api/files/08tzclgz3oh38j1/s33iwrivehftks8/screenshot_2023_01_19_033920_GzCw5lT03q.png\",\n    \"image\": \"screenshot_2023_01_19_033920_GzCw5lT03q.png\",\n    \"order\": 0,\n    \"data\": {},\n    \"post\": \"6xmau21h9poe2f8\",\n    \"created\": \"2023-03-14T11:41:12.065Z\",\n    \"updated\": \"2023-03-14T11:41:12.065Z\"\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```\nAdd Gif Request\n- Json Body:\n```json\n{\n  type: 'GIF',\n  id: gif.id\n  data: gif.images.original\n}\n```\n"
   },
   {
     "_id": "48f30fd2-24f9-4b4b-8b86-9f28ae0e1323",
@@ -1107,11 +1108,11 @@
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
     "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
     "name": "Publish Post",
-    "url": "{{host}}{{post-path}}/posts/{postId}/publish?contentWarning=false",
+    "url": "{{host}}{{post-path}}/posts/{postId}/publish?autoModerate=true",
     "method": "GET",
     "sortNum": 310000,
     "created": "2023-02-18T22:29:51.003Z",
-    "modified": "2023-02-23T00:01:17.880Z",
+    "modified": "2023-03-24T16:41:48.466Z",
     "headers": [],
     "params": [
       {
@@ -1127,18 +1128,24 @@
       },
       {
         "name": "autoModerate",
-        "value": "false",
-        "isDisabled": true,
+        "value": "true",
         "isPath": false
       },
       {
         "name": "contentWarning",
         "value": "false",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "caption",
+        "value": "😀",
+        "isDisabled": true,
         "isPath": false
       }
     ],
     "tests": [],
-    "docs": "Query parameter `publishAt` , sets when post should be published\n\nShould create post publishing job to be executed at set time."
+    "docs": "Query parameter `publishAt` , sets when post should be published\n\nShould create post publishing job to be executed at set time.\n\nSuccess Reponse\n\n```json\n{\n  \"message\": \"Post Published\",\n  \"success\": true,\n  \"data\": {\n    \"postId\": \"unnclu1xkg7d7ux\",\n    \"moderated\": false,\n    \"autoModerate\": true,\n    \"contentWarning\": false,\n    \"status\": \"PENDING\",\n    \"created\": \"2023-03-13T23:54:16.866Z\",\n    \"updated\": \"2023-03-13T23:54:16.866Z\",\n    \"publishAt\": null,\n    \"post\": {\n      \"id\": \"unnclu1xkg7d7ux\",\n      \"caption\": \"😀\",\n      \"published\": false,\n      \"allowComments\": true,\n      \"showLikesCount\": true,\n      \"pinned\": false,\n      \"createdBy\": \"0c5725m57h2cknz\",\n      \"urls\": [],\n      \"repostId\": null,\n      \"version\": 0,\n      \"created\": \"2023-03-10T21:29:33.805Z\",\n      \"updated\": \"2023-03-13T23:54:16.850Z\",\n      \"deletedAt\": null,\n      \"postMedia\": [],\n      \"tags\": [],\n      \"_count\": {\n        \"comments\": 0,\n        \"likedBy\": 0,\n        \"postMedia\": 0,\n        \"tags\": 0,\n        \"views\": 0\n      }\n    },\n    \"moderation\": [],\n    \"reports\": []\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```\n\nError response\n```json\n{\n  \"message\": \"Post must have either caption or at least 1 media element\",\n  \"success\": false,\n  \"data\": null,\n  \"errors\": \"POST_SERVICE_POST_HAS_NO_CONTENT\",\n  \"error\": \"Post content empty\",\n  \"fix\": \"Please add a caption or an image/media before publishing\",\n  \"statusCode\": 400\n}\n```"
   },
   {
     "_id": "6d118602-e7ad-4261-b5e3-35234b0078d7",
@@ -1195,13 +1202,13 @@
   {
     "_id": "4fc28932-0a7b-4aed-9b2d-d87b8a64a1f5",
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
-    "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
-    "name": "Like / Unlike Post",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Unlike Post",
     "url": "{{host}}{{post-path}}/posts/{postId}/likes",
-    "method": "POST",
-    "sortNum": 320000,
+    "method": "DELETE",
+    "sortNum": 270000,
     "created": "2023-02-18T23:53:42.185Z",
-    "modified": "2023-02-18T23:55:39.547Z",
+    "modified": "2023-03-24T16:02:51.259Z",
     "headers": [],
     "params": [
       {
@@ -1237,17 +1244,22 @@
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
     "containerId": "e01d5cab-8df9-49b6-8433-ab2077c04972",
     "name": "Get Post Comments",
-    "url": "{{host}}{{post-path}}/posts/{postId}/comments",
+    "url": "{{host}}{{post-path}}/posts/{postId}/comments?sort=latest",
     "method": "GET",
     "sortNum": 330000,
     "created": "2023-02-19T02:05:09.012Z",
-    "modified": "2023-02-19T02:05:38.370Z",
+    "modified": "2023-04-01T20:57:50.827Z",
     "headers": [],
     "params": [
       {
         "name": "postId",
-        "value": "{{postId}}",
+        "value": "6xmau21h9poe2f8",
         "isPath": true
+      },
+      {
+        "name": "sort",
+        "value": "latest",
+        "isPath": false
       }
     ],
     "tests": []
@@ -1261,7 +1273,7 @@
     "method": "POST",
     "sortNum": 340000,
     "created": "2023-02-19T02:05:47.818Z",
-    "modified": "2023-02-19T02:10:29.012Z",
+    "modified": "2023-03-30T04:41:48.450Z",
     "headers": [],
     "params": [
       {
@@ -1270,6 +1282,11 @@
         "isPath": true
       }
     ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"content\": \"  \"\n}",
+      "form": []
+    },
     "tests": [
       {
         "type": "set-env-var",
@@ -1346,12 +1363,12 @@
     "method": "GET",
     "sortNum": 370000,
     "created": "2023-02-19T13:44:06.689Z",
-    "modified": "2023-02-19T13:44:28.486Z",
+    "modified": "2023-04-01T20:14:51.698Z",
     "headers": [],
     "params": [
       {
         "name": "postId",
-        "value": "{{postId}}",
+        "value": "6xmau21h9poe2f8",
         "isPath": true
       }
     ],
@@ -1419,21 +1436,21 @@
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
     "containerId": "8d24ee09-118a-475e-93ff-e3b0dfb8134f",
     "name": "Get Queue",
-    "url": "{{host}}{{post-path}}/moderation/posts?page=2&limit=5",
+    "url": "{{host}}{{post-path}}/moderation/posts?page=1&limit=10",
     "method": "GET",
     "sortNum": 390000,
     "created": "2023-02-23T09:30:07.885Z",
-    "modified": "2023-02-23T10:24:39.680Z",
+    "modified": "2023-03-14T00:26:15.376Z",
     "headers": [],
     "params": [
       {
         "name": "page",
-        "value": "2",
+        "value": "1",
         "isPath": false
       },
       {
         "name": "limit",
-        "value": "5",
+        "value": "10",
         "isPath": false
       }
     ],
@@ -1785,7 +1802,7 @@
     "method": "GET",
     "sortNum": 490000,
     "created": "2023-03-09T00:24:01.218Z",
-    "modified": "2023-03-09T02:08:01.177Z",
+    "modified": "2023-04-01T20:14:02.690Z",
     "headers": [],
     "params": [
       {
@@ -1844,6 +1861,207 @@
     "modified": "2023-03-11T04:59:40.968Z",
     "headers": [],
     "params": [],
+    "tests": []
+  },
+  {
+    "_id": "2ad93233-2b60-4b7e-81c5-533d44ebb34c",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "769b7fe7-fbc5-4b14-9978-5134801bfbf9",
+    "name": "Get All Posts by user",
+    "url": "{{host}}{{post-path}}/me/posts/all",
+    "method": "GET",
+    "sortNum": 530000,
+    "created": "2023-03-14T00:21:12.772Z",
+    "modified": "2023-03-14T00:21:40.267Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "40703254-6aba-48d7-b3fd-9e4a9623669a",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Like Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/likes",
+    "method": "POST",
+    "sortNum": 540000,
+    "created": "2023-03-24T15:59:49.668Z",
+    "modified": "2023-03-24T22:03:43.177Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "0ppheg5tl6f4auo",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "7fbb5c35-e857-4880-826c-c648395c2cd9",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Get Post Likes",
+    "url": "{{host}}{{post-path}}/posts/{postId}/likes",
+    "method": "GET",
+    "sortNum": 550000,
+    "created": "2023-03-24T16:03:31.586Z",
+    "modified": "2023-03-24T16:04:14.012Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "9290c64b-6a30-46a8-93eb-6bbcee865304",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Get Quote Repost",
+    "url": "{{host}}{{post-path}}/posts/{postId}/reposts",
+    "method": "GET",
+    "sortNum": 560000,
+    "created": "2023-03-24T16:21:22.034Z",
+    "modified": "2023-03-25T12:40:54.062Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "6xmau21h9poe2f8",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "acdeb520-1bb1-4aba-a09e-6f388aabea46",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Quote Post",
+    "url": "{{host}}{{post-path}}/posts/create?repostId={{postId}}",
+    "method": "GET",
+    "sortNum": 570000,
+    "created": "2023-03-24T16:21:42.910Z",
+    "modified": "2023-03-24T16:36:53.905Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "repostId",
+        "value": "{{postId}}",
+        "isPath": false
+      }
+    ],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.id",
+        "action": "setto",
+        "value": "{{postId}}"
+      }
+    ],
+    "docs": "```json\n{\n  \"message\": \"New Post created\",\n  \"success\": true,\n  \"data\": {\n    \"id\": \"o9u3poggsczid9j\",\n    \"caption\": \"\",\n    \"published\": false,\n    \"allowComments\": true,\n    \"showLikesCount\": true,\n    \"pinned\": false,\n    \"createdBy\": \"k4i1u6w41jtnidx\",\n    \"urls\": [],\n    \"repostId\": \"6xmau21h9poe2f8\",\n    \"version\": 0,\n    \"created\": \"2023-03-24T16:36:08.744Z\",\n    \"updated\": \"2023-03-24T16:36:08.744Z\",\n    \"deletedAt\": null,\n    \"postMedia\": [],\n    \"repost\": {\n      \"id\": \"6xmau21h9poe2f8\",\n      \"caption\": \"\",\n      \"published\": false,\n      \"allowComments\": true,\n      \"showLikesCount\": true,\n      \"pinned\": false,\n      \"createdBy\": \"k4i1u6w41jtnidx\",\n      \"urls\": [],\n      \"repostId\": null,\n      \"version\": 0,\n      \"created\": \"2023-03-14T11:40:49.240Z\",\n      \"updated\": \"2023-03-14T11:40:49.240Z\",\n      \"deletedAt\": null,\n      \"postMedia\": [\n        {\n          \"id\": \"s33iwrivehftks8\",\n          \"type\": \"IMAGE\",\n          \"imageUrl\": \"http://localhost:8080/api/files/08tzclgz3oh38j1/s33iwrivehftks8/screenshot_2023_01_19_033920_GzCw5lT03q.png\",\n          \"image\": \"screenshot_2023_01_19_033920_GzCw5lT03q.png\",\n          \"order\": 0,\n          \"data\": {},\n          \"post\": \"6xmau21h9poe2f8\",\n          \"created\": \"2023-03-14T11:41:12.065Z\",\n          \"updated\": \"2023-03-14T11:41:12.065Z\"\n        }\n      ],\n      \"createdByData\": {\n        \"userId\": \"k4i1u6w41jtnidx\",\n        \"email\": \"techybanky@gmail.com\",\n        \"emailVerified\": true,\n        \"phone\": null,\n        \"phoneData\": {},\n        \"phoneVerified\": false,\n        \"registeredVia\": \"EMAIL\",\n        \"username\": \"bankole2000\",\n        \"gender\": \"MALE\",\n        \"roles\": [\n          \"USER\",\n          \"SCOUT\",\n          \"AGENT\",\n          \"MODERATOR\",\n          \"MODERATION\",\n          \"SUPPORT\",\n          \"SYSTEM\",\n          \"ADMIN\",\n          \"SUPER_ADMIN\",\n          \"JURY\",\n          \"JUDGE\"\n        ],\n        \"firstname\": \"Bankole\",\n        \"lastname\": \"Esan\",\n        \"displayname\": \"Bankole\",\n        \"dob\": \"2000-01-01T00:00:00.000Z\",\n        \"followers\": [],\n        \"following\": [],\n        \"blocked\": [],\n        \"blockedBy\": [],\n        \"tos\": true,\n        \"version\": 2,\n        \"createdAt\": \"2023-02-11T19:23:23.884Z\",\n        \"updatedAt\": \"2023-02-11T19:33:41.139Z\",\n        \"deletedAt\": null\n      }\n    },\n    \"moderation\": null\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "44d18c55-1179-422f-bc00-4a0c6183ac8f",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
+    "name": "Publish Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/publish",
+    "method": "POST",
+    "sortNum": 312500,
+    "created": "2023-03-24T19:00:30.357Z",
+    "modified": "2023-03-25T12:43:05.043Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "6xmau21h9poe2f8",
+        "isPath": true
+      },
+      {
+        "name": "publishAt",
+        "value": "2023-02-21 15:32:00",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "contentWarning",
+        "value": "false",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "caption",
+        "value": "😀",
+        "isDisabled": true,
+        "isPath": false
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"caption\": \"This is a repost\",\n  \"autoModerate\": true,\n  \"contentWarning\": false\n}",
+      "form": []
+    },
+    "tests": [],
+    "docs": "Query parameter `publishAt` , sets when post should be published\n\nShould create post publishing job to be executed at set time.\n\nSuccess Reponse\n\n```json\n{\n  \"message\": \"Post Published\",\n  \"success\": true,\n  \"data\": {\n    \"postId\": \"unnclu1xkg7d7ux\",\n    \"moderated\": false,\n    \"autoModerate\": true,\n    \"contentWarning\": false,\n    \"status\": \"PENDING\",\n    \"created\": \"2023-03-13T23:54:16.866Z\",\n    \"updated\": \"2023-03-13T23:54:16.866Z\",\n    \"publishAt\": null,\n    \"post\": {\n      \"id\": \"unnclu1xkg7d7ux\",\n      \"caption\": \"😀\",\n      \"published\": false,\n      \"allowComments\": true,\n      \"showLikesCount\": true,\n      \"pinned\": false,\n      \"createdBy\": \"0c5725m57h2cknz\",\n      \"urls\": [],\n      \"repostId\": null,\n      \"version\": 0,\n      \"created\": \"2023-03-10T21:29:33.805Z\",\n      \"updated\": \"2023-03-13T23:54:16.850Z\",\n      \"deletedAt\": null,\n      \"postMedia\": [],\n      \"tags\": [],\n      \"_count\": {\n        \"comments\": 0,\n        \"likedBy\": 0,\n        \"postMedia\": 0,\n        \"tags\": 0,\n        \"views\": 0\n      }\n    },\n    \"moderation\": [],\n    \"reports\": []\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```\n\nError response\n```json\n{\n  \"message\": \"Post must have either caption or at least 1 media element\",\n  \"success\": false,\n  \"data\": null,\n  \"errors\": \"POST_SERVICE_POST_HAS_NO_CONTENT\",\n  \"error\": \"Post content empty\",\n  \"fix\": \"Please add a caption or an image/media before publishing\",\n  \"statusCode\": 400\n}\n```"
+  },
+  {
+    "_id": "9a068dc2-f333-4caf-acbf-078eb63839ea",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Repost Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/reposts",
+    "method": "POST",
+    "sortNum": 580000,
+    "created": "2023-03-25T12:44:37.039Z",
+    "modified": "2023-03-25T13:03:31.842Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": [],
+    "docs": "```json\n{\n  \"message\": \"You have reposted this post before\",\n  \"success\": true,\n  \"data\": {\n    \"id\": \"061bdfff-dba3-4539-b31b-2ddc094b55b7\",\n    \"caption\": null,\n    \"published\": true,\n    \"allowComments\": true,\n    \"showLikesCount\": true,\n    \"pinned\": false,\n    \"createdBy\": \"k4i1u6w41jtnidx\",\n    \"urls\": [],\n    \"repostId\": \"o9u3poggsczid9j\",\n    \"version\": 1,\n    \"created\": \"2023-03-25T13:00:03.634Z\",\n    \"updated\": \"2023-03-25T13:00:13.893Z\",\n    \"deletedAt\": null\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "9730b7f6-8fa0-4c1e-bd0b-631ab1ddaa86",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "109cb93c-db19-45a5-87e0-1790c503c2e6",
+    "name": "Get Latest Published Posts",
+    "url": "{{host}}{{post-path}}/posts",
+    "method": "GET",
+    "sortNum": 590000,
+    "created": "2023-03-26T09:45:54.754Z",
+    "modified": "2023-03-26T09:46:09.211Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "85361d77-0a86-4edd-963a-a84af3b63817",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "e01d5cab-8df9-49b6-8433-ab2077c04972",
+    "name": "Get Post Comments Copy",
+    "url": "{{host}}{{post-path}}/posts/{postId}/comments",
+    "method": "GET",
+    "sortNum": 335000,
+    "created": "2023-03-29T17:37:18.259Z",
+    "modified": "2023-03-29T17:37:18.259Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "o9u3poggsczid9j",
+        "isPath": true
+      }
+    ],
     "tests": []
   }
 ]

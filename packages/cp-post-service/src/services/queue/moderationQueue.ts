@@ -1,5 +1,6 @@
 import { getIO, ServiceEvent, contentModerationRoles } from '@cribplug/common';
 import BullQueue, { Job, JobOptions } from 'bull';
+import { socketEventTypes } from '../../schema/socket.schema';
 import {
   getChannel,
   getRedis,
@@ -25,6 +26,21 @@ export const publishingQueue = new BullQueue(`${config.redisConfig.scope}:post:p
   redis: redisUrl
 });
 
+export const likeQueue = new BullQueue(`${config.redisConfig.scope}:post:liked`, {
+  redis: redisUrl
+});
+
+export const commentQueue = new BullQueue(`${config.redisConfig.scope}:comment:publishing`, {
+  redis: redisUrl,
+  settings: {
+    maxStalledCount: 0,
+  }
+});
+
+export const unlikeQueue = new BullQueue(`${config.redisConfig.scope}:post:unliked`, {
+  redis: redisUrl
+});
+
 export const addPostToModerationQueue = async (postData: any, options: JobOptions = {}) => {
   const { data: moderators } = await userService.getUsersByRoles(contentModerationRoles);
   console.log('here');
@@ -40,6 +56,34 @@ export const addPostToModerationQueue = async (postData: any, options: JobOption
     caption: postData.post.caption,
     media: postData.post.postMedia.length
   });
+};
+
+export const addCommentToPublishingQueue = async (commentData: any, options: JobOptions = {}) => {
+  await commentQueue.add('Comment-Publishing', commentData, options);
+};
+
+export const addCommentToDeleteQueue = async (commentData: any, options: JobOptions = {}) => {
+  commentQueue.add('Comment-Deleting', commentData, options);
+};
+
+export const addCommentToReplyQueue = async (commentData: any, options: JobOptions = {}) => {
+  commentQueue.add('Comment-Reply-Publishing', commentData, options);
+};
+
+export const addToCommentLikeQueue = async (commentData: any, options: JobOptions = {}) => {
+  commentQueue.add('Comment-Liked', commentData, options);
+};
+
+export const addToCommentUnlikeQueue = async (commentData: any, options: JobOptions = {}) => {
+  commentQueue.add('Comment-Unliked', commentData, options);
+};
+
+export const addToPostLikeQueue = (likeData: string, options: JobOptions = {}) => {
+  likeQueue.add('Post-Liked', likeData, options);
+};
+
+export const addToPostUnlikeQueue = (likeData: string, options: JobOptions = {}) => {
+  likeQueue.add('Post-Unliked', likeData, options);
 };
 
 export const addToPublishingQueue = (postData: string, options: JobOptions = {}) => {
@@ -138,7 +182,61 @@ export const publishPost = async (job: Job) => {
   const serviceQueues = await getServiceQueues(redis, scope || '');
   const se = new ServiceEvent('POST_PUBLISHED', published.data, null, null, serviceName, serviceQueues);
   const result = await sendToServiceQueues(channel, se, serviceQueues);
+  const post = await postService.getPostDetails(published.data.id, published.data.createdBy);
+  getIO().to(published.data.createdBy).emit(socketEventTypes.POST_PUBLISHED, post.data);
   job.log('Post Published');
+  job.progress(100);
+  await job.moveToCompleted();
+  await job.remove();
+  console.log(result);
+};
+
+export const likedPost = async (job: Job) => {
+  console.log({ job });
+  const redis = getRedis();
+  const channel = getChannel();
+  job.progress(50);
+  await job.log('Marking post as liked by user');
+  job.progress(75);
+  job.log('Publishing Post like');
+  getIO().emit(socketEventTypes.POST_LIKED, job.data);
+  const serviceQueues = await getServiceQueues(redis, scope || '');
+  const se = new ServiceEvent(
+    socketEventTypes.POST_LIKED,
+    job.data,
+    null,
+    null,
+    serviceName,
+    serviceQueues
+  );
+  const result = await sendToServiceQueues(channel, se, serviceQueues);
+  job.log('Post like Published');
+  job.progress(100);
+  await job.moveToCompleted();
+  await job.remove();
+  console.log(result);
+};
+
+export const unlikedPost = async (job: Job) => {
+  console.log({ job });
+  const redis = getRedis();
+  const channel = getChannel();
+  job.progress(50);
+  await job.log('Marking post as unliked by user');
+  job.progress(75);
+  job.log('Publishing Post unlike');
+  getIO().emit(socketEventTypes.POST_UNLIKED, job.data);
+  const serviceQueues = await getServiceQueues(redis, scope || '');
+  const se = new ServiceEvent(
+    socketEventTypes.POST_UNLIKED,
+    job.data,
+    null,
+    null,
+    serviceName,
+    serviceQueues
+  );
+  const result = await sendToServiceQueues(channel, se, serviceQueues);
+  job.log('Post unlike Published');
   job.progress(100);
   await job.moveToCompleted();
   await job.remove();
@@ -150,6 +248,57 @@ export const rejectPost = async (job: Job) => {
   console.log('Post rejected');
 };
 
+export const publishComment = async (job: Job) => {
+  console.log({ job });
+  const redis = getRedis();
+  const channel = getChannel();
+  const io = getIO();
+  job.progress(25);
+  await job.log('Publishing comment');
+  const serviceQueues = await getServiceQueues(redis, scope || '');
+  let se: ServiceEvent;
+  if (!job.data.parentCommentId) {
+    se = new ServiceEvent('COMMENT_PUBLISHED', job.data, null, null, serviceName, serviceQueues);
+  } else {
+    se = new ServiceEvent('COMMENT_REPLY_PUBLISHED', job.data, null, null, serviceName, serviceQueues);
+  }
+  const result = await sendToServiceQueues(channel, se, serviceQueues);
+  if (!job.data.parentCommentId) {
+    io.in(job.data.postId).emit(socketEventTypes.COMMENT_PUBLISHED, job.data);
+  } else {
+    io.in(job.data.postId).emit(socketEventTypes.COMMENT_REPLY_PUBLISHED, job.data);
+  }
+  console.log({ result, comment: job.data });
+  job.progress(100);
+  await job.moveToCompleted();
+  // setTimeout(async () => {
+  //   await job.remove();
+  // }, 200000);
+};
+
+export const deleteComment = async (job: Job) => {
+  console.log({ job });
+};
+
+export const publishCommentReply = async (job: Job) => {
+  console.log({ job });
+};
+
+export const likeComment = async (job: Job) => {
+  console.log({ job });
+};
+
+export const unlikeComment = async (job: Job) => {
+  console.log({ job });
+};
+
 moderationQueue.process('Post-Moderation', moderatePost);
 publishingQueue.process('Post-Publishing', publishPost);
 publishingQueue.process('Post-Rejection', rejectPost);
+likeQueue.process('Post-Liked', likedPost);
+likeQueue.process('Post-Unliked', unlikedPost);
+commentQueue.process('Comment-Publishing', publishComment);
+commentQueue.process('Comment-Deleting', deleteComment);
+commentQueue.process('Comment-Reply-Publishing', publishCommentReply);
+commentQueue.process('Comment-Liked', likeComment);
+commentQueue.process('Comment-Unliked', unlikeComment);

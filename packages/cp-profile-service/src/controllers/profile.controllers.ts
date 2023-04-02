@@ -33,10 +33,11 @@ export const getCurrentUserProfile = async (req: Request, res: Response) => {
 };
 
 export const getProfileByUsername = async (req: Request, res: Response) => {
+  console.log('Reached here - line 36');
   const { username } = req.params;
   const sr = await userService.findUserByUsername(username);
   if (sr.success) {
-    const user = await profileService.getProfileByUserId(sr.data.userId, req.user.userId);
+    const user = await profileService.getProfileByUserId(sr.data.userId, req.user?.userId || null);
     return res.status(user.statusCode).send(user);
   }
   await logResponse(req, sr);
@@ -45,7 +46,7 @@ export const getProfileByUsername = async (req: Request, res: Response) => {
 
 export const getProfileByUserId = async (req: Request, res: Response) => {
   const { userId } = req.params;
-  const sr = await profileService.getProfileByUserId(userId, req.user.userId);
+  const sr = await profileService.getProfileByUserId(userId, req.user?.userId || null);
   await logResponse(req, sr);
   return res.status(sr.statusCode).send(sr);
 };

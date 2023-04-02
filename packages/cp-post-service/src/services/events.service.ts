@@ -25,13 +25,23 @@ export const serviceEvents = async (channel: Channel) => {
   }
 };
 
-export const sendToServiceQueues = async (channel: Channel, message: any, services: string[] = []) => {
+export const sendToServiceQueues = async (
+  channel: Channel,
+  message: any,
+  services: string[] = []
+) => {
   const promises: any[] = [];
   services.forEach((service) => {
-    promises.push(channel.sendToQueue(service, Buffer.from(JSON.stringify(message)), { persistent: true }));
+    promises.push(
+      channel.sendToQueue(
+        service,
+        Buffer.from(JSON.stringify(message)),
+        { persistent: true }
+      )
+    );
   });
   const results = await Promise.all(promises);
-  console.log(results);
+  return results;
 };
 
 export const getServiceQueues = async (redis: RedisConnection, scope: string, services: string[] = []) => {

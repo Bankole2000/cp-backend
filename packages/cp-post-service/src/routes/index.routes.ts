@@ -6,7 +6,7 @@ import {
   BullMQAdapter
 } from '@bull-board/express';
 import { contentModerationRoles } from '@cribplug/common';
-import { moderationQueue, publishingQueue } from '../services/queue/moderationQueue';
+import { moderationQueue, publishingQueue, commentQueue } from '../services/queue/moderationQueue';
 // import { currentUserRoutes } from './currentuser.routes';
 import { dataRoutes } from './data.routes';
 import { testRoutes } from './test.routes';
@@ -26,7 +26,11 @@ const serverAdapter = new ExpressAdapter();
 serverAdapter.setBasePath(bullAdminPath);
 
 createBullBoard({
-  queues: [new BullAdapter(moderationQueue), new BullAdapter(publishingQueue)],
+  queues: [
+    new BullAdapter(moderationQueue),
+    new BullAdapter(publishingQueue),
+    new BullAdapter(commentQueue)
+  ],
   serverAdapter
 });
 

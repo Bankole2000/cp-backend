@@ -38,6 +38,23 @@ export const checkPostHasMedia = async (req: Request, res: Response, next: NextF
   return next();
 };
 
+export const checkPostIsNotRetweet = async (req: Request, res: Response, next: NextFunction) => {
+  const { postId } = req.params;
+  const pExists = await ps.getPostById(postId);
+  if (!pExists.success) {
+    return res.status(pExists.statusCode).send(pExists);
+  }
+  if (!pExists.data.published) {
+    const sr = new ServiceResponse('This post is not published', pExists.data, false, 404, 'Error - post not published', 'POST_SERVICE_ERROR_POST_NOT_PUBLISHED', 'Ensure post is published first');
+    return res.status(sr.statusCode).send(sr);
+  }
+  if (!pExists.data.caption && !pExists.data.postMedia.length) {
+    const sr = new ServiceResponse('This post is a retweet', pExists.data, false, 400, 'Post is a retweet', 'POST_SERVICE_ERROR_POST_IS_RETWEET', 'Try performing this action on the original post');
+    return res.status(sr.statusCode).send(sr);
+  }
+  return next();
+};
+
 export const checkUserExists = async (req: Request, res: Response, next: NextFunction) => {
   const { username } = req.params;
   const uExists = await us.findUserByUsername(username);
@@ -61,6 +78,19 @@ export const checkUserBlocked = async (req: Request, res: Response, next: NextFu
       return res.status(sr.statusCode).send(sr);
     }
     return next();
+  }
+  return next();
+};
+
+export const checkPostExists = async (req: Request, res: Response, next: NextFunction) => {
+  const { postId } = req.params;
+  const pExists = await ps.getPostById(postId);
+  if (!pExists.success) {
+    return res.status(pExists.statusCode).send(pExists);
+  }
+  if (!pExists.data.published) {
+    const sr = new ServiceResponse('This post is not published', pExists.data, false, 404, 'Error - post not published', 'POST_SERVICE_ERROR_POST_NOT_PUBLISHED', 'Ensure post is published first');
+    return res.status(sr.statusCode).send(sr);
   }
   return next();
 };

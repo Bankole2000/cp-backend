@@ -24,7 +24,7 @@ export const getUserFollowershandler = async (req: Request, res: Response) => {
   } else {
     page = 1;
   }
-  const sr = await ps.getUserFollowers(uExists.data.userId, page, limit, req.user.userId);
+  const sr = await ps.getUserFollowers(uExists.data.userId, page, limit, req.user?.userId || null);
   return res.status(sr.statusCode).send(sr);
 };
 
@@ -64,7 +64,7 @@ export const searchUserFollowersHandler = async (req: Request, res: Response) =>
     searchTerm as string,
     page,
     limit,
-    req.user.userId
+    req.user?.userId || null
   );
   return res.status(sr.statusCode).send(sr);
 };
@@ -87,7 +87,7 @@ export const getUserFollowingHandler = async (req: Request, res: Response) => {
   } else {
     page = 1;
   }
-  const sr = await ps.getUserFollowing(uExists.data.userId, page, limit, req.user.userId);
+  const sr = await ps.getUserFollowing(uExists.data.userId, page, limit, req.user?.userId || null);
   return res.status(sr.statusCode).send(sr);
 };
 
@@ -127,7 +127,7 @@ export const searchUserFollowingHandler = async (req: Request, res: Response) =>
     searchTerm as string,
     page,
     limit,
-    req.user.userId
+    req.user?.userId || null
   );
   return res.status(sr.statusCode).send(sr);
 };

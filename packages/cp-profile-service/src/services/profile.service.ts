@@ -1457,4 +1457,62 @@ export default class ProfileDBService {
       return new ServiceResponse('Error getting taggable profiles', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
+
+  async getProfileByUsername(username: string, loggedInUserId: string | null = null) {
+    try {
+      const profile = await this.prisma.profile.findUnique({
+        where: {
+          username
+        },
+        include: {
+          profileSettings: true,
+          _count: {
+            select: {
+              followers: true,
+              following: true,
+            }
+          }
+        }
+      });
+      let data;
+      if (!profile) {
+        return new ServiceResponse('User profile not found', profile, false, 404, 'User profile not found', 'PROFILE_SERVICE_PROFILE_NOT_FOUND', 'Check logs and database');
+      }
+      if (loggedInUserId) {
+        const {
+          followingIds,
+          followerIds,
+          sentRequestIds,
+          receivedRequestIds,
+          blockedYouIds,
+          blockedByYouIds
+        } = await this.getFollowingIds(loggedInUserId);
+        const followsYou = followingIds.length ? followingIds.includes(profile.userId) : false;
+        const followedByYou = followerIds.length ? followerIds.includes(profile.userId) : false;
+        const sentRequest = sentRequestIds.length ? sentRequestIds.includes(profile.userId) : false;
+        const recievedRequest = receivedRequestIds.length
+          ? receivedRequestIds.includes(profile.userId) : false;
+        const blockedYou = blockedYouIds.length ? blockedYouIds.includes(profile.userId) : false;
+        const blockedByYou = blockedByYouIds.length
+          ? blockedByYouIds.includes(profile.userId) : false;
+        const isYou = profile.userId === loggedInUserId;
+        data = {
+          ...profile,
+          followsYou,
+          followedByYou,
+          sentRequest,
+          recievedRequest,
+          blockedYou,
+          blockedByYou,
+          isYou
+        };
+      } else {
+        data = profile;
+      }
+      return new ServiceResponse('User profile', data, true, 200, null, null, null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting profile', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
 }

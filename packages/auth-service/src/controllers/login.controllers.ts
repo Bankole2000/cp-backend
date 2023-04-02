@@ -375,7 +375,8 @@ export const usernameLoginHandler = async (req: Request, res: Response) => {
   // #region STEP: Check if device is trusted
   const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress || null;
   const userAgent = req.headers['user-agent'];
-  const deviceApproved = await userService.checkIfDeviceIsApproved(userExists.data.userId, ip as string);
+  const deviceApproved = await userService
+    .checkIfDeviceIsApproved(userExists.data.userId, ip as string);
   if (!deviceApproved.success) {
     // #region STEP: If device not trusted - Send email to user to approve device
     const deviceData = { deviceData: req.useragent, userId: userExists.data.userId, ip: req.headers['x-forwarded-for'] || req.socket.remoteAddress || null };

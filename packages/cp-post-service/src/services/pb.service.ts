@@ -87,6 +87,22 @@ export default class PBService {
     }
   }
 
+  async addPostGif(mediaData: any) {
+    console.log('reached here 91');
+    try {
+      const res = await this.pb.collection('postMedia').create(mediaData);
+      console.log('Reached here 94');
+      console.log({ res });
+      if (res.id) {
+        return new ServiceResponse('Post gif added', res, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error adding post gif', res, false, res.code || 400, res.message || 'Error adding post gif', res || 'POST_SERVICE_POCKETBASE_ERROR_UPLOADING_POST_GIF', 'Check logs and database');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error adding post gif', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async generateImageUrl(record: any, filename: string) {
     return this.pb.getFileUrl(record, filename);
   }

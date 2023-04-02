@@ -3,8 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { ServiceResponse } from '@cribplug/common';
 import { config } from '../utils/config';
 import { logResponse } from '../middleware/logRequests';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 type Model = keyof Omit<PrismaClient, 'disconnect' | 'connect' | 'executeRaw' | 'queryRaw' | 'transaction' | 'on'>;
 
