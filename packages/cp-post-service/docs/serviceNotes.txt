@@ -1,0 +1,12 @@
+Moderation actions
+Approved (if pending)
+Rejected (if pending)
+Auto_moderated (if auto)
+none (if already published)
+unpublish (if already published)
+flagged (if already)
+
+
+SYSTEM SETTINGS
+
+Default auto moderation time

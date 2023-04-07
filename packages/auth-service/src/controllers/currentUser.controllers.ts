@@ -37,3 +37,22 @@ export const deleteOwnAccountHandler = async (req: Request, res: Response) => {
   await logResponse(req, sr);
   return res.status(sr.statusCode).send(sr);
 };
+
+export const getUserDevicesHandler = async (req: Request, res: Response) => {
+  const sr = await userService.getUserDevices(req.user.userId);
+  return res.status(sr.statusCode).send(sr);
+};
+
+export const deleteUserDeviceHandler = async (req: Request, res: Response) => {
+  const { deviceId } = req.params;
+  const deviceExists = await userService.findDeviceById(deviceId);
+  if (!deviceExists.success) {
+    return res.status(deviceExists.statusCode).send(deviceExists);
+  }
+  if (deviceExists.data.userId !== req.user.userId) {
+    const sr = new ServiceResponse('You do not own this device', null, false, 403, 'Unauthorized', 'AUTH_SERVICE_USER_DEVICE_MISMATCH', 'Check that you have the right roles/permission');
+    return res.status(sr.statusCode).send(sr);
+  }
+  const sr = await userService.deleteDeviceById(deviceId);
+  return res.status(sr.statusCode).send(sr);
+};

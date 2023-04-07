@@ -1,5 +1,6 @@
 import express, { Express } from 'express';
 import * as useragent from 'express-useragent';
+import cookieParser from 'cookie-parser';
 import cors from 'cors';
 import { logRequest } from './middleware/logRequests';
 // import { errorHandler } from './middleware/errorHandler';
@@ -7,6 +8,7 @@ import { logRequest } from './middleware/logRequests';
 const app: Express = express();
 
 app.use(express.json());
+app.use(cookieParser());
 app.use(useragent.express());
 app.use(cors());
 app.use(logRequest);

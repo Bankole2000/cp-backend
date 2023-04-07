@@ -2,6 +2,7 @@ import { PrismaClient } from '@prisma/client';
 import {
   getDriver, Driver, ServiceResponse, RedisConnection
 } from '@cribplug/common';
+import prisma from '../lib/prisma';
 
 export default class UserDBService {
   prisma: PrismaClient;
@@ -9,7 +10,7 @@ export default class UserDBService {
   driver: Driver;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prisma = prisma;
     this.driver = getDriver();
   }
 
@@ -81,10 +82,15 @@ export default class UserDBService {
   }
 
   static async getUserSession(redis: RedisConnection, scope: string, sessionId: string) {
-    await redis.client.connect();
-    const session = await redis.client.hGet(`${scope}-logged-in`, sessionId);
-    await redis.client.disconnect();
-    return session;
+    try {
+      await redis.client.connect();
+      const session = await redis.client.hGet(`${scope}-logged-in`, sessionId);
+      await redis.client.disconnect();
+      return session;
+    } catch (error: any) {
+      console.log({ error });
+      return null;
+    }
   }
 
   async purgeUserAccount(userId: string) {

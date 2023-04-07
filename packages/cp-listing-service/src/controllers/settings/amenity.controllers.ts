@@ -37,7 +37,7 @@ export const createAmenityHandler = async (req: Request, res: Response) => {
   if (amenity.success) {
     db.getCollection('amenities').insert(amenity.data);
     db.saveDatabase();
-    await deleteCache(req.redis, [`${basePath}/settings/amenities`]);
+    await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/`]);
   }
   return res.status(amenity.statusCode).json(amenity);
 };
@@ -63,7 +63,7 @@ export const updateAmenityHandler = async (req: Request, res: Response) => {
     amenities.remove(oldamenity);
     amenities.insert(amenity.data);
     db.saveDatabase();
-    await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/amenity-categories`]);
+    await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/amenity-categories`, `${basePath}/settings/`]);
   }
   return res.status(amenity.statusCode).json(amenity);
 };
@@ -77,7 +77,7 @@ export const createAmenityCategoryHandler = async (req: Request, res: Response) 
   if (amenityCategory.success) {
     db.getCollection('amenityCategories').insert(amenityCategory.data);
     db.saveDatabase();
-    await deleteCache(req.redis, [req.originalUrl, `${basePath}/settings/amenities`]);
+    await deleteCache(req.redis, [req.originalUrl, `${basePath}/settings/amenities`, `${basePath}/settings/`]);
   }
   return res.status(amenityCategory.statusCode).json(amenityCategory);
 };
@@ -105,7 +105,7 @@ export const updateAmenityCategoryHandler = async (req: Request, res: Response) 
       });
     }
     db.saveDatabase();
-    await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/amenity-categories`]);
+    await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/amenity-categories`, `${basePath}/settings/`]);
   }
   return res.status(amenityCategory.statusCode).json(amenityCategory);
 };
@@ -133,7 +133,7 @@ export const deleteAmenityHandler = async (req: Request, res: Response) => {
     const oldamenity = amenities.findOne({ amenity: amenitykey });
     amenities.remove(oldamenity);
     db.saveDatabase();
-    await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/amenity-categories`]);
+    await deleteCache(req.redis, [`${basePath}/settings/amenities`, `${basePath}/settings/amenity-categories`, `${basePath}/settings/`]);
   }
   return res.status(amenity.statusCode).json(amenity);
 };
@@ -156,7 +156,7 @@ export const deleteAmenityCategoryHandler = async (req: Request, res: Response) 
     const category = categories.findOne({ amenityCategory: categorykey });
     categories.remove(category);
     db.saveDatabase();
-    await deleteCache(req.redis, [`${basePath}/settings/amenity-categories`]);
+    await deleteCache(req.redis, [`${basePath}/settings/amenity-categories`, `${basePath}/settings/`]);
   }
   return res.status(amenityCategory.statusCode).json(amenityCategory);
 };

@@ -10,6 +10,7 @@ import { requireLoggedInUser } from '../middleware/requireUser';
 import { logoutHandler } from '../controllers/login.controllers';
 import { systemRoutes } from './system.routes';
 import { verifyRoutes } from './verify.routes';
+import { adminRoutes } from './admin.routes';
 
 const { basePath } = config.self;
 
@@ -19,9 +20,10 @@ export default (app: Express): void => {
   app.use(`${basePath}/register`, registerRoutes);
   app.use(`${basePath}/login`, loginRoutes);
   app.use(`${basePath}/verify`, verifyRoutes);
-  app.use(`${basePath}/currentuser`, currentUserRoutes);
+  app.use(`${basePath}/currentuser`, requireLoggedInUser, currentUserRoutes);
   app.use(`${basePath}/data`, dataRoutes);
   app.use(`${basePath}/system`, systemRoutes);
+  app.use(`${basePath}/admin`, adminRoutes);
 
   app.use('*', notFoundHandler);
 };

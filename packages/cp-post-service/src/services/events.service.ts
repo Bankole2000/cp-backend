@@ -25,17 +25,32 @@ export const serviceEvents = async (channel: Channel) => {
   }
 };
 
-export const sendToServiceQueues = async (channel: Channel, message: any, services: string[] = []) => {
+export const sendToServiceQueues = async (
+  channel: Channel,
+  message: any,
+  services: string[] = []
+) => {
   const promises: any[] = [];
   services.forEach((service) => {
-    promises.push(channel.sendToQueue(service, Buffer.from(JSON.stringify(message)), { persistent: true }));
+    promises.push(
+      channel.sendToQueue(
+        service,
+        Buffer.from(JSON.stringify(message)),
+        { persistent: true }
+      )
+    );
   });
   const results = await Promise.all(promises);
-  console.log(results);
+  return results;
 };
 
-export const getServiceQueues = async (redis: RedisConnection, scope: string, services: string[] = []) => {
-  await redis.client.connect();
+export const getServiceQueues = async (
+  redis: RedisConnection,
+  scope: string,
+  services: string[] = []
+) => {
+  await redis.client.connect(); // connected
+  console.log('🚀 ~ file: events.service.ts:53 ~ redis connected:');
   const registeredQueues = await redis.client.sMembers(`${scope}-queues`);
   let relevantQueues: string[] = [];
   if (!services.length) {
@@ -44,6 +59,7 @@ export const getServiceQueues = async (redis: RedisConnection, scope: string, se
     relevantQueues = registeredQueues.filter((x) => services.includes(x.split('-')[1]) && x !== config.self.queue);
   }
   console.log({ registeredQueues, relevantQueues });
-  await redis.client.disconnect();
+  await redis.client.disconnect(); // redis disconnected
+  console.log('🚀 ~ file: events.service.ts:63 ~ redis disconnected:');
   return relevantQueues;
 };

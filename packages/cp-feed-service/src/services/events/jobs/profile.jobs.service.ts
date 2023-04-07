@@ -11,6 +11,41 @@ export const profileQueueJobsHandler = async (msg: any, channel: Channel) => {
     //   }
     //   break;
     // }
+    case 'USER_FOLLOWED_USER': {
+      const result = await profileJobs.USER_FOLLOWED_USER(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
+    case 'USER_UNFOLLOWED_USER': {
+      const result = await profileJobs.USER_UNFOLLOWED_USER(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
+    case 'USER_SENT_FOLLOW_REQUEST': {
+      const result = await profileJobs.USER_SENT_FOLLOW_REQUEST(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
+    case 'USER_BLOCKED_USER': {
+      const result = await profileJobs.USER_BLOCKED_USER(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
+    case 'USER_UNBLOCKED_USER': {
+      const result = await profileJobs.USER_UNBLOCKED_USER(message);
+      if (result.success) {
+        channel.ack(msg);
+      }
+      break;
+    }
     default: {
       const result = await profileJobs.profileDefaultJobHandler(message);
       if (result.success) {

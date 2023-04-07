@@ -3,8 +3,7 @@ import { PrismaClient } from '@prisma/client';
 import { ServiceResponse } from '@cribplug/common';
 import { config } from '../utils/config';
 import { logResponse } from '../middleware/logRequests';
-
-const prisma = new PrismaClient();
+import prisma from '../lib/prisma';
 
 type Model = keyof Omit<PrismaClient, 'disconnect' | 'connect' | 'executeRaw' | 'queryRaw' | 'transaction' | 'on'>;
 
@@ -24,11 +23,7 @@ export const getModelData = async (req: Request, res: Response) => {
   }
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const data = await prisma[model as Model].findMany({
-    orderBy: {
-      createdAt: 'desc',
-    }
-  });
+  const data = await prisma[model as Model].findMany({});
   const sr = new ServiceResponse('Service Data', data, true, 200, null, null, null);
   await logResponse(req, sr);
   return res.status(sr.statusCode).send(sr);

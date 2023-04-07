@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.11](https://github.com/Bankole2000/cp-backend/compare/v1.4.10...v1.4.11) (2023-04-07)
+
+
+### Features
+
+* **posts:** create comments and quote posts ([ebbbb59](https://github.com/Bankole2000/cp-backend/commits/ebbbb59b579e9510564969c2121f6152dc43477f))
+
+### [1.4.10](https://github.com/Bankole2000/cp-backend/compare/v1.4.9...v1.4.10) (2023-04-02)
+
+
+### Features
+
+* **post:** adding comments ([7ec21d8](https://github.com/Bankole2000/cp-backend/commits/7ec21d86c47075ced05520e8fd133f119b8ff0e7))
+
+### [1.4.9](https://github.com/Bankole2000/cp-backend/compare/v1.4.8...v1.4.9) (2023-03-13)
+
+
+### Features
+
+* **posts:** tags and notification queues ([8c6c77a](https://github.com/Bankole2000/cp-backend/commits/8c6c77a7bd9a9546d9f92832de0ea215313f602c))
+
+### [1.4.8](https://github.com/Bankole2000/cp-backend/compare/v1.4.7...v1.4.8) (2023-03-06)
+
+
+### Features
+
+* **notifications:** notifications on new follower ([dc806a9](https://github.com/Bankole2000/cp-backend/commits/dc806a941b2c9e4f2380ac3857b4742bd790abea))
+
+### [1.4.7](https://github.com/Bankole2000/cp-backend/compare/v1.4.6...v1.4.7) (2023-03-01)
+
+
+### Features
+
+* **posts:** wip post comment routes ([97fc6d7](https://github.com/Bankole2000/cp-backend/commits/97fc6d7c460ae6152fca04910827ab54934ba950))
+* **posts:** wip user create post ([b81b8e8](https://github.com/Bankole2000/cp-backend/commits/b81b8e809c01860895a9dc61aa87c9622392d0eb))
+* **profiles:** user can follow users ([59c386f](https://github.com/Bankole2000/cp-backend/commits/59c386f25127047699617cac73fa46ed326f25c2))
+
+### [1.4.6](https://github.com/Bankole2000/cp-backend/compare/v1.4.5...v1.4.6) (2023-02-19)
+
+
+### Features
+
+* **posts:** wip user create post ([26dfcb0](https://github.com/Bankole2000/cp-backend/commits/26dfcb03168fa65bfc2b45d8bf81dbfef72cee89))
+
 ### [1.4.5](https://github.com/Bankole2000/cp-backend/compare/v1.4.4...v1.4.5) (2023-02-06)
 
 

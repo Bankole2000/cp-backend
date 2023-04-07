@@ -13,7 +13,7 @@ Admin section
 
 -----------------------------
 
-  Cribplug is an app that helps 4 kinds of people
+  Relodger is an app that helps 4 kinds of people
 
   1. people who want to make money by hosting others in spare rooms or cohabitable living spaces
   2. people who want are looking for a place to stay for a short while

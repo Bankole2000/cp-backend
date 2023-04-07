@@ -46,7 +46,7 @@ export const updateHouseRuleHandler = async (req: Request, res: Response) => {
     hr = { ...hr, ...hrsr.data };
     houseRules.update(hr);
     db.saveDatabase();
-    deleteCache(req.redis, [`${basePath}/settings/house-rules`, `${basePath}/settings/house-rules/${houseRule}`]);
+    deleteCache(req.redis, [`${basePath}/settings/house-rules`, `${basePath}/settings/house-rules/${houseRule}`, `${basePath}/settings/`]);
   }
   res.status(hrsr.statusCode).json(hrsr);
 };
@@ -58,7 +58,7 @@ export const deleteHouseRuleHandler = async (req: Request, res: Response) => {
     const houseRules = db.getCollection('houseRules');
     houseRules.removeWhere({ houseRule });
     db.saveDatabase();
-    deleteCache(req.redis, [`${basePath}/settings/house-rules`, `${basePath}/settings/house-rules/${houseRule}`]);
+    deleteCache(req.redis, [`${basePath}/settings/house-rules`, `${basePath}/settings/house-rules/${houseRule}`, `${basePath}/settings/`]);
   }
   res.status(deletedHouseRule.statusCode).json(deletedHouseRule);
 };

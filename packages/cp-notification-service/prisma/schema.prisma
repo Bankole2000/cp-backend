@@ -11,25 +11,73 @@ datasource db {
 }
 
 model User {
-  userId        String    @id @default(uuid())
-  email         String?
-  emailVerified Boolean   @default(false) @db.Boolean
-  phone         String?
-  phoneData     Json?     @default("{}") @db.Json
-  phoneVerified Boolean   @default(false) @db.Boolean
-  registeredVia String?
-  username      String    @unique @default(uuid())
-  gender        String?
-  roles         String[]  @default(["USER"])
-  firstname     String?   @db.VarChar(100)
-  lastname      String?   @db.VarChar(100)
-  displayname   String?   @db.VarChar(100)
-  dob           DateTime
-  tos           Boolean   @db.Boolean
-  version       Int       @default(0)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  deletedAt     DateTime?
+  userId               String                    @id @default(uuid())
+  email                String?
+  emailVerified        Boolean                   @default(false) @db.Boolean
+  phone                String?
+  phoneData            Json?                     @default("{}") @db.Json
+  phoneVerified        Boolean                   @default(false) @db.Boolean
+  registeredVia        String?
+  username             String                    @unique @default(uuid())
+  gender               String?
+  roles                String[]                  @default(["USER"])
+  firstname            String?                   @db.VarChar(100)
+  lastname             String?                   @db.VarChar(100)
+  displayname          String?                   @db.VarChar(100)
+  dob                  DateTime
+  tos                  Boolean                   @db.Boolean
+  blocked              String[]                  @default([])
+  blockedBy            String[]                  @default([])
+  followers            String[]                  @default([])
+  following            String[]                  @default([])
+  notifyOnPost         String[]                  @default([])
+  notifyOnOffer        String[]                  @default([])
+  notifyOnListing      String[]                  @default([])
+  notifyOnPersonalAd   String[]                  @default([])
+  notificationSettings UserNotificationSettings?
+  UserNotifications    UserNotifications[]
+  version              Int                       @default(0)
+  createdAt            DateTime                  @default(now())
+  updatedAt            DateTime                  @updatedAt
+  deletedAt            DateTime?
+}
+
+model UserNotificationSettings {
+  userId                    String
+  user                      User?   @relation(fields: [userId], references: [userId])
+  notifyOnFollow            Boolean @default(true)
+  notifyOnPostComment       Boolean @default(true)
+  notifyOnPostLike          Boolean @default(true)
+  notifyOnPersonalAdComment Boolean @default(true)
+  notifyOnPersonalAdLike    Boolean @default(true)
+  notifyOnListingLike       Boolean @default(true)
+  notifyOnOfferComment      Boolean @default(true)
+  notifyOnOfferLike         Boolean @default(true)
+
+  @@id([userId])
+}
+
+model UserNotifications {
+  userId         String
+  user           User         @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  notificationId String
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  seen           Boolean      @default(false)
+  read           Boolean      @default(false)
+
+  @@id([notificationId, userId])
+}
+
+model Notification {
+  id                String              @id @default(uuid())
+  type              String
+  message           String
+  resourceType      String?
+  resourceId        String?
+  resourceData      Json?               @default("{}") @db.Json
+  UserNotifications UserNotifications[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
 }
 
 model RequestLog {

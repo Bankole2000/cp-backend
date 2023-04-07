@@ -37,7 +37,7 @@ export const requireLoggedInUser = async (req: Request, res: Response, next: Nex
 export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextFunction) => {
   const token = req.headers.authorization;
   console.log({ headers: req.headers });
-  console.log('here');
+  console.log('here - 40');
   if (!token) {
     const refreshToken = req.cookies?.refreshToken ? req.cookies.refreshToken : req.headers['x-refresh-token'];
     if (refreshToken) {
@@ -53,7 +53,8 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
         return next();
       }
       console.log('User found');
-      const { success, data: { sessionId, isValid, deviceId } } = await userService.getSessionById(refreshDecoded.sessionId);
+      const { success, data: { sessionId, isValid, deviceId } } = await userService
+        .getSessionById(refreshDecoded.sessionId);
       console.log({ sessionFound: success, isValid, deviceId });
       if (!success || !isValid) {
         req.user = null;

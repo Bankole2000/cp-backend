@@ -13,9 +13,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@bull-board/express": "^4.12.1",
     "@cribplug/common": "^1.0.18",
     "@prisma/client": "^4.7.1",
     "axios": "^1.2.2",
+    "bull": "^4.10.4",
     "cloudinary": "^1.33.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

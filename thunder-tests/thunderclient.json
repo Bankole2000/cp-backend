@@ -1,0 +1,2067 @@
+[
+  {
+    "_id": "ae8a128f-d9dd-4dd0-b10e-569856abbfe8",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ca192d88-976b-4a2a-987a-07cafc70a346",
+    "name": "Logout",
+    "url": "{{host}}{{auth-path}}/logout",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-02-17T20:26:58.774Z",
+    "modified": "2023-03-10T21:15:19.833Z",
+    "headers": [],
+    "params": [],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{idToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{listingId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{serviceId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{personalAdId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{postId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{commentId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{chatRoomId}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{messageId}}"
+      }
+    ],
+    "docs": "```json\n{\n  \"message\": \"User session invalidated successfully\",\n  \"success\": true,\n  \"data\": {\n    \"sessionId\": \"7d73ebdf-4f9f-4156-a028-d4f6b958e40e\",\n    \"ip\": \"::ffff:127.0.0.1\",\n    \"userAgent\": \"Thunder Client (https://www.thunderclient.com)\",\n    \"loginType\": \"EMAIL\",\n    \"userId\": \"0c5725m57h2cknz\",\n    \"deviceId\": \"2666d8a6-ffc7-4764-8274-18e74abccc2c\",\n    \"isValid\": false,\n    \"createdAt\": \"2023-03-10T21:06:37.809Z\",\n    \"loggedOutAt\": \"2023-03-10T21:14:47.694Z\"\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "90b9173e-bcfd-428b-abf7-e1e18c725eb8",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "21514756-d78f-4bff-a7f2-1cc2230f1633",
+    "name": "Test",
+    "url": "{{host}}{{auth-path}}/test",
+    "method": "GET",
+    "sortNum": 65000,
+    "created": "2023-02-17T20:28:04.856Z",
+    "modified": "2023-02-17T20:28:23.260Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "3c6935db-72d9-4e93-ac1b-31ff893aff3c",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8f4da495-6333-4f05-a615-fe7dae03453c",
+    "name": "Register with Email",
+    "url": "{{host}}{{auth-path}}/register/email",
+    "method": "POST",
+    "sortNum": 30000,
+    "created": "2023-02-17T20:29:05.320Z",
+    "modified": "2023-03-10T21:10:56.186Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"email\": \"kolesan2k@yahoo.com\",\n  \"firstname\": \"Techy\",\n  \"lastname\": \"Banky\",\n  \"tos\": true,\n  \"dob\": \"2000-01-01\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      }
+    ],
+    "docs": "Success Respons\n\n```json\n{\n  \"message\": \"Registration Successful\",\n  \"success\": true,\n  \"data\": {\n    \"user\": {\n      \"userId\": \"0c5725m57h2cknz\",\n      \"email\": \"kolesan2k@yahoo.com\",\n      \"emailVerified\": false,\n      \"phone\": null,\n      \"phoneData\": {},\n      \"phoneVerified\": false,\n      \"registeredVia\": \"EMAIL\",\n      \"username\": \"48fdc01a-e305-40aa-9d0b-567749708aad\",\n      \"roles\": [\n        \"USER\"\n      ],\n      \"firstname\": \"Techy\",\n      \"lastname\": \"Banky\",\n      \"displayname\": \"Techy\",\n      \"dob\": \"2000-01-01T00:00:00.000Z\",\n      \"gender\": \"OTHER\",\n      \"tos\": true,\n      \"onboardingStatus\": [\n        \"NEWLY_REGISTERED\"\n      ],\n      \"version\": 0,\n      \"createdAt\": \"2023-03-10T20:56:13.686Z\",\n      \"updatedAt\": \"2023-03-10T20:56:13.686Z\",\n      \"deletedAt\": null\n    },\n    \"idToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYzU3MjVtNTdoMmNrbnoiLCJlbWFpbCI6ImtvbGVzYW4ya0B5YWhvby5jb20iLCJlbWFpbFZlcmlmaWVkIjpmYWxzZSwicGhvbmUiOm51bGwsInBob25lRGF0YSI6e30sInBob25lVmVyaWZpZWQiOmZhbHNlLCJyZWdpc3RlcmVkVmlhIjoiRU1BSUwiLCJ1c2VybmFtZSI6IjQ4ZmRjMDFhLWUzMDUtNDBhYS05ZDBiLTU2Nzc0OTcwOGFhZCIsInJvbGVzIjpbIlVTRVIiXSwiZmlyc3RuYW1lIjoiVGVjaHkiLCJsYXN0bmFtZSI6IkJhbmt5IiwiZGlzcGxheW5hbWUiOiJUZWNoeSIsImRvYiI6IjIwMDAtMDEtMDFUMDA6MDA6MDAuMDAwWiIsImdlbmRlciI6Ik9USEVSIiwidG9zIjp0cnVlLCJvbmJvYXJkaW5nU3RhdHVzIjpbIk5FV0xZX1JFR0lTVEVSRUQiXSwidmVyc2lvbiI6MCwiY3JlYXRlZEF0IjoiMjAyMy0wMy0xMFQyMDo1NjoxMy42ODZaIiwidXBkYXRlZEF0IjoiMjAyMy0wMy0xMFQyMDo1NjoxMy42ODZaIiwiZGVsZXRlZEF0IjpudWxsLCJpYXQiOjE2Nzg0ODE3NzN9.9JY5YACiQB4Kth-F2ChFBvV29eXA6cLCoEBy7ICo9I8\"\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 201\n}\n```\n"
+  },
+  {
+    "_id": "f5130970-1a88-40ed-9530-25abca1469b4",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8f4da495-6333-4f05-a615-fe7dae03453c",
+    "name": "Register with Phone",
+    "url": "{{host}}{{auth-path}}/register/phone",
+    "method": "POST",
+    "sortNum": 40000,
+    "created": "2023-02-17T20:29:35.568Z",
+    "modified": "2023-03-10T21:11:24.162Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"countryCode\": \"\",\n  \"phone\": \"\",\n  \"firstname\": \"\",\n  \"lastname\": \"\",\n  \"tos\": false,\n  \"dob\": \"2000-01-01\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      }
+    ]
+  },
+  {
+    "_id": "7c059e93-f172-4868-9f40-e69d78012762",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8f4da495-6333-4f05-a615-fe7dae03453c",
+    "name": "[Onboarding] Set Username",
+    "url": "{{host}}{{auth-path}}/register/onboarding/username",
+    "method": "POST",
+    "sortNum": 40000,
+    "created": "2023-02-17T20:30:34.537Z",
+    "modified": "2023-03-10T21:12:26.211Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"username\": \"neoncoder\",\n  \"gender\": \"MALE\",\n  \"password\": \"newPassword\",\n  \"confirmPassword\": \"newPassword\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.accessToken",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.refreshToken",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{idToken}}"
+      }
+    ],
+    "docs": "```json\n{\n  \"message\": \"Onboarding Successful\",\n  \"success\": true,\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYzU3MjVtNTdoMmNrbnoiLCJlbWFpbCI6ImtvbGVzYW4ya0B5YWhvby5jb20iLCJlbWFpbFZlcmlmaWVkIjp0cnVlLCJwaG9uZSI6bnVsbCwicGhvbmVEYXRhIjp7fSwicGhvbmVWZXJpZmllZCI6ZmFsc2UsInJlZ2lzdGVyZWRWaWEiOiJFTUFJTCIsInVzZXJuYW1lIjoibmVvbmNvZGVyIiwicm9sZXMiOlsiVVNFUiJdLCJmaXJzdG5hbWUiOiJUZWNoeSIsImxhc3RuYW1lIjoiQmFua3kiLCJkaXNwbGF5bmFtZSI6IlRlY2h5IiwiZG9iIjoiMjAwMC0wMS0wMVQwMDowMDowMC4wMDBaIiwiZ2VuZGVyIjoiTUFMRSIsInRvcyI6dHJ1ZSwib25ib2FyZGluZ1N0YXR1cyI6WyJORVdMWV9SRUdJU1RFUkVEIiwiVVNFUk5BTUVfU0VUIiwiUEFTU1dPUkRfU0VUIl0sInZlcnNpb24iOjIsImNyZWF0ZWRBdCI6IjIwMjMtMDMtMTBUMjA6NTY6MTMuNjg2WiIsInVwZGF0ZWRBdCI6IjIwMjMtMDMtMTBUMjE6MDY6MzYuMzUwWiIsImRlbGV0ZWRBdCI6bnVsbCwic2Vzc2lvbklkIjoiN2Q3M2ViZGYtNGY5Zi00MTU2LWEwMjgtZDRmNmI5NThlNDBlIiwiZGV2aWNlSWQiOiIyNjY2ZDhhNi1mZmM3LTQ3NjQtODI3NC0xOGU3NGFiY2NjMmMiLCJwYlRva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiMnhzWldOMGFXOXVTV1FpT2lKZmNHSmZkWE5sY25OZllYVjBhRjhpTENKbGVIQWlPakUyTnprMk9URTVPVGdzSW1sa0lqb2lNR00xTnpJMWJUVTNhREpqYTI1Nklpd2lkSGx3WlNJNkltRjFkR2hTWldOdmNtUWlmUS5hbFJWM2Zic0hsbzVqckhWRExfTnF1anIzMkRoTzhWQl9aTU5xX3d0VldrIiwicGJVc2VyIjp7ImF2YXRhciI6IiIsImNvbGxlY3Rpb25JZCI6Il9wYl91c2Vyc19hdXRoXyIsImNvbGxlY3Rpb25OYW1lIjoidXNlcnMiLCJjcmVhdGVkIjoiMjAyMy0wMy0xMCAyMDo1NjoxMy42ODZaIiwiZGVsZXRlZEF0IjoiIiwiZGlzcGxheW5hbWUiOiJUZWNoeSIsImRvYiI6IjIwMDAtMDEtMDEgMDA6MDA6MDAuMDAwWiIsImVtYWlsIjoia29sZXNhbjJrQHlhaG9vLmNvbSIsImVtYWlsVmlzaWJpbGl0eSI6dHJ1ZSwiZmlyc3RuYW1lIjoiVGVjaHkiLCJnZW5kZXIiOiJNQUxFIiwiaWQiOiIwYzU3MjVtNTdoMmNrbnoiLCJsYXN0bmFtZSI6IkJhbmt5Iiwib25ib2FyZGluZ1N0YXR1cyI6WyJORVdMWV9SRUdJU1RFUkVEIiwiVVNFUk5BTUVfU0VUIiwiUEFTU1dPUkRfU0VUIl0sInBob25lIjoiIiwicHJvZmlsZUltYWdlIjoiIiwicHJvZmlsZVdhbGxwYXBlciI6IiIsInJvbGVzIjpbIlVTRVIiXSwidG9zIjp0cnVlLCJ1cGRhdGVkIjoiMjAyMy0wMy0xMCAyMTowNjozNy43NTRaIiwidXNlcm5hbWUiOiJuZW9uY29kZXIiLCJ2ZXJpZmllZCI6dHJ1ZSwiZXhwYW5kIjp7fX0sImlhdCI6MTY3ODQ4MjM5OCwiZXhwIjoxNjc4NDg1OTk4fQ.0fqaiyo4Wsz6IP2ioud0EKVJYVe3okh3mk8KRvLfXBA\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIwYzU3MjVtNTdoMmNrbnoiLCJlbWFpbCI6ImtvbGVzYW4ya0B5YWhvby5jb20iLCJlbWFpbFZlcmlmaWVkIjp0cnVlLCJwaG9uZSI6bnVsbCwicGhvbmVEYXRhIjp7fSwicGhvbmVWZXJpZmllZCI6ZmFsc2UsInJlZ2lzdGVyZWRWaWEiOiJFTUFJTCIsInVzZXJuYW1lIjoibmVvbmNvZGVyIiwicm9sZXMiOlsiVVNFUiJdLCJmaXJzdG5hbWUiOiJUZWNoeSIsImxhc3RuYW1lIjoiQmFua3kiLCJkaXNwbGF5bmFtZSI6IlRlY2h5IiwiZG9iIjoiMjAwMC0wMS0wMVQwMDowMDowMC4wMDBaIiwiZ2VuZGVyIjoiTUFMRSIsInRvcyI6dHJ1ZSwib25ib2FyZGluZ1N0YXR1cyI6WyJORVdMWV9SRUdJU1RFUkVEIiwiVVNFUk5BTUVfU0VUIiwiUEFTU1dPUkRfU0VUIl0sInZlcnNpb24iOjIsImNyZWF0ZWRBdCI6IjIwMjMtMDMtMTBUMjA6NTY6MTMuNjg2WiIsInVwZGF0ZWRBdCI6IjIwMjMtMDMtMTBUMjE6MDY6MzYuMzUwWiIsImRlbGV0ZWRBdCI6bnVsbCwic2Vzc2lvbklkIjoiN2Q3M2ViZGYtNGY5Zi00MTU2LWEwMjgtZDRmNmI5NThlNDBlIiwiZGV2aWNlSWQiOiIyNjY2ZDhhNi1mZmM3LTQ3NjQtODI3NC0xOGU3NGFiY2NjMmMiLCJwYlRva2VuIjoiZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmpiMnhzWldOMGFXOXVTV1FpT2lKZmNHSmZkWE5sY25OZllYVjBhRjhpTENKbGVIQWlPakUyTnprMk9URTVPVGdzSW1sa0lqb2lNR00xTnpJMWJUVTNhREpqYTI1Nklpd2lkSGx3WlNJNkltRjFkR2hTWldOdmNtUWlmUS5hbFJWM2Zic0hsbzVqckhWRExfTnF1anIzMkRoTzhWQl9aTU5xX3d0VldrIiwicGJVc2VyIjp7ImF2YXRhciI6IiIsImNvbGxlY3Rpb25JZCI6Il9wYl91c2Vyc19hdXRoXyIsImNvbGxlY3Rpb25OYW1lIjoidXNlcnMiLCJjcmVhdGVkIjoiMjAyMy0wMy0xMCAyMDo1NjoxMy42ODZaIiwiZGVsZXRlZEF0IjoiIiwiZGlzcGxheW5hbWUiOiJUZWNoeSIsImRvYiI6IjIwMDAtMDEtMDEgMDA6MDA6MDAuMDAwWiIsImVtYWlsIjoia29sZXNhbjJrQHlhaG9vLmNvbSIsImVtYWlsVmlzaWJpbGl0eSI6dHJ1ZSwiZmlyc3RuYW1lIjoiVGVjaHkiLCJnZW5kZXIiOiJNQUxFIiwiaWQiOiIwYzU3MjVtNTdoMmNrbnoiLCJsYXN0bmFtZSI6IkJhbmt5Iiwib25ib2FyZGluZ1N0YXR1cyI6WyJORVdMWV9SRUdJU1RFUkVEIiwiVVNFUk5BTUVfU0VUIiwiUEFTU1dPUkRfU0VUIl0sInBob25lIjoiIiwicHJvZmlsZUltYWdlIjoiIiwicHJvZmlsZVdhbGxwYXBlciI6IiIsInJvbGVzIjpbIlVTRVIiXSwidG9zIjp0cnVlLCJ1cGRhdGVkIjoiMjAyMy0wMy0xMCAyMTowNjozNy43NTRaIiwidXNlcm5hbWUiOiJuZW9uY29kZXIiLCJ2ZXJpZmllZCI6dHJ1ZSwiZXhwYW5kIjp7fX0sImlhdCI6MTY3ODQ4MjM5OCwiZXhwIjoxNjc5MDg3MTk4fQ.FS3alUHbcuTjX1tHkW9iudlk4qbLj91hxp0GFCgetKU\",\n    \"session\": {\n      \"sessionId\": \"7d73ebdf-4f9f-4156-a028-d4f6b958e40e\",\n      \"ip\": \"::ffff:127.0.0.1\",\n      \"userAgent\": \"Thunder Client (https://www.thunderclient.com)\",\n      \"loginType\": \"EMAIL\",\n      \"userId\": \"0c5725m57h2cknz\",\n      \"deviceId\": \"2666d8a6-ffc7-4764-8274-18e74abccc2c\",\n      \"isValid\": true,\n      \"createdAt\": \"2023-03-10T21:06:37.809Z\",\n      \"loggedOutAt\": \"2023-03-10T21:06:37.809Z\",\n      \"user\": {\n        \"userId\": \"0c5725m57h2cknz\",\n        \"email\": \"kolesan2k@yahoo.com\",\n        \"emailVerified\": true,\n        \"phone\": null,\n        \"phoneData\": {},\n        \"phoneVerified\": false,\n        \"registeredVia\": \"EMAIL\",\n        \"username\": \"neoncoder\",\n        \"roles\": [\n          \"USER\"\n        ],\n        \"firstname\": \"Techy\",\n        \"lastname\": \"Banky\",\n        \"displayname\": \"Techy\",\n        \"dob\": \"2000-01-01T00:00:00.000Z\",\n        \"gender\": \"MALE\",\n        \"tos\": true,\n        \"onboardingStatus\": [\n          \"NEWLY_REGISTERED\",\n          \"USERNAME_SET\",\n          \"PASSWORD_SET\"\n        ],\n        \"version\": 2,\n        \"createdAt\": \"2023-03-10T20:56:13.686Z\",\n        \"updatedAt\": \"2023-03-10T21:06:36.350Z\",\n        \"deletedAt\": null\n      },\n      \"device\": {\n        \"deviceId\": \"2666d8a6-ffc7-4764-8274-18e74abccc2c\",\n        \"ip\": \"::ffff:127.0.0.1\",\n        \"active\": true,\n        \"banned\": false,\n        \"bannedByUserId\": null,\n        \"userId\": \"0c5725m57h2cknz\",\n        \"createdAt\": \"2023-03-10T21:06:37.786Z\",\n        \"updatedAt\": \"2023-03-10T21:06:37.786Z\"\n      }\n    },\n    \"user\": {\n      \"userId\": \"0c5725m57h2cknz\",\n      \"email\": \"kolesan2k@yahoo.com\",\n      \"emailVerified\": true,\n      \"phone\": null,\n      \"phoneData\": {},\n      \"phoneVerified\": false,\n      \"registeredVia\": \"EMAIL\",\n      \"username\": \"neoncoder\",\n      \"roles\": [\n        \"USER\"\n      ],\n      \"firstname\": \"Techy\",\n      \"lastname\": \"Banky\",\n      \"displayname\": \"Techy\",\n      \"dob\": \"2000-01-01T00:00:00.000Z\",\n      \"gender\": \"MALE\",\n      \"tos\": true,\n      \"onboardingStatus\": [\n        \"NEWLY_REGISTERED\",\n        \"USERNAME_SET\",\n        \"PASSWORD_SET\"\n      ],\n      \"version\": 2,\n      \"createdAt\": \"2023-03-10T20:56:13.686Z\",\n      \"updatedAt\": \"2023-03-10T21:06:36.350Z\",\n      \"deletedAt\": null\n    }\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "a2f0dfce-6d6b-4c98-ba29-982b09d1b025",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8f4da495-6333-4f05-a615-fe7dae03453c",
+    "name": "[Onboarding] Set Password",
+    "url": "{{host}}{{auth-path}}/register/onboarding/password",
+    "method": "POST",
+    "sortNum": 50000,
+    "created": "2023-02-17T20:31:22.991Z",
+    "modified": "2023-02-18T08:04:28.521Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"password\": \"\",\n  \"confirmPassword\": \"\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "d156fa73-d072-4db3-ac68-8b2911fcedf6",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ca192d88-976b-4a2a-987a-07cafc70a346",
+    "name": "Login with Email",
+    "url": "{{host}}{{auth-path}}/login/email",
+    "method": "POST",
+    "sortNum": 50000,
+    "created": "2023-02-17T20:32:11.560Z",
+    "modified": "2023-03-10T21:29:09.712Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"email\": \"kolesan2k@yahoo.com\",\n  \"password\": \"{{password}}\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.accessToken",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.refreshToken",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      }
+    ]
+  },
+  {
+    "_id": "4f091308-cdcb-4b66-a9ff-853d91447d56",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ca192d88-976b-4a2a-987a-07cafc70a346",
+    "name": "Login with Phone",
+    "url": "{{host}}{{auth-path}}/login/phone",
+    "method": "POST",
+    "sortNum": 60000,
+    "created": "2023-02-17T20:32:31.728Z",
+    "modified": "2023-02-17T21:10:04.062Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"countryCode\": \"NG\",\n  \"phone\": \"08069166906\",\n  \"password\": \"{{password}}\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.accessToken",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.refreshToken",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      }
+    ]
+  },
+  {
+    "_id": "2153c0ce-4e18-4814-90fa-880f66ab605b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ca192d88-976b-4a2a-987a-07cafc70a346",
+    "name": "Login with Username",
+    "url": "{{host}}{{auth-path}}/login/username",
+    "method": "POST",
+    "sortNum": 70000,
+    "created": "2023-02-17T20:32:49.599Z",
+    "modified": "2023-04-05T23:27:08.649Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"username\": \"neoncoder\",\n  \"password\": \"{{password}}\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.accessToken",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.refreshToken",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      }
+    ],
+    "docs": "```json\n{\n  \"message\": \"Login Successful\",\n  \"success\": true,\n  \"data\": {\n    \"accessToken\": \"<accessToken>\",\n    \"refreshToken\": \"<refreshToken>\",\n    \"session\": {\n      \"sessionId\": \"b695a0ae-7251-4aa8-a984-2739a81ff5c5\",\n      \"ip\": \"::ffff:127.0.0.1\",\n      \"userAgent\": \"Thunder Client (https://www.thunderclient.com)\",\n      \"loginType\": \"EMAIL\",\n      \"userId\": \"k4i1u6w41jtnidx\",\n      \"deviceId\": \"123f4345-c37e-46f7-93d3-e58d7b4a11bd\",\n      \"isValid\": true,\n      \"createdAt\": \"2023-03-14T00:05:04.339Z\",\n      \"loggedOutAt\": \"2023-03-14T00:05:04.339Z\",\n      \"user\": {\n        \"userId\": \"k4i1u6w41jtnidx\",\n        \"email\": \"techybanky@gmail.com\",\n        \"emailVerified\": true,\n        \"phone\": null,\n        \"phoneData\": {},\n        \"phoneVerified\": false,\n        \"registeredVia\": \"EMAIL\",\n        \"username\": \"bankole2000\",\n        \"roles\": [\n          \"USER\",\n          \"SCOUT\",\n          \"AGENT\",\n          \"MODERATOR\",\n          \"MODERATION\",\n          \"SUPPORT\",\n          \"SYSTEM\",\n          \"ADMIN\",\n          \"SUPER_ADMIN\",\n          \"JURY\",\n          \"JUDGE\"\n        ],\n        \"firstname\": \"Bankole\",\n        \"lastname\": \"Esan\",\n        \"displayname\": \"Bankole\",\n        \"dob\": \"2000-01-01T00:00:00.000Z\",\n        \"gender\": \"MALE\",\n        \"tos\": true,\n        \"onboardingStatus\": [\n          \"NEWLY_REGISTERED\",\n          \"USERNAME_SET\",\n          \"PASSWORD_SET\"\n        ],\n        \"version\": 2,\n        \"createdAt\": \"2023-01-29T02:36:43.319Z\",\n        \"updatedAt\": \"2023-01-29T02:38:31.147Z\",\n        \"deletedAt\": null\n      },\n      \"device\": {\n        \"deviceId\": \"123f4345-c37e-46f7-93d3-e58d7b4a11bd\",\n        \"ip\": \"::ffff:127.0.0.1\",\n        \"active\": true,\n        \"banned\": false,\n        \"bannedByUserId\": null,\n        \"userId\": \"k4i1u6w41jtnidx\",\n        \"createdAt\": \"2023-02-15T06:38:31.692Z\",\n        \"updatedAt\": \"2023-02-18T12:03:16.884Z\"\n      }\n    },\n    \"user\": {\n      \"userId\": \"k4i1u6w41jtnidx\",\n      \"email\": \"techybanky@gmail.com\",\n      \"emailVerified\": true,\n      \"phone\": null,\n      \"phoneData\": {},\n      \"phoneVerified\": false,\n      \"registeredVia\": \"EMAIL\",\n      \"username\": \"bankole2000\",\n      \"roles\": [\n        \"USER\",\n        \"SCOUT\",\n        \"AGENT\",\n        \"MODERATOR\",\n        \"MODERATION\",\n        \"SUPPORT\",\n        \"SYSTEM\",\n        \"ADMIN\",\n        \"SUPER_ADMIN\",\n        \"JURY\",\n        \"JUDGE\"\n      ],\n      \"firstname\": \"Bankole\",\n      \"lastname\": \"Esan\",\n      \"displayname\": \"Bankole\",\n      \"dob\": \"2000-01-01T00:00:00.000Z\",\n      \"gender\": \"MALE\",\n      \"tos\": true,\n      \"onboardingStatus\": [\n        \"NEWLY_REGISTERED\",\n        \"USERNAME_SET\",\n        \"PASSWORD_SET\"\n      ],\n      \"version\": 2,\n      \"createdAt\": \"2023-01-29T02:36:43.319Z\",\n      \"updatedAt\": \"2023-01-29T02:38:31.147Z\",\n      \"deletedAt\": null\n    }\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "5d83c205-96dd-480c-8186-258f7307bb9e",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ca192d88-976b-4a2a-987a-07cafc70a346",
+    "name": "Verify Device Login",
+    "url": "{{host}}{{auth-path}}/verify/verify-device-login",
+    "method": "POST",
+    "sortNum": 80000,
+    "created": "2023-02-17T20:34:13.376Z",
+    "modified": "2023-02-25T12:07:13.782Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"userId\": \"uejqr39kbih3nyf\",\n  \"username\": \"bankole\",\n  \"code\": \"FHHHAP\",\n  \"deviceId\": \"41606d95-96bc-4462-b884-eb8b88122e0e\",\n  \"type\": \"USERNAME\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.accessToken",
+        "action": "setto",
+        "value": "{{accessToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.idToken",
+        "action": "setto",
+        "value": "{{idToken}}"
+      },
+      {
+        "type": "set-env-var",
+        "custom": "json.data.refreshToken",
+        "action": "setto",
+        "value": "{{refreshToken}}"
+      }
+    ],
+    "docs": "if user uses `phone`, `email` or `username` to login, then send type as PHONE, EMAIL, or USERNAME respectively and field with corresponding data, i.e. `phone: <phone>`, `email: <email>` etc\n\n```json\n{\n  \"idToken\": \"{{idToken}}\",\n  \"userId\": \"uejqr39kbih3nyf\",\n  \"username\": \"bankole\",\n  \"code\": \"FHHHAP\",\n  \"deviceId\": \"41606d95-96bc-4462-b884-eb8b88122e0e\",\n  \"type\": \"USERNAME\"\n}\n```"
+  },
+  {
+    "_id": "98e93717-26b1-4e6e-aea9-0db0c0289f08",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "1005b8ed-970c-444c-8b27-e45878b9e1c9",
+    "name": "Verify OTP (Email / Phone)",
+    "url": "{{host}}{{auth-path}}/verify/otp/verify",
+    "method": "POST",
+    "sortNum": 70000,
+    "created": "2023-02-17T20:35:06.873Z",
+    "modified": "2023-03-10T21:05:38.955Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"idToken\": \"{{idToken}}\",\n  \"userId\": \"0c5725m57h2cknz\",\n  \"OTP\": \"E8I5F9\",\n  \"type\": \"EMAIL\",\n  \"email\": \"kolesan2k@yahoo.com\"\n}",
+      "form": []
+    },
+    "tests": [],
+    "docs": "Email Verified Example\n```json\n{\n  \"message\": \"Email Verified\",\n  \"success\": true,\n  \"data\": {\n    \"userId\": \"0c5725m57h2cknz\",\n    \"email\": \"kolesan2k@yahoo.com\",\n    \"emailVerified\": true,\n    \"phone\": null,\n    \"phoneData\": {},\n    \"phoneVerified\": false,\n    \"registeredVia\": \"EMAIL\",\n    \"username\": \"48fdc01a-e305-40aa-9d0b-567749708aad\",\n    \"roles\": [\n      \"USER\"\n    ],\n    \"password\": \"7dd7d601-d165-408c-83ce-144aa6bbde0e\",\n    \"firstname\": \"Techy\",\n    \"lastname\": \"Banky\",\n    \"displayname\": \"Techy\",\n    \"dob\": \"2000-01-01T00:00:00.000Z\",\n    \"gender\": \"OTHER\",\n    \"tos\": true,\n    \"onboardingStatus\": [\n      \"NEWLY_REGISTERED\"\n    ],\n    \"version\": 1,\n    \"createdAt\": \"2023-03-10T20:56:13.686Z\",\n    \"updatedAt\": \"2023-03-10T21:04:52.981Z\",\n    \"deletedAt\": null\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "a7c7de7a-8d15-47d4-a560-0f1f0ebd7152",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "1005b8ed-970c-444c-8b27-e45878b9e1c9",
+    "name": "Forgot Password Request",
+    "url": "{{host}}{{auth-path}}/verify/forgot-password",
+    "method": "POST",
+    "sortNum": 80000,
+    "created": "2023-02-17T20:36:17.911Z",
+    "modified": "2023-02-18T08:06:04.113Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"field\": \"\"\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "5555a24b-c2f3-45d8-9dbf-1628b9bcbfaf",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f3594bd2-e6c6-4e33-8854-5d4c15a47386",
+    "name": "Get Current User",
+    "url": "{{host}}{{auth-path}}/currentuser/me",
+    "method": "GET",
+    "sortNum": 90000,
+    "created": "2023-02-17T20:37:27.495Z",
+    "modified": "2023-02-17T20:37:46.087Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "c35e3d4f-1a7f-4de4-b924-3dcdff122c85",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f3594bd2-e6c6-4e33-8854-5d4c15a47386",
+    "name": "Delete Own Account",
+    "url": "{{host}}{{auth-path}}/currentuser/me",
+    "method": "DELETE",
+    "sortNum": 100000,
+    "created": "2023-02-17T20:37:53.342Z",
+    "modified": "2023-02-17T20:38:37.881Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "a92dc53d-9d89-4da0-8475-1b5ddaf87022",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f3594bd2-e6c6-4e33-8854-5d4c15a47386",
+    "name": "Get My Devices",
+    "url": "{{host}}{{auth-path}}/currentuser/devices",
+    "method": "GET",
+    "sortNum": 110000,
+    "created": "2023-02-17T20:38:49.687Z",
+    "modified": "2023-03-14T00:29:16.267Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "5cf75a52-fd4c-465d-88f8-0f26d98f840b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f3594bd2-e6c6-4e33-8854-5d4c15a47386",
+    "name": "Delete Device",
+    "url": "{{host}}{{auth-path}}/currentuser/devices/{deviceId}",
+    "method": "DELETE",
+    "sortNum": 100000,
+    "created": "2023-02-17T20:53:52.320Z",
+    "modified": "2023-02-17T20:55:10.900Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "deviceId",
+        "value": "",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "1ae816e2-4011-4bb4-8ff0-30ff41f5d2af",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "968652bd-ebd3-421a-aee5-159f714838ef",
+    "name": "Get Phone Country Codes",
+    "url": "{{host}}{{auth-path}}/system/data/phone-country-codes",
+    "method": "GET",
+    "sortNum": 110000,
+    "created": "2023-02-17T20:56:28.301Z",
+    "modified": "2023-02-17T20:56:57.010Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "3971a8b7-b674-43ce-b711-c9f3df5493d9",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "968652bd-ebd3-421a-aee5-159f714838ef",
+    "name": "Get IP Geo Data",
+    "url": "{{host}}{{auth-path}}/system/data/ip-geo-data/{ip}",
+    "method": "GET",
+    "sortNum": 120000,
+    "created": "2023-02-17T20:57:10.075Z",
+    "modified": "2023-02-17T20:57:59.079Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "ip",
+        "value": "127.0.0.1",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "ddf5bfb3-548d-4366-9085-6a199266cd90",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "968652bd-ebd3-421a-aee5-159f714838ef",
+    "name": "Store IP Geo Data",
+    "url": "{{host}}{{auth-path}}/system/data/ip-geo-data",
+    "method": "POST",
+    "sortNum": 120000,
+    "created": "2023-02-17T20:58:24.075Z",
+    "modified": "2023-02-17T20:58:49.524Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "c1eda2e4-a89a-4d98-ba67-422b7f0e3e44",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "968652bd-ebd3-421a-aee5-159f714838ef",
+    "name": "Update IP Geo Data",
+    "url": "{{host}}{{auth-path}}/system/data/ip-geo-data",
+    "method": "PATCH",
+    "sortNum": 130000,
+    "created": "2023-02-17T20:59:14.603Z",
+    "modified": "2023-02-17T20:59:34.903Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "4abd7057-3b4e-43df-b5a9-65f7966cea5a",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ab367ea1-5567-4172-ad00-2b67b32a8fb6",
+    "name": "Purge User From System",
+    "url": "{{host}}{{auth-path}}/system/manage/user/{userId}",
+    "method": "DELETE",
+    "sortNum": 130000,
+    "created": "2023-02-17T21:00:31.916Z",
+    "modified": "2023-02-17T21:01:06.343Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "userId",
+        "value": "asdf",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "7e8455f6-3e07-4e79-899a-94e36f9c2c36",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ed5dcde8-5780-4e7e-a094-457838c01a9c",
+    "name": "Models",
+    "url": "{{host}}{{auth-path}}/data",
+    "method": "GET",
+    "sortNum": 75000,
+    "created": "2023-02-18T06:59:09.101Z",
+    "modified": "2023-02-18T07:02:20.612Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "051cd6fd-ed5d-4a20-add1-640057979e1d",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "ed5dcde8-5780-4e7e-a094-457838c01a9c",
+    "name": "Model Data",
+    "url": "{{host}}{{auth-path}}/data/{model}",
+    "method": "GET",
+    "sortNum": 85000,
+    "created": "2023-02-18T07:01:24.748Z",
+    "modified": "2023-02-18T07:03:17.504Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "model",
+        "value": "approvedDevices",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "b7996af0-69e3-411c-b0cd-07d1e6fa5909",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "09612184-5b58-42f2-9da5-987086bded17",
+    "name": "Test",
+    "url": "{{host}}{{listing-path}}/test",
+    "method": "GET",
+    "sortNum": 160000,
+    "created": "2023-02-18T07:04:01.581Z",
+    "modified": "2023-02-18T07:04:24.067Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "d7034b9d-b221-41c4-991f-260ff2fb46be",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "3c7374c4-f7dd-4712-b03d-c85eb84640db",
+    "name": "Models",
+    "url": "{{host}}{{profile-path}}/data",
+    "method": "GET",
+    "sortNum": 75000,
+    "created": "2023-02-18T07:09:19.129Z",
+    "modified": "2023-02-18T07:40:10.531Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "4bf737bc-8aa7-48a5-aa72-0be539455ac8",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "3c7374c4-f7dd-4712-b03d-c85eb84640db",
+    "name": "Model Data",
+    "url": "{{host}}{{profile-path}}/data/{model}",
+    "method": "GET",
+    "sortNum": 85000,
+    "created": "2023-02-18T07:09:19.131Z",
+    "modified": "2023-02-18T10:06:38.976Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "model",
+        "value": "profile",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "9ff52c73-7703-413b-a3f0-d4096b8bc655",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "641d9c98-937c-413b-9932-f5107eb68499",
+    "name": "Models",
+    "url": "{{host}}{{listing-path}}/data",
+    "method": "GET",
+    "sortNum": 75000,
+    "created": "2023-02-18T07:11:39.835Z",
+    "modified": "2023-02-18T07:11:39.835Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "2ba90016-935b-4fd5-a046-40cff72998e9",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "641d9c98-937c-413b-9932-f5107eb68499",
+    "name": "Model Data",
+    "url": "{{host}}{{listing-path}}/data/{model}",
+    "method": "GET",
+    "sortNum": 85000,
+    "created": "2023-02-18T07:11:39.836Z",
+    "modified": "2023-02-18T07:12:29.393Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "model",
+        "value": "listingImage",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "d0442ffd-8bc1-45a9-a2ab-d743495207e8",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8756a8a4-e299-41a3-845c-e095f8efe052",
+    "name": "Get Listings",
+    "url": "{{host}}{{listing-path}}/listings",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-02-18T07:14:24.289Z",
+    "modified": "2023-02-18T07:17:33.435Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "6d304085-7515-48b7-81a4-b6c28dc51092",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "3ba028d6-f139-467f-8bdf-9c398ad58f49",
+    "name": "Create Listings",
+    "url": "{{host}}{{listing-path}}/listings",
+    "method": "POST",
+    "sortNum": 180000,
+    "created": "2023-02-18T07:15:16.593Z",
+    "modified": "2023-02-18T08:08:20.862Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"title\": \"\",\n  \"caption\": \"\"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.listingId",
+        "action": "setto",
+        "value": "{{listingId}}"
+      }
+    ]
+  },
+  {
+    "_id": "7e983cbf-530d-45fb-b614-a801ae4356f5",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8756a8a4-e299-41a3-845c-e095f8efe052",
+    "name": "Get Listing Details",
+    "url": "{{host}}{{listing-path}}/listings/{listingId}",
+    "method": "GET",
+    "sortNum": 180000,
+    "created": "2023-02-18T07:17:43.530Z",
+    "modified": "2023-02-18T08:07:22.852Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "listingId",
+        "value": "skvmw3wefkj5ewd",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "441494bb-422e-488e-8201-74713bfdc687",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "3ba028d6-f139-467f-8bdf-9c398ad58f49",
+    "name": "Set Basic Listing Info",
+    "url": "{{host}}{{listing-path}}/listings/{listingId}",
+    "method": "PATCH",
+    "sortNum": 190000,
+    "created": "2023-02-18T08:09:52.236Z",
+    "modified": "2023-02-18T08:10:24.703Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "listingId",
+        "value": "",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "6905921e-1a54-4bd5-afe5-49217c1c9383",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "5c0ad0be-a237-4fcd-9cb2-e11027a14cfa",
+    "name": "Test",
+    "url": "{{host}}{{profile-path}}/test",
+    "method": "GET",
+    "sortNum": 200000,
+    "created": "2023-02-18T10:08:19.480Z",
+    "modified": "2023-02-18T10:08:31.826Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "378e70b1-d2bf-4410-8f08-aca632db156e",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "bd905278-f4a0-4f6d-a897-dfad060f31b3",
+    "name": "Get All User Profiles",
+    "url": "{{host}}{{profile-path}}/admin/users",
+    "method": "GET",
+    "sortNum": 210000,
+    "created": "2023-02-18T10:09:02.991Z",
+    "modified": "2023-02-18T10:09:16.145Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "ea607c38-891d-4a56-b4df-5e234093fb0b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "acdd67e2-554a-4fc9-9871-1268babdf78e",
+    "name": "Get My Profile",
+    "url": "{{host}}{{profile-path}}/me/profile",
+    "method": "GET",
+    "sortNum": 220000,
+    "created": "2023-02-18T10:09:59.360Z",
+    "modified": "2023-02-18T10:10:13.169Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "1279e28b-c114-4436-9e68-1decf2a1102f",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "acdd67e2-554a-4fc9-9871-1268babdf78e",
+    "name": "Upload Profile Image",
+    "url": "{{host}}{{profile-path}}/me/image",
+    "method": "POST",
+    "sortNum": 230000,
+    "created": "2023-02-18T10:10:24.758Z",
+    "modified": "2023-02-18T10:10:40.087Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "0129d07c-b629-49a8-bddf-9aa1d67bbcff",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "acdd67e2-554a-4fc9-9871-1268babdf78e",
+    "name": "Upload Profile Wallpaper",
+    "url": "{{host}}{{profile-path}}/me/wallpaper",
+    "method": "POST",
+    "sortNum": 240000,
+    "created": "2023-02-18T10:11:34.421Z",
+    "modified": "2023-02-18T10:11:42.495Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "aae9c0bf-3d5e-41a3-aaaa-0a225e7187d4",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Get Profile By User Id",
+    "url": "{{host}}{{profile-path}}/u/id/profile/{userId}",
+    "method": "GET",
+    "sortNum": 230000,
+    "created": "2023-02-18T10:12:52.552Z",
+    "modified": "2023-02-27T02:05:53.560Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "userId",
+        "value": "",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "64f9fdd4-c322-49dc-82cd-d8e2adff3a7a",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Get Profile By Username",
+    "url": "{{host}}{{profile-path}}/u/profile/{username}",
+    "method": "GET",
+    "sortNum": 240000,
+    "created": "2023-02-18T10:13:23.444Z",
+    "modified": "2023-02-27T02:06:33.657Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole2000",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "48cee55d-ce23-4b00-a1a7-fa4bd5c73feb",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Get Profile Wallpaper",
+    "url": "{{host}}{{profile-path}}/u/wallpaper/{username}",
+    "method": "GET",
+    "sortNum": 250000,
+    "created": "2023-02-18T10:14:32.245Z",
+    "modified": "2023-02-18T10:14:50.344Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "3814c9e9-ccbc-41ad-913e-8c94580930a6",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Get Profile Image",
+    "url": "{{host}}{{profile-path}}/u/image/{username}",
+    "method": "GET",
+    "sortNum": 260000,
+    "created": "2023-02-18T10:15:36.525Z",
+    "modified": "2023-02-18T10:15:44.571Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "3f24a1c4-48b7-49cc-953e-90c2ca3b0a66",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0ce8d702-11eb-4a6d-a8ab-4ef3939407a1",
+    "name": "Models",
+    "url": "{{host}}{{chat-path}}/data",
+    "method": "GET",
+    "sortNum": 75000,
+    "created": "2023-02-18T10:17:53.789Z",
+    "modified": "2023-02-18T10:18:20.751Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "e5084112-9a4a-4bb3-981d-7823dcb6324a",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0ce8d702-11eb-4a6d-a8ab-4ef3939407a1",
+    "name": "Model Data",
+    "url": "{{host}}{{chat-path}}/data/{model}",
+    "method": "GET",
+    "sortNum": 85000,
+    "created": "2023-02-18T10:17:53.790Z",
+    "modified": "2023-02-18T10:18:53.357Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "model",
+        "value": "user",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "9197399f-afa0-4b86-99bd-fb42ec73bdc0",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "72c0e8a0-d46d-46c9-a95b-c72e04e3db4e",
+    "name": "Test",
+    "url": "{{host}}{{chat-path}}/test",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-02-18T10:18:04.564Z",
+    "modified": "2023-02-18T10:18:13.451Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "4b1ae01b-58c7-44ef-8fa7-5ffd57fcf755",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "383f9258-51c5-4a44-a1e8-b439cd2f19b9",
+    "name": "Models",
+    "url": "{{host}}{{post-path}}/data",
+    "method": "GET",
+    "sortNum": 75000,
+    "created": "2023-02-18T10:58:23.613Z",
+    "modified": "2023-02-18T10:59:54.376Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "dea4c4f5-03c1-428b-90c6-599008c5d035",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "383f9258-51c5-4a44-a1e8-b439cd2f19b9",
+    "name": "Model Data",
+    "url": "{{host}}{{post-path}}/data/{model}",
+    "method": "GET",
+    "sortNum": 85000,
+    "created": "2023-02-18T10:58:23.614Z",
+    "modified": "2023-02-22T23:06:19.986Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "model",
+        "value": "moderationQueue",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "f2c65472-50a6-48d8-8055-a73ce45ddc8b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
+    "name": "Test",
+    "url": "{{host}}{{chat-path}}/test",
+    "method": "GET",
+    "sortNum": 10000,
+    "created": "2023-02-18T11:00:13.821Z",
+    "modified": "2023-02-18T11:00:17.524Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "3589d621-0694-4797-9d3c-3a14db09de5c",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
+    "name": "Create Post",
+    "url": "{{host}}{{post-path}}/posts/create",
+    "method": "GET",
+    "sortNum": 240000,
+    "created": "2023-02-18T17:31:48.982Z",
+    "modified": "2023-03-10T21:33:29.525Z",
+    "headers": [],
+    "params": [],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.id",
+        "action": "setto",
+        "value": "{{postId}}"
+      }
+    ],
+    "docs": "```json\n{\n  \"message\": \"New Post created\",\n  \"success\": true,\n  \"data\": {\n    \"id\": \"9g7h4ie3md0tw21\",\n    \"caption\": \"\",\n    \"published\": false,\n    \"allowComments\": true,\n    \"showLikesCount\": true,\n    \"pinned\": false,\n    \"createdBy\": \"0c5725m57h2cknz\",\n    \"urls\": [],\n    \"repostId\": null,\n    \"version\": 0,\n    \"created\": \"2023-03-10T21:33:12.585Z\",\n    \"updated\": \"2023-03-10T21:33:12.585Z\",\n    \"deletedAt\": null,\n    \"postMedia\": [],\n    \"repost\": null,\n    \"moderation\": null\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "be22d092-abf2-46f5-ac6b-b5cc0dc1c129",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f4725599-a855-4222-8745-e7b5b60ed920",
+    "name": "Add Post Media",
+    "url": "{{host}}{{post-path}}/posts/{postId}/media",
+    "method": "POST",
+    "sortNum": 260000,
+    "created": "2023-02-18T22:25:40.091Z",
+    "modified": "2023-03-14T13:54:46.402Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "body": {
+      "type": "formdata",
+      "raw": "",
+      "form": [
+        {
+          "name": "type",
+          "value": "IMAGE"
+        }
+      ],
+      "files": [
+        {
+          "name": "media",
+          "value": "..\\..\\..\\..\\Downloads\\Screenshot 2023-01-19 033920.png"
+        }
+      ]
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.id",
+        "action": "setto",
+        "value": "{{postMediaId}}"
+      }
+    ],
+    "docs": "Adding Post media: \nPost media can be either IMAGE (file uploaded by user), or GIF (selection from GIPHY api).\nBody should have the following properties\n- type : IMAGE / GIF,\n- imageUrl: optional, include if type is GIF,\n- gifData: optional, include if type is GIF\n\nAdd IMAGE request\n - FormData:\n```json\ntype: IMAGE\nmedia: File\n```\nAdd IMAGE response \n```json\n{\n  \"message\": \"Post media added\",\n  \"success\": true,\n  \"data\": {\n    \"id\": \"s33iwrivehftks8\",\n    \"type\": \"IMAGE\",\n    \"imageUrl\": \"http://localhost:8080/api/files/08tzclgz3oh38j1/s33iwrivehftks8/screenshot_2023_01_19_033920_GzCw5lT03q.png\",\n    \"image\": \"screenshot_2023_01_19_033920_GzCw5lT03q.png\",\n    \"order\": 0,\n    \"data\": {},\n    \"post\": \"6xmau21h9poe2f8\",\n    \"created\": \"2023-03-14T11:41:12.065Z\",\n    \"updated\": \"2023-03-14T11:41:12.065Z\"\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```\nAdd Gif Request\n- Json Body:\n```json\n{\n  type: 'GIF',\n  id: gif.id\n  data: gif.images.original\n}\n```\n"
+  },
+  {
+    "_id": "48f30fd2-24f9-4b4b-8b86-9f28ae0e1323",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f4725599-a855-4222-8745-e7b5b60ed920",
+    "name": "Update Post Media",
+    "url": "{{host}}{{post-path}}/posts/{postId}/media",
+    "method": "PATCH",
+    "sortNum": 270000,
+    "created": "2023-02-18T22:25:50.211Z",
+    "modified": "2023-02-18T23:36:39.029Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "4b10180f-3e7d-4b68-b53f-06b980194f37",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "17bbd008-fa64-4b42-a1d5-61d9289aefd6",
+    "name": "Set Post Caption",
+    "url": "{{host}}{{post-path}}/posts/{postId}/caption",
+    "method": "PATCH",
+    "sortNum": 290000,
+    "created": "2023-02-18T22:28:47.355Z",
+    "modified": "2023-03-11T00:16:52.410Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"caption\": \"new post with #hashtag and tagging user @user with a link to https://google.com\"\n}",
+      "form": []
+    },
+    "tests": [],
+    "docs": "```json\n{\n  \"message\": \"Post caption set\",\n  \"success\": true,\n  \"data\": {\n    \"id\": \"9g7h4ie3md0tw21\",\n    \"caption\": \"new post with #hashtag and tagging user @user with a link to https://google.com\",\n    \"published\": false,\n    \"allowComments\": true,\n    \"showLikesCount\": true,\n    \"pinned\": false,\n    \"createdBy\": \"0c5725m57h2cknz\",\n    \"urls\": [],\n    \"repostId\": null,\n    \"version\": 0,\n    \"created\": \"2023-03-10T21:33:12.585Z\",\n    \"updated\": \"2023-03-10T21:50:50.158Z\",\n    \"deletedAt\": null,\n    \"postMedia\": [],\n    \"tags\": []\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "80ad7dd3-cb22-4346-8915-f8b3c0a3bf3e",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "17bbd008-fa64-4b42-a1d5-61d9289aefd6",
+    "name": "Set Post Privacy",
+    "url": "",
+    "method": "GET",
+    "sortNum": 300000,
+    "created": "2023-02-18T22:29:29.082Z",
+    "modified": "2023-02-18T22:29:29.082Z",
+    "headers": []
+  },
+  {
+    "_id": "d371e95c-a8b8-4633-89cc-da880b36c6e9",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
+    "name": "Publish Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/publish?autoModerate=true",
+    "method": "GET",
+    "sortNum": 310000,
+    "created": "2023-02-18T22:29:51.003Z",
+    "modified": "2023-03-24T16:41:48.466Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "publishAt",
+        "value": "2023-02-21 15:32:00",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "autoModerate",
+        "value": "true",
+        "isPath": false
+      },
+      {
+        "name": "contentWarning",
+        "value": "false",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "caption",
+        "value": "😀",
+        "isDisabled": true,
+        "isPath": false
+      }
+    ],
+    "tests": [],
+    "docs": "Query parameter `publishAt` , sets when post should be published\n\nShould create post publishing job to be executed at set time.\n\nSuccess Reponse\n\n```json\n{\n  \"message\": \"Post Published\",\n  \"success\": true,\n  \"data\": {\n    \"postId\": \"unnclu1xkg7d7ux\",\n    \"moderated\": false,\n    \"autoModerate\": true,\n    \"contentWarning\": false,\n    \"status\": \"PENDING\",\n    \"created\": \"2023-03-13T23:54:16.866Z\",\n    \"updated\": \"2023-03-13T23:54:16.866Z\",\n    \"publishAt\": null,\n    \"post\": {\n      \"id\": \"unnclu1xkg7d7ux\",\n      \"caption\": \"😀\",\n      \"published\": false,\n      \"allowComments\": true,\n      \"showLikesCount\": true,\n      \"pinned\": false,\n      \"createdBy\": \"0c5725m57h2cknz\",\n      \"urls\": [],\n      \"repostId\": null,\n      \"version\": 0,\n      \"created\": \"2023-03-10T21:29:33.805Z\",\n      \"updated\": \"2023-03-13T23:54:16.850Z\",\n      \"deletedAt\": null,\n      \"postMedia\": [],\n      \"tags\": [],\n      \"_count\": {\n        \"comments\": 0,\n        \"likedBy\": 0,\n        \"postMedia\": 0,\n        \"tags\": 0,\n        \"views\": 0\n      }\n    },\n    \"moderation\": [],\n    \"reports\": []\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```\n\nError response\n```json\n{\n  \"message\": \"Post must have either caption or at least 1 media element\",\n  \"success\": false,\n  \"data\": null,\n  \"errors\": \"POST_SERVICE_POST_HAS_NO_CONTENT\",\n  \"error\": \"Post content empty\",\n  \"fix\": \"Please add a caption or an image/media before publishing\",\n  \"statusCode\": 400\n}\n```"
+  },
+  {
+    "_id": "6d118602-e7ad-4261-b5e3-35234b0078d7",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f4725599-a855-4222-8745-e7b5b60ed920",
+    "name": "Remove Post Media",
+    "url": "{{host}}{{post-path}}/posts/{postId}/media/{mediaId}",
+    "method": "DELETE",
+    "sortNum": 280000,
+    "created": "2023-02-18T23:39:46.299Z",
+    "modified": "2023-02-18T23:40:26.444Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "mediaId",
+        "value": "{{postMediaId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "44123923-bc96-4a75-84b4-15d8f5f09634",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
+    "name": "Delete Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/unpublished",
+    "method": "DELETE",
+    "sortNum": 320000,
+    "created": "2023-02-18T23:40:29.049Z",
+    "modified": "2023-04-05T23:50:05.802Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "3qh7knoo6ountox",
+        "isPath": true
+      }
+    ],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{postId}}"
+      }
+    ]
+  },
+  {
+    "_id": "4fc28932-0a7b-4aed-9b2d-d87b8a64a1f5",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Unlike Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/likes",
+    "method": "DELETE",
+    "sortNum": 270000,
+    "created": "2023-02-18T23:53:42.185Z",
+    "modified": "2023-03-24T16:02:51.259Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "f3ac24b2-21d0-4e5e-93da-a66c4850569d",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "4b692297-8311-4e68-a2cf-5802114563b5",
+    "name": "Get Post Likes",
+    "url": "{{host}}{{post-path}}/posts/{postId}/likes",
+    "method": "GET",
+    "sortNum": 330000,
+    "created": "2023-02-19T00:57:41.660Z",
+    "modified": "2023-02-19T00:58:03.272Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "2197e308-9d15-47e6-97ba-3893468740f5",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "e01d5cab-8df9-49b6-8433-ab2077c04972",
+    "name": "Get Post Comments",
+    "url": "{{host}}{{post-path}}/posts/{postId}/comments?sort=latest",
+    "method": "GET",
+    "sortNum": 330000,
+    "created": "2023-02-19T02:05:09.012Z",
+    "modified": "2023-04-01T20:57:50.827Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "6xmau21h9poe2f8",
+        "isPath": true
+      },
+      {
+        "name": "sort",
+        "value": "latest",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "90e5d929-f494-49e7-9f00-c8b49b296ae8",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "e01d5cab-8df9-49b6-8433-ab2077c04972",
+    "name": "Comment on Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/comments",
+    "method": "POST",
+    "sortNum": 340000,
+    "created": "2023-02-19T02:05:47.818Z",
+    "modified": "2023-03-30T04:41:48.450Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"content\": \"  \"\n}",
+      "form": []
+    },
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.id",
+        "action": "setto",
+        "value": "{{postCommentId}}"
+      }
+    ]
+  },
+  {
+    "_id": "96e04ef2-afef-4e3c-a319-54fa02a35477",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "e01d5cab-8df9-49b6-8433-ab2077c04972",
+    "name": "Pin / Unpin Comment on Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/comments/{commentId}/pin",
+    "method": "PATCH",
+    "sortNum": 350000,
+    "created": "2023-02-19T02:06:42.978Z",
+    "modified": "2023-02-19T02:11:13.382Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "commentId",
+        "value": "{{postCommentId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "2dd6be8d-c0c0-4c4f-8c03-3299ac0a24b3",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "e01d5cab-8df9-49b6-8433-ab2077c04972",
+    "name": "Delete Comment",
+    "url": "{{host}}{{post-path}}/posts/{postId}/comments/{commentId}",
+    "method": "DELETE",
+    "sortNum": 360000,
+    "created": "2023-02-19T02:23:07.487Z",
+    "modified": "2023-02-19T02:30:14.717Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "commentId",
+        "value": "{{postCommentId}}",
+        "isPath": true
+      }
+    ],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "null",
+        "action": "setto",
+        "value": "{{postCommentId}}"
+      }
+    ],
+    "docs": "Comment on post can be deleted by\n- User who created comment\n- User who created Post\n- Moderator\n- Admin"
+  },
+  {
+    "_id": "0d1e96de-1bf7-491d-800a-83fd969bae20",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "109cb93c-db19-45a5-87e0-1790c503c2e6",
+    "name": "Get Post Details",
+    "url": "{{host}}{{post-path}}/posts/{postId}",
+    "method": "GET",
+    "sortNum": 370000,
+    "created": "2023-02-19T13:44:06.689Z",
+    "modified": "2023-04-03T14:23:47.675Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "zrnhnvi1owrou52",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "135ea2b2-e68f-46d1-b811-eb6af5dae0a2",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f4725599-a855-4222-8745-e7b5b60ed920",
+    "name": "Change Media Order",
+    "url": "{{host}}{{post-path}}/posts/{postId}/media/{mediaId}/order",
+    "method": "PATCH",
+    "sortNum": 275000,
+    "created": "2023-02-19T22:12:48.794Z",
+    "modified": "2023-02-19T22:23:14.218Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "mediaId",
+        "value": "{{postMediaId}}",
+        "isPath": true
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"order\": 0\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "6ab121bd-b9e7-4ed4-b937-17cd4c908fe4",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
+    "name": "Unpublish Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/unpublish",
+    "method": "GET",
+    "sortNum": 315000,
+    "created": "2023-02-22T15:25:57.956Z",
+    "modified": "2023-02-22T15:26:41.270Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      },
+      {
+        "name": "publishAt",
+        "value": "2023-02-21 15:32:00",
+        "isDisabled": true,
+        "isPath": false
+      }
+    ],
+    "tests": [],
+    "docs": "Query parameter `publishAt` , sets when post should be published\n\nShould create post publishing job to be executed at set time."
+  },
+  {
+    "_id": "c921f08e-5f25-4160-9db2-9a5c3ae1f79b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8d24ee09-118a-475e-93ff-e3b0dfb8134f",
+    "name": "Get Queue",
+    "url": "{{host}}{{post-path}}/moderation/posts?page=1&limit=10",
+    "method": "GET",
+    "sortNum": 390000,
+    "created": "2023-02-23T09:30:07.885Z",
+    "modified": "2023-03-14T00:26:15.376Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "1",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "10",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "3bbcbc9e-925e-490f-b539-8d3712ee1658",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "8d24ee09-118a-475e-93ff-e3b0dfb8134f",
+    "name": "Add Moderation Review",
+    "url": "",
+    "method": "GET",
+    "sortNum": 400000,
+    "created": "2023-02-23T11:40:12.914Z",
+    "modified": "2023-02-23T11:40:12.914Z",
+    "headers": []
+  },
+  {
+    "_id": "34ec24a0-3907-4a0a-834d-86356fed4aa9",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "User Followers",
+    "url": "{{host}}{{profile-path}}/me/followers?page&limit",
+    "method": "GET",
+    "sortNum": 410000,
+    "created": "2023-02-23T21:30:37.043Z",
+    "modified": "2023-02-23T21:38:32.705Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "47ccbd0f-7911-485c-9148-b588865a0075",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Follow User",
+    "url": "{{host}}{{profile-path}}/me/follow/{username}",
+    "method": "POST",
+    "sortNum": 420000,
+    "created": "2023-02-23T21:38:53.603Z",
+    "modified": "2023-02-25T12:01:32.619Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole2000",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "cc2047f6-5dd5-4ae5-9a3d-e2e66460ca5f",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Search User Followers",
+    "url": "{{host}}{{profile-path}}/me/followers/search?page&limit&q=abc",
+    "method": "GET",
+    "sortNum": 415000,
+    "created": "2023-02-24T20:34:27.999Z",
+    "modified": "2023-02-24T20:35:09.279Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "q",
+        "value": "abc",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "e6c4f470-6681-4f19-aa5d-cd98edc3533f",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "User Following",
+    "url": "{{host}}{{profile-path}}/me/following?page&limit",
+    "method": "GET",
+    "sortNum": 412500,
+    "created": "2023-02-24T21:18:32.208Z",
+    "modified": "2023-02-24T21:18:54.058Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "46d32ba2-5c88-4c88-a267-1f44341d302c",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Search User Following",
+    "url": "{{host}}{{profile-path}}/me/following/search?page&limit&q=abc",
+    "method": "GET",
+    "sortNum": 417500,
+    "created": "2023-02-24T21:19:02.662Z",
+    "modified": "2023-02-24T21:19:27.035Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "q",
+        "value": "abc",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "27230002-e185-4d30-85ad-abb0000dabbe",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Sent Follow Requests",
+    "url": "{{host}}{{profile-path}}/me/follow-requests/sent",
+    "method": "GET",
+    "sortNum": 430000,
+    "created": "2023-02-24T21:28:03.736Z",
+    "modified": "2023-02-24T21:28:42.414Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "81fde048-df7f-4c5d-8349-dfe992694cf1",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Received Follow Requests",
+    "url": "{{host}}{{profile-path}}/me/follow-requests/received?page&limit",
+    "method": "GET",
+    "sortNum": 440000,
+    "created": "2023-02-24T21:29:55.718Z",
+    "modified": "2023-02-24T21:31:24.756Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "1632aa4f-103a-4436-8c26-1398652ed56b",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Bulk Accept Follow Requests",
+    "url": "{{host}}{{profile-path}}/me/follow-requests",
+    "method": "POST",
+    "sortNum": 440000,
+    "created": "2023-02-24T21:32:25.205Z",
+    "modified": "2023-02-24T21:32:57.307Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "58fcb7d4-9e58-479d-b90d-5bf901227e56",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Bulk Decline Follow Requests",
+    "url": "{{host}}{{profile-path}}/me/follow-requests",
+    "method": "DELETE",
+    "sortNum": 450000,
+    "created": "2023-02-24T21:33:20.748Z",
+    "modified": "2023-02-24T21:34:09.069Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "c8a525a1-8b3c-43ca-b425-89d7a9d5fc7a",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "UnFollow User",
+    "url": "{{host}}{{profile-path}}/me/unfollow/{username}",
+    "method": "POST",
+    "sortNum": 425000,
+    "created": "2023-02-24T21:36:13.587Z",
+    "modified": "2023-02-24T21:37:20.500Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "5a97b20e-efc7-402c-ad61-8bbecf413fd3",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Blocked Users",
+    "url": "{{host}}{{profile-path}}/me/blocked?page&limit",
+    "method": "GET",
+    "sortNum": 450000,
+    "created": "2023-02-24T21:54:26.856Z",
+    "modified": "2023-02-24T21:56:19.477Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "1865f1b7-0f81-42b2-b450-8a04c1449f1e",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "95b110af-d886-4ebf-87d8-fb41e2b73901",
+    "name": "Block User",
+    "url": "{{host}}{{profile-path}}/me/block/{username}",
+    "method": "POST",
+    "sortNum": 460000,
+    "created": "2023-02-24T21:56:42.815Z",
+    "modified": "2023-02-24T22:12:16.900Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "abc",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "04768dfc-22eb-48e5-b423-065360a98812",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Suggested Profiles",
+    "url": "{{host}}{{profile-path}}/u/suggested",
+    "method": "GET",
+    "sortNum": 460000,
+    "created": "2023-02-25T13:09:31.111Z",
+    "modified": "2023-02-26T21:56:05.421Z",
+    "headers": [],
+    "params": [],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"suggested\": []\n}",
+      "form": []
+    },
+    "tests": []
+  },
+  {
+    "_id": "62b1bebc-4b6f-4251-8e1a-5aa055c7d550",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "67954224-1e0e-4faa-b506-d6235370d24c",
+    "name": "Search User Profiles",
+    "url": "{{host}}{{profile-path}}/u/profiles/search?q=r&page&limit",
+    "method": "GET",
+    "sortNum": 470000,
+    "created": "2023-02-25T13:54:33.636Z",
+    "modified": "2023-03-11T07:19:30.181Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "q",
+        "value": "r",
+        "isPath": false
+      },
+      {
+        "name": "page",
+        "value": "",
+        "isPath": false
+      },
+      {
+        "name": "limit",
+        "value": "",
+        "isPath": false
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "01ce104d-de54-4633-958e-33a4e65dcbe4",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "f066b08a-a599-4a78-b66a-38a08f1fd6c1",
+    "name": "Get User Contacts",
+    "url": "{{host}}{{chat-path}}/me/contacts",
+    "method": "GET",
+    "sortNum": 480000,
+    "created": "2023-02-28T16:18:55.868Z",
+    "modified": "2023-02-28T16:26:18.437Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "408d1c51-b205-4c0d-af75-16e62465a081",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "109cb93c-db19-45a5-87e0-1790c503c2e6",
+    "name": "Get User Posts",
+    "url": "{{host}}{{post-path}}/u/{username}/posts",
+    "method": "GET",
+    "sortNum": 490000,
+    "created": "2023-03-09T00:24:01.218Z",
+    "modified": "2023-04-01T20:14:02.690Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "username",
+        "value": "bankole2000",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "4d40e4eb-f986-425c-97bd-226bb8d71c10",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "5bd2996c-9191-408e-b66b-2050e9250184",
+    "name": "Get Tags",
+    "url": "{{host}}{{post-path}}/tags",
+    "method": "GET",
+    "sortNum": 500000,
+    "created": "2023-03-11T02:16:07.299Z",
+    "modified": "2023-03-11T02:22:02.148Z",
+    "headers": [],
+    "params": [],
+    "tests": [],
+    "docs": "```json\n{\n  \"message\": \"Tags\",\n  \"success\": true,\n  \"data\": {\n    \"total\": 6,\n    \"page\": 1,\n    \"pages\": 1,\n    \"limit\": 12,\n    \"prev\": null,\n    \"next\": null,\n    \"data\": [\n      {\n        \"id\": \"d48bfc22-aca5-4c35-ba7f-8969b63ced8b\",\n        \"name\": \"automoderated\",\n        \"createdAt\": \"2023-02-22T21:39:00.995Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      },\n      {\n        \"id\": \"eab42765-7bad-4162-bfa4-6994a19474dc\",\n        \"name\": \"newtag\",\n        \"createdAt\": \"2023-02-20T11:07:00.595Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      },\n      {\n        \"id\": \"72c88ed1-a47c-4568-b223-b6676d58c66a\",\n        \"name\": \"hashtag\",\n        \"createdAt\": \"2023-02-26T18:13:27.005Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      },\n      {\n        \"id\": \"8b746af4-78bd-44ab-9430-c9d173e74311\",\n        \"name\": \"first\",\n        \"createdAt\": \"2023-02-21T19:28:21.897Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      },\n      {\n        \"id\": \"41d042f2-a629-4c57-8afd-b2756bf834e2\",\n        \"name\": \"published\",\n        \"createdAt\": \"2023-02-22T21:39:00.995Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      },\n      {\n        \"id\": \"18e1869d-be05-4c9d-8a31-94a15d59e954\",\n        \"name\": \"post\",\n        \"createdAt\": \"2023-02-20T11:05:52.968Z\",\n        \"_count\": {\n          \"posts\": 1\n        }\n      }\n    ]\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "b062218a-841f-4452-a212-aeeb0c20e2b4",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "5bd2996c-9191-408e-b66b-2050e9250184",
+    "name": "Get Tag Posts",
+    "url": "{{host}}{{post-path}}/tags/{tag}/posts",
+    "method": "GET",
+    "sortNum": 510000,
+    "created": "2023-03-11T02:26:11.956Z",
+    "modified": "2023-03-11T02:42:42.448Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "tag",
+        "value": "automoderated",
+        "isPath": true
+      }
+    ],
+    "tests": [],
+    "docs": "```json\n{\n  \"message\": \"User Posts\",\n  \"success\": true,\n  \"data\": {\n    \"total\": 1,\n    \"data\": [\n      {\n        \"id\": \"zrnhnvi1owrou52\",\n        \"caption\": \"This post will be #automoderated and published #published - https://twitter.com/postid\",\n        \"published\": true,\n        \"allowComments\": true,\n        \"showLikesCount\": true,\n        \"pinned\": false,\n        \"createdBy\": \"k4i1u6w41jtnidx\",\n        \"urls\": [\n          \"https://twitter.com/postid\"\n        ],\n        \"repostId\": null,\n        \"version\": 2,\n        \"created\": \"2023-02-22T21:37:38.927Z\",\n        \"updated\": \"2023-02-22T22:24:31.464Z\",\n        \"deletedAt\": null,\n        \"createdByData\": {\n          \"userId\": \"k4i1u6w41jtnidx\",\n          \"email\": \"techybanky@gmail.com\",\n          \"emailVerified\": true,\n          \"phone\": null,\n          \"phoneData\": {},\n          \"phoneVerified\": false,\n          \"registeredVia\": \"EMAIL\",\n          \"username\": \"bankole2000\",\n          \"gender\": \"MALE\",\n          \"roles\": [\n            \"USER\",\n            \"SCOUT\",\n            \"AGENT\",\n            \"MODERATOR\",\n            \"MODERATION\",\n            \"SUPPORT\",\n            \"SYSTEM\",\n            \"ADMIN\",\n            \"SUPER_ADMIN\",\n            \"JURY\",\n            \"JUDGE\"\n          ],\n          \"firstname\": \"Bankole\",\n          \"lastname\": \"Esan\",\n          \"displayname\": \"Bankole\",\n          \"dob\": \"2000-01-01T00:00:00.000Z\",\n          \"followers\": [],\n          \"following\": [],\n          \"blocked\": [],\n          \"blockedBy\": [],\n          \"tos\": true,\n          \"version\": 2,\n          \"createdAt\": \"2023-02-11T19:23:23.884Z\",\n          \"updatedAt\": \"2023-02-11T19:33:41.139Z\",\n          \"deletedAt\": null\n        },\n        \"postMedia\": [],\n        \"moderation\": {\n          \"postId\": \"zrnhnvi1owrou52\",\n          \"moderated\": true,\n          \"autoModerate\": true,\n          \"contentWarning\": false,\n          \"status\": \"AUTO_APPROVED\",\n          \"created\": \"2023-02-22T21:38:50.866Z\",\n          \"updated\": \"2023-02-22T21:39:00.937Z\",\n          \"publishAt\": null\n        },\n        \"repost\": null,\n        \"tags\": [\n          {\n            \"id\": \"d48bfc22-aca5-4c35-ba7f-8969b63ced8b\",\n            \"name\": \"automoderated\",\n            \"createdAt\": \"2023-02-22T21:39:00.995Z\"\n          },\n          {\n            \"id\": \"41d042f2-a629-4c57-8afd-b2756bf834e2\",\n            \"name\": \"published\",\n            \"createdAt\": \"2023-02-22T21:39:00.995Z\"\n          }\n        ],\n        \"_count\": {\n          \"likedBy\": 0,\n          \"comments\": 0,\n          \"postMedia\": 0,\n          \"views\": 0,\n          \"reposts\": 0\n        },\n        \"followsYou\": false,\n        \"followedByYou\": false,\n        \"reportedByYou\": false,\n        \"savedByYou\": false,\n        \"repostedByYou\": false,\n        \"viewedByYou\": false,\n        \"authoredByYou\": false\n      }\n    ],\n    \"page\": 1,\n    \"pages\": 1,\n    \"limit\": 12,\n    \"prev\": null,\n    \"next\": null\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "81eacf27-505d-4cad-a451-78fcbb3ed36c",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "acdd67e2-554a-4fc9-9871-1268babdf78e",
+    "name": "Get Taggable Profiles",
+    "url": "{{host}}{{profile-path}}/me/taggable",
+    "method": "GET",
+    "sortNum": 520000,
+    "created": "2023-03-11T04:59:24.543Z",
+    "modified": "2023-03-11T04:59:40.968Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "2ad93233-2b60-4b7e-81c5-533d44ebb34c",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "769b7fe7-fbc5-4b14-9978-5134801bfbf9",
+    "name": "Get All Posts by user",
+    "url": "{{host}}{{post-path}}/me/posts/all",
+    "method": "GET",
+    "sortNum": 530000,
+    "created": "2023-03-14T00:21:12.772Z",
+    "modified": "2023-03-14T00:21:40.267Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "40703254-6aba-48d7-b3fd-9e4a9623669a",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Like Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/likes",
+    "method": "POST",
+    "sortNum": 540000,
+    "created": "2023-03-24T15:59:49.668Z",
+    "modified": "2023-03-24T22:03:43.177Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "0ppheg5tl6f4auo",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "7fbb5c35-e857-4880-826c-c648395c2cd9",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Get Post Likes",
+    "url": "{{host}}{{post-path}}/posts/{postId}/likes",
+    "method": "GET",
+    "sortNum": 550000,
+    "created": "2023-03-24T16:03:31.586Z",
+    "modified": "2023-03-24T16:04:14.012Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "9290c64b-6a30-46a8-93eb-6bbcee865304",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Get Quote Repost",
+    "url": "{{host}}{{post-path}}/posts/{postId}/reposts",
+    "method": "GET",
+    "sortNum": 560000,
+    "created": "2023-03-24T16:21:22.034Z",
+    "modified": "2023-03-25T12:40:54.062Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "6xmau21h9poe2f8",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  },
+  {
+    "_id": "acdeb520-1bb1-4aba-a09e-6f388aabea46",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Quote Post",
+    "url": "{{host}}{{post-path}}/posts/create?repostId={{postId}}",
+    "method": "GET",
+    "sortNum": 570000,
+    "created": "2023-03-24T16:21:42.910Z",
+    "modified": "2023-03-24T16:36:53.905Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "repostId",
+        "value": "{{postId}}",
+        "isPath": false
+      }
+    ],
+    "tests": [
+      {
+        "type": "set-env-var",
+        "custom": "json.data.id",
+        "action": "setto",
+        "value": "{{postId}}"
+      }
+    ],
+    "docs": "```json\n{\n  \"message\": \"New Post created\",\n  \"success\": true,\n  \"data\": {\n    \"id\": \"o9u3poggsczid9j\",\n    \"caption\": \"\",\n    \"published\": false,\n    \"allowComments\": true,\n    \"showLikesCount\": true,\n    \"pinned\": false,\n    \"createdBy\": \"k4i1u6w41jtnidx\",\n    \"urls\": [],\n    \"repostId\": \"6xmau21h9poe2f8\",\n    \"version\": 0,\n    \"created\": \"2023-03-24T16:36:08.744Z\",\n    \"updated\": \"2023-03-24T16:36:08.744Z\",\n    \"deletedAt\": null,\n    \"postMedia\": [],\n    \"repost\": {\n      \"id\": \"6xmau21h9poe2f8\",\n      \"caption\": \"\",\n      \"published\": false,\n      \"allowComments\": true,\n      \"showLikesCount\": true,\n      \"pinned\": false,\n      \"createdBy\": \"k4i1u6w41jtnidx\",\n      \"urls\": [],\n      \"repostId\": null,\n      \"version\": 0,\n      \"created\": \"2023-03-14T11:40:49.240Z\",\n      \"updated\": \"2023-03-14T11:40:49.240Z\",\n      \"deletedAt\": null,\n      \"postMedia\": [\n        {\n          \"id\": \"s33iwrivehftks8\",\n          \"type\": \"IMAGE\",\n          \"imageUrl\": \"http://localhost:8080/api/files/08tzclgz3oh38j1/s33iwrivehftks8/screenshot_2023_01_19_033920_GzCw5lT03q.png\",\n          \"image\": \"screenshot_2023_01_19_033920_GzCw5lT03q.png\",\n          \"order\": 0,\n          \"data\": {},\n          \"post\": \"6xmau21h9poe2f8\",\n          \"created\": \"2023-03-14T11:41:12.065Z\",\n          \"updated\": \"2023-03-14T11:41:12.065Z\"\n        }\n      ],\n      \"createdByData\": {\n        \"userId\": \"k4i1u6w41jtnidx\",\n        \"email\": \"techybanky@gmail.com\",\n        \"emailVerified\": true,\n        \"phone\": null,\n        \"phoneData\": {},\n        \"phoneVerified\": false,\n        \"registeredVia\": \"EMAIL\",\n        \"username\": \"bankole2000\",\n        \"gender\": \"MALE\",\n        \"roles\": [\n          \"USER\",\n          \"SCOUT\",\n          \"AGENT\",\n          \"MODERATOR\",\n          \"MODERATION\",\n          \"SUPPORT\",\n          \"SYSTEM\",\n          \"ADMIN\",\n          \"SUPER_ADMIN\",\n          \"JURY\",\n          \"JUDGE\"\n        ],\n        \"firstname\": \"Bankole\",\n        \"lastname\": \"Esan\",\n        \"displayname\": \"Bankole\",\n        \"dob\": \"2000-01-01T00:00:00.000Z\",\n        \"followers\": [],\n        \"following\": [],\n        \"blocked\": [],\n        \"blockedBy\": [],\n        \"tos\": true,\n        \"version\": 2,\n        \"createdAt\": \"2023-02-11T19:23:23.884Z\",\n        \"updatedAt\": \"2023-02-11T19:33:41.139Z\",\n        \"deletedAt\": null\n      }\n    },\n    \"moderation\": null\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "44d18c55-1179-422f-bc00-4a0c6183ac8f",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
+    "name": "Publish Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/publish",
+    "method": "POST",
+    "sortNum": 312500,
+    "created": "2023-03-24T19:00:30.357Z",
+    "modified": "2023-03-25T12:43:05.043Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "6xmau21h9poe2f8",
+        "isPath": true
+      },
+      {
+        "name": "publishAt",
+        "value": "2023-02-21 15:32:00",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "contentWarning",
+        "value": "false",
+        "isDisabled": true,
+        "isPath": false
+      },
+      {
+        "name": "caption",
+        "value": "😀",
+        "isDisabled": true,
+        "isPath": false
+      }
+    ],
+    "body": {
+      "type": "json",
+      "raw": "{\n  \"caption\": \"This is a repost\",\n  \"autoModerate\": true,\n  \"contentWarning\": false\n}",
+      "form": []
+    },
+    "tests": [],
+    "docs": "Query parameter `publishAt` , sets when post should be published\n\nShould create post publishing job to be executed at set time.\n\nSuccess Reponse\n\n```json\n{\n  \"message\": \"Post Published\",\n  \"success\": true,\n  \"data\": {\n    \"postId\": \"unnclu1xkg7d7ux\",\n    \"moderated\": false,\n    \"autoModerate\": true,\n    \"contentWarning\": false,\n    \"status\": \"PENDING\",\n    \"created\": \"2023-03-13T23:54:16.866Z\",\n    \"updated\": \"2023-03-13T23:54:16.866Z\",\n    \"publishAt\": null,\n    \"post\": {\n      \"id\": \"unnclu1xkg7d7ux\",\n      \"caption\": \"😀\",\n      \"published\": false,\n      \"allowComments\": true,\n      \"showLikesCount\": true,\n      \"pinned\": false,\n      \"createdBy\": \"0c5725m57h2cknz\",\n      \"urls\": [],\n      \"repostId\": null,\n      \"version\": 0,\n      \"created\": \"2023-03-10T21:29:33.805Z\",\n      \"updated\": \"2023-03-13T23:54:16.850Z\",\n      \"deletedAt\": null,\n      \"postMedia\": [],\n      \"tags\": [],\n      \"_count\": {\n        \"comments\": 0,\n        \"likedBy\": 0,\n        \"postMedia\": 0,\n        \"tags\": 0,\n        \"views\": 0\n      }\n    },\n    \"moderation\": [],\n    \"reports\": []\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```\n\nError response\n```json\n{\n  \"message\": \"Post must have either caption or at least 1 media element\",\n  \"success\": false,\n  \"data\": null,\n  \"errors\": \"POST_SERVICE_POST_HAS_NO_CONTENT\",\n  \"error\": \"Post content empty\",\n  \"fix\": \"Please add a caption or an image/media before publishing\",\n  \"statusCode\": 400\n}\n```"
+  },
+  {
+    "_id": "9a068dc2-f333-4caf-acbf-078eb63839ea",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "0279823e-b7b2-4234-9dc1-933fc4411a59",
+    "name": "Repost Post",
+    "url": "{{host}}{{post-path}}/posts/{postId}/reposts",
+    "method": "POST",
+    "sortNum": 580000,
+    "created": "2023-03-25T12:44:37.039Z",
+    "modified": "2023-03-25T13:03:31.842Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "{{postId}}",
+        "isPath": true
+      }
+    ],
+    "tests": [],
+    "docs": "```json\n{\n  \"message\": \"You have reposted this post before\",\n  \"success\": true,\n  \"data\": {\n    \"id\": \"061bdfff-dba3-4539-b31b-2ddc094b55b7\",\n    \"caption\": null,\n    \"published\": true,\n    \"allowComments\": true,\n    \"showLikesCount\": true,\n    \"pinned\": false,\n    \"createdBy\": \"k4i1u6w41jtnidx\",\n    \"urls\": [],\n    \"repostId\": \"o9u3poggsczid9j\",\n    \"version\": 1,\n    \"created\": \"2023-03-25T13:00:03.634Z\",\n    \"updated\": \"2023-03-25T13:00:13.893Z\",\n    \"deletedAt\": null\n  },\n  \"errors\": null,\n  \"error\": null,\n  \"fix\": null,\n  \"statusCode\": 200\n}\n```"
+  },
+  {
+    "_id": "9730b7f6-8fa0-4c1e-bd0b-631ab1ddaa86",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "109cb93c-db19-45a5-87e0-1790c503c2e6",
+    "name": "Get Latest Published Posts",
+    "url": "{{host}}{{post-path}}/posts",
+    "method": "GET",
+    "sortNum": 590000,
+    "created": "2023-03-26T09:45:54.754Z",
+    "modified": "2023-03-26T09:46:09.211Z",
+    "headers": [],
+    "params": [],
+    "tests": []
+  },
+  {
+    "_id": "85361d77-0a86-4edd-963a-a84af3b63817",
+    "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
+    "containerId": "e01d5cab-8df9-49b6-8433-ab2077c04972",
+    "name": "Get Post Comments Copy",
+    "url": "{{host}}{{post-path}}/posts/{postId}/comments",
+    "method": "GET",
+    "sortNum": 335000,
+    "created": "2023-03-29T17:37:18.259Z",
+    "modified": "2023-03-29T17:37:18.259Z",
+    "headers": [],
+    "params": [
+      {
+        "name": "postId",
+        "value": "o9u3poggsczid9j",
+        "isPath": true
+      }
+    ],
+    "tests": []
+  }
+]

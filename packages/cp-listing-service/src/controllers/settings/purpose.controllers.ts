@@ -92,7 +92,7 @@ export const updateListingPurposeHandler = async (req: Request, res: Response) =
       });
     }
     db.saveDatabase();
-    await deleteCache(req.redis, [req.originalUrl, `${basePath}/settings/purposes`]);
+    await deleteCache(req.redis, [req.originalUrl, `${basePath}/settings/purposes`, `${basePath}/settings/`]);
   }
   if (res.locals.newAccessToken) lpsr.newAccessToken = res.locals.newAccessToken;
   return res.status(lpsr.statusCode).json(lpsr);
@@ -119,7 +119,7 @@ export const deleteListingPurposeHandler = async (req: Request, res: Response) =
     const purpose = purposes.findOne({ listingPurpose: purposeId });
     purposes.remove(purpose);
     db.saveDatabase();
-    await deleteCache(req.redis, [req.originalUrl, `${basePath}/settings/purposes`]);
+    await deleteCache(req.redis, [req.originalUrl, `${basePath}/settings/purposes`, `${basePath}/settings/`]);
   }
   if (res.locals.newAccessToken) lpsr.newAccessToken = res.locals.newAccessToken;
   return res.status(lpsr.statusCode).json(lpsr);
@@ -155,7 +155,7 @@ export const createSubgroupHandler = async (req: Request, res: Response) => {
   if (subgroupSR.success) {
     db.getCollection('subgroups').insert(subgroupSR.data);
     db.saveDatabase();
-    await deleteCache(req.redis, [`${basePath}/settings/subgroups`, `${basePath}/settings/purposes`, `${basePath}/settings/purposes/${purposeId}`]);
+    await deleteCache(req.redis, [`${basePath}/settings/subgroups`, `${basePath}/settings/purposes`, `${basePath}/settings/purposes/${purposeId}`, `${basePath}/settings`]);
   }
   if (res.locals.newAccessToken) subgroupSR.newAccessToken = res.locals.newAccessToken;
   return res.status(subgroupSR.statusCode).json(subgroupSR);
@@ -203,7 +203,7 @@ export const updateSubgroupHandler = async (req: Request, res: Response) => {
     subgroup = { ...subgroup, ...subgroupSR.data };
     subgroups.update(subgroup);
     db.saveDatabase();
-    await deleteCache(req.redis, [`${basePath}/settings/subgroups`, `${basePath}/settings/purposes/${purposeId}`, `${basePath}/settings/purposes/${purposeId}/subgroups`]);
+    await deleteCache(req.redis, [`${basePath}/settings/subgroups`, `${basePath}/settings/purposes/${purposeId}`, `${basePath}/settings/purposes/${purposeId}/subgroups`, `${basePath}/settings/`]);
   }
   if (res.locals.newAccessToken) subgroupSR.newAccessToken = res.locals.newAccessToken;
   return res.status(subgroupSR.statusCode).json(subgroupSR);
@@ -233,7 +233,7 @@ export const deleteSubgroupHandler = async (req: Request, res: Response) => {
     subgroups.remove(sgtd);
     // db.getCollection('subgroups').remove({ purposeSubgroup: subgroupId });
     db.saveDatabase();
-    await deleteCache(req.redis, [`${basePath}/settings/subgroups`, `${basePath}/settings/purposes`, `${basePath}/settings/purposes/${purposeId}`, `${basePath}/settings/purposes/${purposeId}/subgroups`]);
+    await deleteCache(req.redis, [`${basePath}/settings/subgroups`, `${basePath}/settings/purposes`, `${basePath}/settings/purposes/${purposeId}`, `${basePath}/settings/purposes/${purposeId}/subgroups`, `${basePath}/settings/`]);
   }
   if (res.locals.newAccessToken) delSubgroupSR.newAccessToken = res.locals.newAccessToken;
   return res.status(delSubgroupSR.statusCode).json(delSubgroupSR);
