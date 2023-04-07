@@ -244,6 +244,15 @@ export default class UserDBService {
               likedBy: true,
             }
           },
+          comments: {
+            take: 1,
+            where: {
+              pinned: true
+            },
+            include: {
+              author: true
+            }
+          },
           _count: {
             select: {
               likedBy: true,

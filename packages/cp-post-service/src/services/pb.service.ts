@@ -25,7 +25,7 @@ export default class PBService {
     }
   }
 
-  async checkAuth() {
+  checkAuth() {
     console.log({
       isValid: this.pb.authStore.isValid,
       model: this.pb.authStore.model,
@@ -37,9 +37,18 @@ export default class PBService {
   async saveAuth(token: any, model: any) {
     console.log({ token, model });
     try {
-      this.pb.authStore.save(token, model);
+      const saveResult = await this.pb.authStore.save(token, model);
+      let res;
+      if (!this.checkAuth()) {
+        res = await this.pb.collection('users').authRefresh();
+      } else {
+        res = { token, record: model };
+      }
+      console.log({ res, saveResult });
+      return res;
     } catch (error: any) {
       console.log({ error });
+      return null;
     }
   }
 
@@ -127,7 +136,7 @@ export default class PBService {
     try {
       const res = await this.pb.collection(collection).delete(resourceId);
       console.log({ res });
-      if (!res) {
+      if (res) {
         return new ServiceResponse('Resource deleted', res, true, 200, null, null, null);
       }
       return new ServiceResponse('Error deleting resource', null, false, res.code || 400, res.message || 'Error deleting resource', res || 'POST_SERVICE_POCKETBASE_ERROR_DELETING_RESOURCE', 'Check logs and database');

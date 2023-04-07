@@ -4,14 +4,16 @@ import fs, { PathLike } from 'fs';
 import { config } from '../utils/config';
 import CommentDBService from '../services/comment.service';
 import PBService from '../services/pb.service';
-import { addCommentToPublishingQueue } from '../services/queue/moderationQueue';
+import { addCommentToPublishingQueue, addToCommentLikeQueue } from '../services/queue/moderationQueue';
 import { socketEventTypes } from '../schema/socket.schema';
+import PostDBService from '../services/post.service';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const FormData = require('form-data');
 
 const cs = new CommentDBService();
 const pb = new PBService(config.pocketbase.url || '');
+const ps = new PostDBService();
 
 const deleteUploadedFile = (filePath: PathLike) => {
   fs.unlinkSync(filePath);
@@ -96,6 +98,9 @@ export const getPostCommentsHandler = async (req: Request, res: Response) => {
     sort = 'top';
   }
   const sr = await cs.getPostComments(req.params.postId, sort, page, limit, req.user?.userId);
+  if (res.locals.newAccessToken) {
+    sr.newAccessToken = res.locals.newAccessToken;
+  }
   return res.status(sr.statusCode).send(sr);
 };
 
@@ -110,12 +115,94 @@ export const getCommentLikesHandler = async (req: Request, res: Response) => {
 };
 
 export const likeCommentHandler = async (req: Request, res: Response) => {
-  const sr = new ServiceResponse('Not yet implemented', null, true, 200, null, null, null);
+  const { user } = req;
+  const { commentId } = req.params;
+  const uLikesc = await cs.checkUserLikesComment(user.userId, commentId);
+  if (uLikesc.success) {
+    uLikesc.message = 'You already liked this comment';
+    return res.status(uLikesc.statusCode).send(uLikesc);
+  }
+  const sr = await cs.likeComment(user.userId, commentId);
+  if (sr.success) {
+    addToCommentLikeQueue(sr.data);
+  }
   return res.status(sr.statusCode).send(sr);
 };
 
-export const pinCommentHanlder = async (req: Request, res: Response) => {
-  const sr = new ServiceResponse('Not yet implemented', null, true, 200, null, null, null);
+export const unlikeCommentHandler = async (req: Request, res: Response) => {
+  const { user } = req;
+  const { commentId } = req.params;
+  const uLikesc = await cs.checkUserLikesComment(user.userId, commentId);
+  if (!uLikesc.success) {
+    uLikesc.message = 'You have not liked this comment';
+    return res.status(uLikesc.statusCode).send(uLikesc);
+  }
+  const sr = await cs.unlikeComment(user.userId, commentId);
+  if (sr.success) {
+    if (!sr.data.comment.parentCommentId) {
+      getIO().to(sr.data.comment.postId).emit(socketEventTypes.COMMENT_UNLIKED, sr.data);
+    } else {
+      getIO().to(sr.data.comment.postId).emit(socketEventTypes.COMMENT_REPLY_UNLIKED, sr.data);
+    }
+  }
+  return res.status(sr.statusCode).send(sr);
+};
+
+export const pinCommentHandler = async (req: Request, res: Response) => {
+  const { postId, commentId } = req.params;
+  const { user } = req;
+  const post = await ps.getPostById(postId);
+  if (!post.success) {
+    return res.status(post.statusCode).send(post);
+  }
+  const comment = await cs.getCommentById(commentId);
+  if (!comment.success) {
+    return res.status(comment.statusCode).send(comment);
+  }
+  if (comment.data.pinned) {
+    comment.message = 'You already pinned this comment';
+    comment.statusCode = 400;
+    return res.status(comment.statusCode).send(comment);
+  }
+  let sr: ServiceResponse;
+  if (post.data.createdBy === user.userId) {
+    sr = await cs.pinComment(commentId, true);
+  } else {
+    sr = new ServiceResponse('You didn\'t create this post', post.data, false, 400, 'Unauthorized', 'POST_SERVICE_ERROR_USER_NOT_AUTHORIZED', 'Check that you authored the post');
+  }
+  if (sr.success) {
+    getIO().to(sr.data.postId).emit('COMMENT_PINNED', sr.data);
+  }
+  return res.status(sr.statusCode).send(sr);
+};
+
+export const unpinCommentHandler = async (req: Request, res: Response) => {
+  const { postId, commentId } = req.params;
+  const { user } = req;
+  const post = await ps.getPostById(postId);
+  if (!post.success) {
+    return res.status(post.statusCode).send(post);
+  }
+  const comment = await cs.getCommentById(commentId);
+  if (!comment.success) {
+    return res.status(comment.statusCode).send(comment);
+  }
+  if (comment.data.parentCommentId) {
+    comment.message = 'You can\'t pin a comment reply';
+    comment.statusCode = 400;
+    return res.status(comment.statusCode).send(comment);
+  }
+  if (!comment.data.pinned) {
+    comment.message = 'This comment is not pinned';
+    comment.statusCode = 400;
+    return res.status(comment.statusCode).send(comment);
+  }
+  let sr: ServiceResponse;
+  if (post.data.createdBy === user.userId) {
+    sr = await cs.pinComment(commentId, false);
+  } else {
+    sr = new ServiceResponse('You didn\'t create this post', post.data, false, 400, 'Unauthorized', 'POST_SERVICE_ERROR_USER_NOT_AUTHORIZED', 'Check that you authored the post');
+  }
   return res.status(sr.statusCode).send(sr);
 };
 

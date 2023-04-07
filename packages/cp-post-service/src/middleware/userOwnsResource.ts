@@ -1,10 +1,12 @@
 import { ServiceResponse } from '@cribplug/common';
 import { Request, Response, NextFunction } from 'express';
+import CommentDBService from '../services/comment.service';
 import PostDBService from '../services/post.service';
 import UserDBService from '../services/user.service';
 
 const ps = new PostDBService();
 const us = new UserDBService();
+const cs = new CommentDBService();
 
 export const checkUserAuthoredPost = async (req: Request, res: Response, next: NextFunction) => {
   const { user } = req;
@@ -91,6 +93,23 @@ export const checkPostExists = async (req: Request, res: Response, next: NextFun
   if (!pExists.data.published) {
     const sr = new ServiceResponse('This post is not published', pExists.data, false, 404, 'Error - post not published', 'POST_SERVICE_ERROR_POST_NOT_PUBLISHED', 'Ensure post is published first');
     return res.status(sr.statusCode).send(sr);
+  }
+  return next();
+};
+
+export const checkCommentExistsOnPost = async (req: Request, res: Response, next: NextFunction) => {
+  const { postId, commentId } = req.params;
+  const cExists = await cs.getCommentById(commentId);
+  if (!cExists.success) {
+    return res.status(cExists.statusCode).send(cExists);
+  }
+  if (cExists.data.postId !== postId) {
+    cExists.statusCode = 404;
+    cExists.message = 'This comment is not on this post';
+    cExists.errors = 'POST_SERVICE_ERROR_POST_COMMENT_MISMATCH';
+    cExists.error = 'Error - Comment Id mismatched with Post Id';
+    cExists.fix = 'Check comment exists on the post and has the right postId';
+    return res.status(cExists.statusCode).send(cExists);
   }
   return next();
 };

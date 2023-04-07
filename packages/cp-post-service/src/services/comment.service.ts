@@ -62,12 +62,12 @@ export default class CommentDBService {
     let orderBy: Prisma.Enumerable<Prisma.CommentOrderByWithRelationInput>;
     if (sort === 'latest') {
       orderBy = [
-        { pinned: 'asc' },
+        { pinned: 'desc' },
         { createdAt: 'desc' }
       ];
     } else {
       orderBy = [
-        { pinned: 'asc' },
+        { pinned: 'desc' },
         {
           childComments: {
             _count: 'desc'
@@ -126,6 +126,7 @@ export default class CommentDBService {
         const {
           followerIds, followingIds, blockedIds, blockedByIds, likedIds
         } = await this.getLikedIds(loggedInUserId, postId);
+        console.log({ likedIds });
         data = comments.map((c) => ({
           ...c,
           followsYou: followerIds.length
@@ -140,7 +141,14 @@ export default class CommentDBService {
             ? likedIds.includes(c.id) : false,
         }));
       } else {
-        data = comments;
+        data = comments.map((c) => ({
+          ...c,
+          followsYou: false,
+          followedByYou: false,
+          blockedByYou: false,
+          blockedYou: false,
+          likedByYou: false,
+        }));
       }
       return new ServiceResponse(
         'Post comments',
@@ -211,6 +219,23 @@ export default class CommentDBService {
     }
   }
 
+  async getCommentById(commentId: string) {
+    try {
+      const comment = await this.prisma.comment.findUnique({
+        where: {
+          id: commentId
+        }
+      });
+      if (comment) {
+        return new ServiceResponse('Comment found', comment, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Comment not found', comment, false, 404, 'Error - comment not found', 'POST_SERVICE_ERROR_COMMENT_NOT_FOUND', 'Check comment Id and that comment exists');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting comment by Id', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
   async createComment(
     postId: string,
     userId: string,
@@ -234,7 +259,15 @@ export default class CommentDBService {
           },
           author: true,
           media: true,
-          post: true,
+          post: {
+            include: {
+              _count: {
+                select: {
+                  comments: true
+                }
+              }
+            }
+          },
           parentComment: true,
         },
       });
@@ -278,6 +311,145 @@ export default class CommentDBService {
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error updating comment', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async deleteComment(commentId: string) {
+    try {
+      const deletedComment = await this.prisma.comment.delete({
+        where: {
+          id: commentId
+        },
+        include: {
+          _count: {
+            select: {
+              childComments: true,
+              likedBy: true,
+            }
+          },
+          author: true,
+          media: true,
+        },
+      });
+      if (deletedComment) {
+        return new ServiceResponse('Comment deleted', deletedComment, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error deleting comment', deletedComment, false, 404, 'Error deleting comment', 'POST_SERVICE_ERROR_DELETING_COMMENT', 'Check comment exists and commentId');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error deleting comment', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async pinComment(commentId: string, pin = false) {
+    try {
+      const pinnedComment = await this.prisma.comment.update({
+        where: {
+          id: commentId
+        },
+        data: {
+          pinned: pin
+        }
+      });
+      if (pinnedComment) {
+        return new ServiceResponse(`Comment ${pin ? 'pinned' : 'unpinned'}`, pinnedComment, true, 200, null, null, null);
+      }
+      return new ServiceResponse(
+        `Error ${pin ? 'pinning' : 'unpinning'} comment`,
+        pinnedComment,
+        false,
+        400,
+        `Error ${pin ? 'pinning' : 'unpinning'} comment`,
+        `POST_SERVICE_ERROR_${pin ? '' : 'UN'}PINNING_COMMENT`,
+        'Check inputs, logs and database'
+      );
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error pinning comment', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async checkUserLikesComment(userId: string, commentId: string) {
+    try {
+      const likedComment = await this.prisma.userLikesComment.findUnique({
+        where: {
+          commentId_userId: {
+            userId,
+            commentId,
+          }
+        }
+      });
+      if (likedComment) {
+        return new ServiceResponse('User liked comment', likedComment, true, 200, null, null, null);
+      }
+      return new ServiceResponse('User liked comment not found', likedComment, false, 404, 'User Comment like not found', 'POST_SERVICE_ERROR_USER_COMMENT_LIKE_NOT_FOUND', 'Check user previously liked comment');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error checking if user liked comment', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async likeComment(userId: string, commentId: string) {
+    try {
+      const likedComment = await this.prisma.userLikesComment.create({
+        data: {
+          commentId,
+          userId
+        },
+        include: {
+          user: true,
+          comment: {
+            include: {
+              _count: {
+                select: {
+                  childComments: true,
+                  likedBy: true,
+                }
+              },
+              author: true
+            }
+          },
+        }
+      });
+      if (likedComment) {
+        return new ServiceResponse('Comment liked', likedComment, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error liking comment', likedComment, false, 400, 'Error liking comment', 'POST_SERVICE_ERROR_LIKING_COMMENT', 'Check inputs, userId, and commenId');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error liking comment', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async unlikeComment(userId: string, commentId: string) {
+    try {
+      const unlikedComment = await this.prisma.userLikesComment.delete({
+        where: {
+          commentId_userId: {
+            userId,
+            commentId
+          }
+        },
+        include: {
+          comment: {
+            include: {
+              _count: {
+                select: {
+                  childComments: true,
+                  likedBy: true,
+                }
+              }
+            }
+          }
+        }
+      });
+      if (unlikedComment) {
+        return new ServiceResponse('Comment unliked', unlikedComment, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error unliking comment', unlikedComment, false, 400, 'Error unliking comment', 'POST_SERVICE_ERROR_UNLIKING_COMMENT', 'Check inputs');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error unliking comment', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
 }

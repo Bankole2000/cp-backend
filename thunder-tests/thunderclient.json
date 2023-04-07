@@ -285,12 +285,12 @@
     "method": "POST",
     "sortNum": 70000,
     "created": "2023-02-17T20:32:49.599Z",
-    "modified": "2023-03-14T00:06:11.073Z",
+    "modified": "2023-04-05T23:27:08.649Z",
     "headers": [],
     "params": [],
     "body": {
       "type": "json",
-      "raw": "{\n  \"username\": \"bankole2000\",\n  \"password\": \"{{password}}\"\n}",
+      "raw": "{\n  \"username\": \"neoncoder\",\n  \"password\": \"{{password}}\"\n}",
       "form": []
     },
     "tests": [
@@ -1177,16 +1177,16 @@
     "colId": "b7218c4a-a823-43c9-8ace-b74fbfb191e0",
     "containerId": "049ecc14-4fbc-4f3e-92c8-42f7bbcea948",
     "name": "Delete Post",
-    "url": "{{host}}{{post-path}}/posts/{postId}",
+    "url": "{{host}}{{post-path}}/posts/{postId}/unpublished",
     "method": "DELETE",
     "sortNum": 320000,
     "created": "2023-02-18T23:40:29.049Z",
-    "modified": "2023-02-22T15:25:17.665Z",
+    "modified": "2023-04-05T23:50:05.802Z",
     "headers": [],
     "params": [
       {
         "name": "postId",
-        "value": "{{postId}}",
+        "value": "3qh7knoo6ountox",
         "isPath": true
       }
     ],
@@ -1363,12 +1363,12 @@
     "method": "GET",
     "sortNum": 370000,
     "created": "2023-02-19T13:44:06.689Z",
-    "modified": "2023-04-01T20:14:51.698Z",
+    "modified": "2023-04-03T14:23:47.675Z",
     "headers": [],
     "params": [
       {
         "name": "postId",
-        "value": "6xmau21h9poe2f8",
+        "value": "zrnhnvi1owrou52",
         "isPath": true
       }
     ],

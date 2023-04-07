@@ -186,7 +186,7 @@ export default class PostDBService {
             orderBy: {
               order: 'asc'
             },
-          }
+          },
         }
       });
       if (post) {
@@ -417,15 +417,25 @@ export default class PostDBService {
           ...post
         };
         const isRepost = post.repostId && !post.caption && !post.postMedia.length;
-        data.repostCount = isRepost
-          ? (await this.getRepostCount(post.repostId as string)).data.count
-          : (await this.getRepostCount(post.id)).data.count;
-        data.repostOnlyCount = isRepost
-          ? (await this.getRepostOnlyCount(post.repostId as string)).data.count
-          : (await this.getRepostOnlyCount(post.id)).data.count;
-        data.quoteRepostCount = isRepost
-          ? (await this.getQuoteRepostOnlyCount(post.repostId as string)).data.count
-          : (await this.getQuoteRepostOnlyCount(post.id)).data.count;
+        const {
+          data: {
+            repostCount,
+            repostOnlyCount,
+            quoteRepostCount
+          }
+        } = await this.getAllRepostCounts(isRepost ? post.repostId as string : post.id);
+        data.repostCount = repostCount;
+        // = isRepost
+        //   ? (await this.getRepostCount(post.repostId as string)).data.count
+        //   : (await this.getRepostCount(post.id)).data.count;
+        data.repostOnlyCount = repostOnlyCount;
+        // = isRepost
+        //   ? (await this.getRepostOnlyCount(post.repostId as string)).data.count
+        //   : (await this.getRepostOnlyCount(post.id)).data.count;
+        data.quoteRepostCount = quoteRepostCount;
+        // = isRepost
+        //   ? (await this.getQuoteRepostOnlyCount(post.repostId as string)).data.count
+        //   : (await this.getQuoteRepostOnlyCount(post.id)).data.count;
         console.log('Got repost counts');
         if (loggedInUserId) {
           const {
@@ -810,9 +820,86 @@ export default class PostDBService {
       const repostCount = await this.prisma.post.count({
         where: {
           repostId: postId,
+          published: true,
         }
       });
       return new ServiceResponse('Repost count', { count: repostCount, postId }, true, 200, null, null, null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting post repost count', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async getAllRepostCounts(postId: string) {
+    try {
+      const repostCount = await this.prisma.post.count({
+        where: {
+          repostId: postId,
+          published: true,
+        }
+      });
+      const repostOnlyCount = await this.prisma.post.count({
+        where: {
+          repostId: postId,
+          AND: [
+            {
+              OR: [
+                {
+                  caption: ''
+                },
+                {
+                  caption: null
+                }
+              ]
+            },
+            {
+              postMedia: {
+                none: {
+                  order: {
+                    gt: -1
+                  }
+                }
+              }
+            },
+            {
+              published: true
+            }
+          ]
+        }
+      });
+      const quoteRepostCount = await this.prisma.post.count({
+        where: {
+          repostId: postId,
+          AND: {
+            OR: [
+              {
+                caption: {
+                  not: '' || null,
+                }
+              },
+              {
+                postMedia: {
+                  some: {
+                    order: {
+                      gt: -1
+                    }
+                  }
+                }
+              },
+            ],
+            published: true
+          }
+        }
+      });
+      return new ServiceResponse(
+        'Repost counts',
+        { repostCount, repostOnlyCount, quoteRepostCount },
+        true,
+        200,
+        null,
+        null,
+        null
+      );
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error getting post repost count', null, false, 500, error.message, error, 'Check logs and database');
@@ -843,6 +930,9 @@ export default class PostDBService {
                   }
                 }
               }
+            },
+            {
+              published: true,
             }
           ]
         }
@@ -875,7 +965,8 @@ export default class PostDBService {
                   }
                 }
               }
-            ]
+            ],
+            published: true
           }
         }
       });
@@ -898,6 +989,7 @@ export default class PostDBService {
         take: limit,
         where: {
           repostId: postId,
+          published: true,
         },
         include: {
           createdByData: true,
@@ -990,7 +1082,8 @@ export default class PostDBService {
                   }
                 }
               }
-            ]
+            ],
+            published: true
           }
         },
         include: {
@@ -1059,7 +1152,8 @@ export default class PostDBService {
                   }
                 }
               }
-            ]
+            ],
+            published: true
           }
         }
       });
@@ -1116,6 +1210,7 @@ export default class PostDBService {
         where: {
           createdBy: userId,
           repostId: postId,
+          published: true,
           AND: [
             {
               OR: [
@@ -1215,7 +1310,16 @@ export default class PostDBService {
               moderation: true,
               tags: true,
             }
-          }
+          },
+          comments: {
+            take: 1,
+            where: {
+              pinned: true
+            },
+            include: {
+              author: true
+            }
+          },
         },
         orderBy: {
           created: 'desc'
@@ -1225,9 +1329,19 @@ export default class PostDBService {
       posts.forEach((p) => {
         const isRepost = p.repostId && !p.caption && !p.postMedia.length;
         if (isRepost) {
-          promises.push(this.prisma.post.count({ where: { repostId: p.repostId } }));
+          promises.push(this.prisma.post.count({
+            where: {
+              repostId: p.repostId,
+              published: true
+            }
+          }));
         } else {
-          promises.push(this.prisma.post.count({ where: { repostId: p.id } }));
+          promises.push(this.prisma.post.count({
+            where: {
+              repostId: p.id,
+              published: true
+            }
+          }));
         }
       });
       const repostCount = await Promise.all(promises);
@@ -1279,7 +1393,18 @@ export default class PostDBService {
           };
         });
       } else {
-        data = posts;
+        data = posts.map((post, i) => ({
+          ...post,
+          followsYou: false,
+          followedByYou: false,
+          reportedByYou: false,
+          savedByYou: false,
+          repostCount: repostCount[i],
+          repostedByYou: false,
+          viewedByYou: false,
+          likedByYou: false,
+          authoredByYou: false
+        }));
       }
       return new ServiceResponse(
         'User Posts',
@@ -1295,6 +1420,51 @@ export default class PostDBService {
     } catch (error: any) {
       console.log({ error });
       return new ServiceResponse('Error getting latest published posts', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async pinPost(postId: string, pin = false) {
+    try {
+      const pinnedPost = await this.prisma.post.update({
+        where: {
+          id: postId,
+        },
+        data: {
+          pinned: pin
+        }
+      });
+      if (pinnedPost) {
+        return new ServiceResponse(`Post ${pin ? 'pinned' : 'unpinned'}`, pinnedPost, true, 200, null, null, null);
+      }
+      return new ServiceResponse(
+        `Error ${pin ? 'pinning' : 'unpinning'} Post`,
+        pinnedPost,
+        false,
+        400,
+        `Error ${pin ? 'pinning' : 'unpinning'} Post`,
+        `POST_SERVICE_ERROR_${pin ? '' : 'UN'}PINNING_POST`,
+        'Check inputs, logs and database'
+      );
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error pinning post', null, false, 500, error.message, error, 'Check logs and database');
+    }
+  }
+
+  async deletePost(postId: string) {
+    try {
+      const deletedPost = await this.prisma.post.delete({
+        where: {
+          id: postId
+        }
+      });
+      if (deletedPost) {
+        return new ServiceResponse('Post deleted', deletedPost, true, 200, null, null, null);
+      }
+      return new ServiceResponse('Error deleting post', deletedPost, false, 400, 'Error deleting post', 'POST_SERVICE_ERROR_DELETING_POST', 'Check post exists and post Id');
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error deleting post', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
 }

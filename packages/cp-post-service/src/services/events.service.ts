@@ -44,8 +44,13 @@ export const sendToServiceQueues = async (
   return results;
 };
 
-export const getServiceQueues = async (redis: RedisConnection, scope: string, services: string[] = []) => {
-  await redis.client.connect();
+export const getServiceQueues = async (
+  redis: RedisConnection,
+  scope: string,
+  services: string[] = []
+) => {
+  await redis.client.connect(); // connected
+  console.log('🚀 ~ file: events.service.ts:53 ~ redis connected:');
   const registeredQueues = await redis.client.sMembers(`${scope}-queues`);
   let relevantQueues: string[] = [];
   if (!services.length) {
@@ -54,6 +59,7 @@ export const getServiceQueues = async (redis: RedisConnection, scope: string, se
     relevantQueues = registeredQueues.filter((x) => services.includes(x.split('-')[1]) && x !== config.self.queue);
   }
   console.log({ registeredQueues, relevantQueues });
-  await redis.client.disconnect();
+  await redis.client.disconnect(); // redis disconnected
+  console.log('🚀 ~ file: events.service.ts:63 ~ redis disconnected:');
   return relevantQueues;
 };

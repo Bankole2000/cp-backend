@@ -42,6 +42,9 @@ export const createPostIntentHandler = async (req: Request, res: Response) => {
   };
   const sr = await PS.createPostIntent(postData);
   await logResponse(req, sr);
+  if (res.locals.newAccessToken) {
+    sr.newAccessToken = res.locals.newAccessToken;
+  }
   return res.status(sr.statusCode).send(sr);
 };
 
@@ -78,9 +81,9 @@ export const createRepostHandler = async (req: Request, res: Response) => {
     console.log('Sending response');
     postModeration.message = 'Reposted Successfully';
     repost.data.repostCount = (await PS.getRepostCount(repost.data.repostId)).data;
-    getIO()
-      .to([user.userId, repost.data.repost.createdBy])
-      .emit(socketEventTypes.POST_REPOSTED, repost.data);
+    repost.data.repostOnlyCount = (await PS.getRepostOnlyCount(repost.data.repostId)).data;
+    repost.data.quoteRepostCount = (await PS.getQuoteRepostOnlyCount(repost.data.repostId)).data;
+    getIO().emit(socketEventTypes.POST_REPOSTED, repost.data);
   }
   return res.status(postModeration.statusCode).send(postModeration);
 };
@@ -99,9 +102,10 @@ export const undoRepostHandler = async (req: Request, res: Response) => {
   }
   const sr = await PS.undoRepost(uHasReposted.data.id);
   sr.data.repostCount = (await PS.getRepostCount(sr.data.repostId)).data;
+  sr.data.repostOnlyCount = (await PS.getRepostOnlyCount(sr.data.repostId)).data;
+  sr.data.quoteRepostOnlyCount = (await PS.getQuoteRepostOnlyCount(sr.data.repostId)).data;
   if (sr.success) {
     getIO()
-      .to([user.userId, sr.data.repost.createdBy])
       .emit(socketEventTypes.REPOST_UNDONE, sr.data);
   }
   return res.status(sr.statusCode).send(sr);
@@ -206,6 +210,9 @@ export const getPostDetailsHandler = async (req: Request, res: Response) => {
   const { postId } = req.params;
   console.log('getting post details');
   const sr = await PS.getPostDetails(postId, req.user?.userId);
+  if (res.locals.newAccessToken) {
+    sr.newAccessToken = res.locals.newAccessToken;
+  }
   return res.status(sr.statusCode).send(sr);
 };
 
@@ -270,7 +277,23 @@ export const updatePostDetailsHandler = async (req: Request, res: Response) => {
   return res.status(sr.statusCode).send(sr);
 };
 
-export const deletePostHandler = async (req: Request, res: Response) => {
+export const deleteUnpublishedPostHandler = async (req: Request, res: Response) => {
+  const { postId } = req.params;
+  const postMedia = (await PS.getPostMedia(postId)).data;
+  await pb.saveAuth(req.user.pbToken, req.user.pbUser);
+  if (postMedia.length) {
+    const mediaIds = postMedia.map((x: any) => x.id);
+    await pb.deleteMultipleRecords('postMedia', mediaIds);
+  }
+  const result = await pb.deletePBResource('posts', postId);
+  if (result.success) {
+    const sr = await PS.deletePost(postId);
+    return res.status(sr.statusCode).send(sr);
+  }
+  return res.status(result.statusCode).send(result);
+};
+
+export const deletePublishedPostHandler = async (req: Request, res: Response) => {
   const sr = new ServiceResponse('Not yet implemented', null, true, 200, null, null, null);
   return res.status(sr.statusCode).send(sr);
 };
@@ -469,5 +492,18 @@ export const getLatestPublishedPostsHandler = async (req: Request, res: Response
     page = 1;
   }
   const sr = await PS.getLatestPublishedPosts(page, limit, user ? user.userId : null);
+  if (res.locals.newAccessToken) {
+    sr.newAccessToken = res.locals.newAccessToken;
+  }
+  return res.status(sr.statusCode).send(sr);
+};
+
+export const pinPostHandler = async (req: Request, res: Response) => {
+  const sr = new ServiceResponse('Not yet implemented', null, true, 200, null, null, null);
+  return res.status(sr.statusCode).send(sr);
+};
+
+export const unpinPostHandler = async (req: Request, res: Response) => {
+  const sr = new ServiceResponse('Not yet implemented', null, true, 200, null, null, null);
   return res.status(sr.statusCode).send(sr);
 };

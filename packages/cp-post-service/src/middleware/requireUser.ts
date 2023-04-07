@@ -1,5 +1,11 @@
 import {
-  sanitizeData, ServiceResponse, signJWT, verifyToken, userCreateFields
+  sanitizeData,
+  ServiceResponse,
+  signJWT,
+  verifyToken,
+  userCreateFields,
+  redisConnect,
+  RedisConnection
 } from '@cribplug/common';
 import { Request, Response, NextFunction } from 'express';
 import PBService from '../services/pb.service';
@@ -40,7 +46,9 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     const { pbUser, pbToken } = decoded;
     const userExists = await userService.findUserById(decoded.userId);
     if (!userExists.success) {
-      const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', decoded.sessionId);
+      // const { redis } = req;
+      const redis: RedisConnection = redisConnect(redisConfig.url || '', redisConfig.scope || '');
+      const session = await UserDBService.getUserSession(redis, redisConfig.scope || '', decoded.sessionId);
       if (!session || !JSON.parse(session)) {
         req.user = null;
         return next();
@@ -63,7 +71,9 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
-    const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', decoded.sessionId);
+    // const { redis } = req;
+    const redis: RedisConnection = redisConnect(redisConfig.url || '', redisConfig.scope || '');
+    const session = await UserDBService.getUserSession(redis, redisConfig.scope || '', decoded.sessionId);
     if (!session || !JSON.parse(session)) {
       req.user = null;
       return next();
@@ -98,7 +108,8 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
     const { pbUser: oldUser, pbToken: oldToken } = refreshDecoded;
     const userExists = await userService.findUserById(refreshDecoded.userId);
     if (!userExists.success) {
-      const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', refreshDecoded.sessionId);
+      const redis: RedisConnection = redisConnect(redisConfig.url || '', redisConfig.scope || '');
+      const session = await UserDBService.getUserSession(redis, redisConfig.scope || '', refreshDecoded.sessionId);
       if (!session || !JSON.parse(session)) {
         req.user = null;
         return next();
@@ -113,8 +124,10 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       const userData = sanitizeData(userCreateFields, user);
       const createdUser = await userService.createUser(userData);
       if (createdUser.success) {
-        await pb.saveAuth(oldToken, oldUser);
-        const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
+        const { token: pbToken, record: pbUser } = await pb.saveAuth(oldToken, oldUser);
+        const pbIsValid = await pb.checkAuth();
+        console.log({ pbIsValid, pbToken, pbUser });
+        // const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
         req.user = {
           ...user, deviceId, sessionId, pbUser, pbToken
         };
@@ -128,7 +141,8 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
-    const session = await UserDBService.getUserSession(req.redis, redisConfig.scope || '', refreshDecoded.sessionId).catch((err) => {
+    const redis: RedisConnection = redisConnect(redisConfig.url || '', redisConfig.scope || '');
+    const session = await UserDBService.getUserSession(redis, redisConfig.scope || '', refreshDecoded.sessionId).catch((err) => {
       console.log({ err });
       return null;
     });
@@ -143,8 +157,10 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       req.user = null;
       return next();
     }
-    await pb.saveAuth(oldToken, oldUser);
-    const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
+    const { token: pbToken, record: pbUser } = await pb.saveAuth(oldToken, oldUser);
+    const pbIsValid = await pb.checkAuth();
+    console.log({ pbIsValid, pbToken, pbUser });
+    // const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
     req.user = {
       ...user, deviceId, sessionId, pbUser, pbToken
     };
@@ -159,7 +175,11 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
   return next();
 };
 
-export const requireRole = (roles: string[]) => (req: Request, res: Response, next: NextFunction) => {
+export const requireRole = (roles: string[]) => (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   const { user } = req;
   if (!user) {
     const sr = new ServiceResponse('Unauthenticated', null, false, 401, 'Unauthenticated', 'AUTH_SERVICE_USER_NOT_AUTHENTICATED', 'You need to be Logged in to perform this action');

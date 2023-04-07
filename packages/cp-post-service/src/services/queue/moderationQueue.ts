@@ -269,10 +269,11 @@ export const publishComment = async (job: Job) => {
     io.in(job.data.postId).emit(socketEventTypes.COMMENT_REPLY_PUBLISHED, job.data);
   }
   console.log({ result, comment: job.data });
+  await job.log('Comment published');
   job.progress(100);
   await job.moveToCompleted();
+  await job.remove();
   // setTimeout(async () => {
-  //   await job.remove();
   // }, 200000);
 };
 
@@ -286,6 +287,43 @@ export const publishCommentReply = async (job: Job) => {
 
 export const likeComment = async (job: Job) => {
   console.log({ job });
+  const redis = getRedis();
+  const channel = getChannel();
+  const io = getIO();
+  job.progress(25);
+  await job.log('Publishing comment like');
+  const serviceQueues = await getServiceQueues(redis, scope || '');
+  let se: ServiceEvent;
+  if (!job.data.parentCommentId) {
+    se = new ServiceEvent(
+      socketEventTypes.COMMENT_LIKED,
+      job.data,
+      null,
+      null,
+      serviceName,
+      serviceQueues
+    );
+  } else {
+    se = new ServiceEvent(
+      socketEventTypes.COMMENT_REPLY_LIKED,
+      job.data,
+      null,
+      null,
+      serviceName,
+      serviceQueues
+    );
+  }
+  const result = await sendToServiceQueues(channel, se, serviceQueues);
+  if (!job.data.comment.parentCommentId) {
+    io.in(job.data.comment.postId).emit(socketEventTypes.COMMENT_LIKED, job.data);
+  } else {
+    io.in(job.data.comment.postId).emit(socketEventTypes.COMMENT_REPLY_LIKED, job.data);
+  }
+  console.log({ result, comment: job.data });
+  await job.log('Comment like published');
+  job.progress(100);
+  await job.moveToCompleted();
+  await job.remove();
 };
 
 export const unlikeComment = async (job: Job) => {
