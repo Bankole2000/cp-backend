@@ -61,8 +61,7 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
         return next();
       }
       const { pbUser: oldUser, pbToken: oldToken } = refreshDecoded;
-      await pb.saveAuth(oldToken, oldUser);
-      const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
+      const { token: pbToken, record: pbUser } = await pb.saveAuth(oldToken, oldUser);
       const newAccessToken = (await signJWT({
         ...userExists.data, sessionId, deviceId, pbToken, pbUser
       }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;
@@ -140,8 +139,7 @@ export const getUserIfLoggedIn = async (req: Request, res: Response, next: NextF
       return next();
     }
     const { pbUser: oldUser, pbToken: oldToken } = refreshDecoded;
-    await pb.saveAuth(oldToken, oldUser);
-    const { token: pbToken, record: pbUser } = (await pb.refreshAuth()).data;
+    const { token: pbToken, record: pbUser } = await pb.saveAuth(oldToken, oldUser);
     const newAccessToken = (await signJWT({
       ...userExists.data, sessionId, deviceId, pbUser, pbToken
     }, config.self.jwtSecret as string, { expiresIn: config.self.accessTokenTTL })).token;

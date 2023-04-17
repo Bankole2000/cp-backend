@@ -20,3 +20,8 @@ export const getAllUserProfilesHandler = async (req: Request, res: Response) => 
   const sr = await adminService.getAllUserProfiles(page, limit);
   return res.status(sr.statusCode).send(sr);
 };
+
+export const getResourceCountHandler = async (req: Request, res: Response) => {
+  const sr = await adminService.getAnalytics();
+  return res.status(sr.statusCode).send(sr);
+};

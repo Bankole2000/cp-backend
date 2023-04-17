@@ -130,9 +130,18 @@ export default class PBService {
   async saveAuth(token: any, model: any) {
     console.log({ token, model });
     try {
-      this.pb.authStore.save(token, model);
+      const saveResult = await this.pb.authStore.save(token, model);
+      let res;
+      if (!this.checkAuth()) {
+        res = await this.pb.collection('users').authRefresh();
+      } else {
+        res = { token, record: model };
+      }
+      console.log({ res, saveResult });
+      return res;
     } catch (error: any) {
       console.log({ error });
+      return null;
     }
   }
 

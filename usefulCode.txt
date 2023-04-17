@@ -172,3 +172,5 @@ function importRecordsInParallel(records) {
 
     return Promise.all(promises);
 }
+
+"dev": "dotenv -e .env -- ts-node-dev src/index.ts",
