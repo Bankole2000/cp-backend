@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.4.12](https://github.com/Bankole2000/cp-backend/compare/v1.4.11...v1.4.12) (2023-04-17)
+
+
+### Bug Fixes
+
+* **staging:** setup for railway test deploy ([c7025e9](https://github.com/Bankole2000/cp-backend/commits/c7025e98cf1c591710101be8bfa32c39a2f586d3))
+
 ### [1.4.11](https://github.com/Bankole2000/cp-backend/compare/v1.4.10...v1.4.11) (2023-04-07)
 
 
