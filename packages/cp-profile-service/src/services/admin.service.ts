@@ -38,4 +38,34 @@ export default class AdminDBService {
       return new ServiceResponse('Error getting user profiles', null, false, 500, error.message, error, 'Check logs and database');
     }
   }
+
+  async getAnalytics() {
+    try {
+      const numbers = await this.prisma.profile.aggregate({
+        _sum: {
+          listingsCount: true,
+          offersCount: true,
+          postCount: true,
+          serviceCount: true
+        }
+      });
+      const {
+        _sum:
+        {
+          listingsCount, offersCount, postCount, serviceCount
+        }
+      } = numbers;
+      const users = await this.prisma.profile.count({});
+      return new ServiceResponse('Resource numbers', {
+        listingsCount,
+        offersCount,
+        postCount,
+        serviceCount,
+        users
+      }, true, 200, null, null, null);
+    } catch (error: any) {
+      console.log({ error });
+      return new ServiceResponse('Error getting profile analytics', null, false, 500, error.message, error);
+    }
+  }
 }

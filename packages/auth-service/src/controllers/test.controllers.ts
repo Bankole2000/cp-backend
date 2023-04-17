@@ -22,6 +22,7 @@ export const testEndpointHandler = async (req: Request, res: Response) => {
   const sr = new ServiceResponse('Success', {
     path: '/test',
     message: '/test route working',
+    config,
     queues,
     allQueues,
     someQueues,
